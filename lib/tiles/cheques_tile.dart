@@ -5,7 +5,7 @@ class ChequesTile extends DrawerTile {
   ChequesTile(PageController controller, int pageIndex)
       : super(
             text: "Cheques Calculados",
-            icon: Icons.list,
+            icon: Icons.account_balance,
             pageIndex: pageIndex,
             controller: controller);
 }

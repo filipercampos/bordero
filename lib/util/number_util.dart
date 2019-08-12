@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:intl/intl.dart';
 
 class NumberUtil{
 
@@ -34,5 +35,16 @@ class NumberUtil{
     }else{
       return Decimal.parse(Decimal.parse(value).toStringAsFixed(scale));
     }
+  }
+  static String toFormatCurrency(Decimal value){
+    return NumberFormat.currency().format(value.toDouble());
+  }
+
+  static String toFormatBr(Decimal value){
+    var format1 = NumberFormat.currency().format(value.toDouble());
+    print(format1);
+    final format2 = NumberFormat("#,##0.00", "pt_BR").format(value.toDouble());
+    print(format2);
+    return format2;
   }
 }

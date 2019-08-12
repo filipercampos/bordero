@@ -1,4 +1,4 @@
-import 'package:bordero/screens/home_screen.dart';
+import 'package:bordero/screens/signup/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         primaryColor: Colors.teal// Color.fromARGB(255, 4, 125, 141),
       ),
-      home: HomeScreen(),
+      home: SignUpScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

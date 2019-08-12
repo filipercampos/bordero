@@ -1,22 +1,21 @@
-import 'package:bordero/datas/cheque.dart';
+import 'package:bordero/helpers/cheque_helper.dart';
 import 'package:bordero/screens/cheques_calculados_screen.dart';
 import 'package:bordero/util/date_util.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:bordero/widgets/custom_drawer.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
-class BorderoTab extends StatefulWidget {
+class BorderoScreen extends StatefulWidget {
   final PageController _controller;
 
-  BorderoTab(this._controller);
+  BorderoScreen(this._controller);
 
   @override
-  _BorderoTabState createState() => _BorderoTabState();
+  _BorderoScreenState createState() => _BorderoScreenState();
 }
 
-class _BorderoTabState extends State<BorderoTab> {
+class _BorderoScreenState extends State<BorderoScreen> {
   final _formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Cheque> _cheques = List<Cheque>();
@@ -26,8 +25,6 @@ class _BorderoTabState extends State<BorderoTab> {
   final _dataPagamentoController = TextEditingController();
   final _prazoController = TextEditingController();
   final _numeroChequeController = TextEditingController();
-
-  final _countCheques = TextEditingController();
 
   final _valorChequeController = MoneyMaskedTextController(
     decimalSeparator: '.',
@@ -46,10 +43,69 @@ class _BorderoTabState extends State<BorderoTab> {
     thousandSeparator: ',',
   );
 
-  _BorderoTabState() {
+  final FocusNode _focusPrazo = FocusNode();
+
+  _BorderoScreenState() {
+    this._dataEmissaoController.text =
+        DateUtil.toFormat(DateUtil.firstDateFromMonth());
     _prazoController.text = "0";
     this._numeroChequeController.text = "00001";
-    _countCheques.text = this._cheques.length.toString();
+
+    _focusPrazo.addListener(() {
+      if (!_focusPrazo.hasFocus && _prazoController.text.isEmpty) {
+        _prazoController.text = "0";
+      } else if (_prazoController.text == "0") {
+        _prazoController.text = "";
+      }
+    });
+  }
+
+  Widget _buildActionButton() {
+    return Container(
+      margin: EdgeInsets.only(right: 8.0),
+      alignment: Alignment.centerRight,
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.list,
+              color: Colors.white,
+            ),
+            onPressed: this._cheques.length > 0
+                ? () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ChequesCalculadosScreen(this._cheques),
+                      ),
+                    );
+                  }
+                : null,//desabilita o botao
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Container(
+              alignment: Alignment.center,
+              width: 18,
+              height: 18,
+              child: Text(
+                this._cheques.length.toString(),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.teal,
+                ),
+              ),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white, //cor do botão no top
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -60,18 +116,9 @@ class _BorderoTabState extends State<BorderoTab> {
         title: Text("Borderô"),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.list),
-            onPressed: this._cheques.length > 0
-                ? () {
-                    //cheques calculados
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            ChequesCalculadosScreen(this._cheques)));
-                  }
-                : null,
+          Container(
+            child: this._cheques.length == 0 ? null : _buildActionButton(),
           ),
-          // a
         ],
       ),
       body: Padding(
@@ -120,7 +167,7 @@ class _BorderoTabState extends State<BorderoTab> {
                                     _dataVencimentoController); // Call Function that has showDatePicker()
                               },
                               child: IgnorePointer(
-                                child: TextFormField(
+                                child: TextField(
                                   controller: _dataVencimentoController,
                                   decoration: InputDecoration(
                                     hintText: "Dt. Vencimento",
@@ -128,9 +175,6 @@ class _BorderoTabState extends State<BorderoTab> {
                                     labelStyle: TextStyle(fontSize: 12),
                                   ),
                                   keyboardType: TextInputType.datetime,
-                                  validator: (text) {
-                                    return null;
-                                  },
                                 ),
                               ),
                             ),
@@ -145,7 +189,7 @@ class _BorderoTabState extends State<BorderoTab> {
                                     _dataPagamentoController); // Call Function that has showDatePicker()
                               },
                               child: IgnorePointer(
-                                child: TextFormField(
+                                child: TextField(
                                   readOnly: true,
                                   controller: _dataPagamentoController,
                                   decoration: InputDecoration(
@@ -154,9 +198,6 @@ class _BorderoTabState extends State<BorderoTab> {
                                     labelStyle: TextStyle(fontSize: 12),
                                   ),
                                   keyboardType: TextInputType.datetime,
-                                  validator: (text) {
-                                    return null;
-                                  },
                                 ),
                               ),
                             ),
@@ -176,7 +217,7 @@ class _BorderoTabState extends State<BorderoTab> {
                               decoration: InputDecoration(
                                 hintText: "Valor Cheque",
                                 labelText: "Valor Cheque",
-                                labelStyle: TextStyle(fontSize: 14),
+                                labelStyle: TextStyle(fontSize: 12),
                               ),
                               keyboardType: TextInputType.numberWithOptions(
                                   decimal: true),
@@ -197,7 +238,7 @@ class _BorderoTabState extends State<BorderoTab> {
                               decoration: InputDecoration(
                                 hintText: "% Taxa de Juros",
                                 labelText: "% Taxa de Juros",
-                                labelStyle: TextStyle(fontSize: 14),
+                                labelStyle: TextStyle(fontSize: 12),
                               ),
                               keyboardType: TextInputType.numberWithOptions(
                                   decimal: true),
@@ -205,8 +246,6 @@ class _BorderoTabState extends State<BorderoTab> {
                                 Cheque cheque = _buildCheque();
                                 if (validator(cheque)) {
                                   calcularCheque(cheque);
-                                }else{
-                                  print("Cheque invalido");
                                 }
                               },
                             ),
@@ -222,18 +261,22 @@ class _BorderoTabState extends State<BorderoTab> {
                         children: <Widget>[
                           Flexible(
                             child: TextField(
+                              focusNode: _focusPrazo,
                               controller: _prazoController,
                               decoration: InputDecoration(
                                 hintText: "Prazo",
                                 labelText: "Prazo",
-                                labelStyle: TextStyle(fontSize: 14),
+                                labelStyle: TextStyle(fontSize: 12),
                               ),
                               keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.done,
                               onChanged: (text) {
                                 int prazo =
                                     NumberUtil.toInt(_prazoController.text);
                                 if (prazo != 0) {
-                                  calcDateFromPrazo( _buildCheque());
+                                  calcDateFromPrazo();
+                                } else {
+                                  print("Nao calculado");
                                 }
                               },
                             ),
@@ -248,7 +291,7 @@ class _BorderoTabState extends State<BorderoTab> {
                               decoration: InputDecoration(
                                 hintText: "Valor Juros",
                                 labelText: "Valor Juros",
-                                labelStyle: TextStyle(fontSize: 14),
+                                labelStyle: TextStyle(fontSize: 12),
                               ),
                               keyboardType: TextInputType.numberWithOptions(
                                   decimal: true),
@@ -270,7 +313,7 @@ class _BorderoTabState extends State<BorderoTab> {
                               decoration: InputDecoration(
                                 hintText: "Valor Líquido",
                                 labelText: "Valor Líquido",
-                                labelStyle: TextStyle(fontSize: 14),
+                                labelStyle: TextStyle(fontSize: 12),
                               ),
                             ),
                           ),
@@ -283,77 +326,83 @@ class _BorderoTabState extends State<BorderoTab> {
                               decoration: InputDecoration(
                                 hintText: "Número Cheque",
                                 labelText: "Número Cheque",
-                                labelStyle: TextStyle(fontSize: 14),
+                                labelStyle: TextStyle(fontSize: 12),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 30,),
-                      Text("Cheques: ${_countCheques.text}"),
                     ],
                   ),
                 ),
               ),
               //Botoes
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  ButtonTheme(
-                    height: 50.0,
-                    minWidth: 100, //MediaQuery.of(context).size.width-20,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+              Container(
+                color: Colors.transparent,
+                margin: EdgeInsets.only(bottom: 10, top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    ButtonTheme(
+                      buttonColor: Colors.transparent,
+                      height: 50.0,
+                      minWidth: 100, //MediaQuery.of(context).size.width-20,
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Text(
+                          "Limpar",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        textColor: Colors.white,
+                        color: Theme.of(context).primaryColor,
+                        onPressed:
+                            this._cheques.length > 0 ? clearCheques : null,
                       ),
-                      child: Text(
-                        "Limpar",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      textColor: Colors.white,
-                      color: Theme.of(context).primaryColor,
-                      onPressed: this._cheques.length > 0 ? clearCheques : null,
                     ),
-                  ),
-                  ButtonTheme(
-                    height: 50.0,
-                    minWidth: 100, //MediaQuery.of(context).size.width-20,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                    ButtonTheme(
+                      height: 50.0,
+                      minWidth: 100, //MediaQuery.of(context).size.width-20,
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Text(
+                          "Novo",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        textColor: Colors.white,
+                        color: Theme.of(context).primaryColor,
+                        onPressed: newCalc,
                       ),
-                      child: Text(
-                        "Novo",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      textColor: Colors.white,
-                      color: Theme.of(context).primaryColor,
-                      onPressed: newCalc,
                     ),
-                  ),
-                  ButtonTheme(
-                    height: 50.0,
-                    minWidth: 100, //MediaQuery.of(context).size.width-20,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Text(
-                        "Salvar",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      textColor: Colors.white,
-                      color: Theme.of(context).primaryColor,
-                      onPressed: () {
-                        var cheque = _buildCheque();
+                    ButtonTheme(
+                      height: 50.0,
+                      minWidth: 100, //MediaQuery.of(context).size.width-20,
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Text(
+                          "Salvar",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        textColor: Colors.white,
+                        color: Theme.of(context).primaryColor,
+                        onPressed: () {
+                          var cheque = _buildCheque();
 
-                        if(validator(cheque)) {
-                          addCheque(cheque);
-                        }
-                      },
+                          if (validator(cheque)) {
+                            addCheque(cheque);
+                          } else {
+                            _showDialogChequeInvalido();
+                          }
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -363,6 +412,7 @@ class _BorderoTabState extends State<BorderoTab> {
     );
   }
 
+  /// Seleciona a data no calendário
   Future _selectDate(TextEditingController controller) async {
     final DateTime now = DateTime.now();
     DateTime picked = await showDatePicker(
@@ -415,10 +465,16 @@ class _BorderoTabState extends State<BorderoTab> {
 
     //seta o valor liquido
     cheque.setValorLiquido(cheque.valorCheque, cheque.valorJuros);
+
+    setState(() {
+      _valorLiquidoController.text = cheque.valorLiquido.toStringAsFixed(2);
+      _valorJurosController.text = cheque.valorJuros.toStringAsFixed(2);
+    });
   }
 
+  /// Inicia um novo cálculo de cheque
   void newCalc() {
-    _dataEmissaoController.text = "";
+    _dataEmissaoController.text = DateUtil.toFormat(DateUtil.firstDateFromMonth());
     _dataPagamentoController.text = "";
     _dataVencimentoController.text = "";
 
@@ -427,7 +483,7 @@ class _BorderoTabState extends State<BorderoTab> {
     _valorLiquidoController.text = "0.00";
 
     _taxaJurosController.text = "0.00";
-    _prazoController.text = "0.00";
+    _prazoController.text = "0";
     _numeroChequeController.text = "00001";
 
     scaffoldKey.currentState.showSnackBar(
@@ -438,15 +494,47 @@ class _BorderoTabState extends State<BorderoTab> {
     );
   }
 
+  /// Remove os cheques cálculados
   void clearCheques() {
     if (this._cheques.length > 0) {
-      this._cheques.clear();
-      _countCheques.text = "0";
-      scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          duration: Duration(seconds: 2),
-          content: Text("Cheques removidos"),
-        ),
+      // flutter defined function
+      showDialog(
+        context: this.context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: Text(
+              "Atenção",
+              textAlign: TextAlign.center,
+            ),
+            content:
+                Text("Deseja realmente remover todos os cheques calculados ?"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Não"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text("Sim"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    //remove os cheques
+                    this._cheques.clear();
+                  });
+                  scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      duration: Duration(seconds: 2),
+                      content: Text("Cheques removidos"),
+                    ),
+                  );
+                },
+              ),
+            ],
+          );
+        },
       );
     } else {
       scaffoldKey.currentState.showSnackBar(
@@ -459,34 +547,41 @@ class _BorderoTabState extends State<BorderoTab> {
     newCalc();
   }
 
+  /// Adiciona um cheque calculado
   void addCheque(cheque) {
-
     if (cheque != null) {
-      this._cheques.add(cheque);
-      this._numeroChequeController.text =
-          "0000" + (this._cheques.length + 1).toString();
+      setState(() {
+        this._cheques.add(cheque);
+      });
+      scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 2),
+          content: Container(
+            child: Text("Cheque ${cheque.numeroCheque} adicionado !"),
+          ),
+        ),
+      );
     } else {
-      _dialogChequeInvalido();
+      _showDialogChequeInvalido();
     }
   }
 
   /// Calcula a data do prazo.
-  Cheque calcDateFromPrazo( Cheque cheque) {
-    print(cheque);
+  void calcDateFromPrazo() {
+    Cheque cheque = _buildCheque();
+    //calcula a data de vencimento
+    var dataVencimento =
+        DateUtil.addDays(cheque.dataEmissao, cheque.prazoTotal);
+
+    //seta a data no campo
+    _dataVencimentoController.text = DateUtil.toFormat(dataVencimento);
+
+    //data de pagamento acompanha o vencimento
+    _dataPagamentoController.text = DateUtil.toFormat(dataVencimento);
+
     if (validator(cheque)) {
-      //calcula a data de vencimento
-      var dataVencimento =
-          DateUtil.addDays(cheque.dataEmissao, cheque.prazoTotal);
-
-      //seta a data no campo
-      _dataVencimentoController.text = DateUtil.toFormat(dataVencimento);
-
-      //data de pagamento acompanha o vencimento
-      _dataPagamentoController.text = DateUtil.toFormat(dataVencimento);
-
       calcularCheque(cheque);
     }
-    return cheque;
   }
 
   /// Calcula o prazo a partir da data de emissao e vencimento.
@@ -504,7 +599,8 @@ class _BorderoTabState extends State<BorderoTab> {
     }
   }
 
-  void _dialogChequeInvalido() {
+  /// Alerta de cheque inválido
+  void _showDialogChequeInvalido() {
     // flutter defined function
     showDialog(
       context: this.context,
@@ -577,18 +673,17 @@ class _BorderoTabState extends State<BorderoTab> {
     );
   }
 
+  /// Valida as datas do cheque
   bool _validateDataNCalc() {
     //referenciando as datas setada
     var dataEmissao = DateUtil.toDate(_dataEmissaoController.text);
     var dataVencimento = DateUtil.toDate(_dataVencimentoController.text);
 
-    if(_dataEmissaoController.text.isEmpty ||
-        _dataVencimentoController.text.isEmpty){
+    if (_dataEmissaoController.text.isEmpty ||
+        _dataVencimentoController.text.isEmpty) {
       return false;
     }
 
-//    print("Emissao: $dataEmissao");
-//    print("Vencimento $dataVencimento");
     bool maior = dataEmissao.compareTo(dataVencimento) > 0;
     bool inferior = dataVencimento.compareTo(dataEmissao) < 0;
     //a data de pagamento acompanha a data de vencimento
@@ -596,7 +691,7 @@ class _BorderoTabState extends State<BorderoTab> {
 
     //se for diferente de null nao sao iguais e se for true a data de vencimento eh menor
     if (inferior) {
-      _buildAlert("Atenção",
+      _buildDialog("Atenção",
           "A data de vencimento não pode ser inferior\na data de emissão");
 
       //seta data de emissao no vencimento
@@ -604,7 +699,7 @@ class _BorderoTabState extends State<BorderoTab> {
     }
     //se true a data de emissao eh maior a data de vencimento
     else if (maior) {
-      _buildAlert("Atenção",
+      _buildDialog("Atenção",
           "A data de emissão não pode ser superior\na data de vencimento.\n");
       //entao sao iguais
       _dataEmissaoController.text = _dataVencimentoController.text;
@@ -616,49 +711,36 @@ class _BorderoTabState extends State<BorderoTab> {
     return false;
   }
 
-  _buildAlert(String title, String message) {
-    void _dialogChequeInvalido() {
-      // flutter defined function
-      showDialog(
-        context: this.context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return AlertDialog(
-            title: Text(
-              title,
-              textAlign: TextAlign.center,
+  /// Cria uma alerta
+  void _buildDialog(String title, String message) {
+    // flutter defined function
+    showDialog(
+      context: this.context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Text(
+            title,
+            textAlign: TextAlign.center,
+          ),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            content: Text(message),
-            actions: <Widget>[
-              FlatButton(
-                child: Text("OK"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
+          ],
+        );
+      },
+    );
   }
 
   /// Verifica se os dados do cheque são válidos para cálculo.
-  /// true Válido
-  /// false Inválidos
   bool validator(Cheque cheque) {
-//    if (_dataEmissaoController.text.isEmpty ||
-//        _dataVencimentoController.text.isEmpty ||
-//        _prazoController.text.isEmpty ||
-//        valorCheque < Decimal.one ||
-//        taxaJuros <= Decimal.zero) {
-//      return null;
-//    }
-    //se ambos forem diferentes de zero ao mesmo tempo
     return cheque.prazo != 0 &&
-        cheque.taxaJuros != Decimal.zero &&
-        cheque.valorCheque != Decimal.zero;
+        cheque.taxaJuros.toDouble() != 0.0 &&
+        cheque.valorCheque.toDouble() != 0.0;
   }
-
-
 }

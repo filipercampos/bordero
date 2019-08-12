@@ -1,5 +1,4 @@
-import 'package:bordero/tabs/bordero_tab.dart';
-import 'package:bordero/screens/cheques_calculados_screen.dart';
+import 'package:bordero/screens/bordero_screen.dart';
 import 'package:bordero/tabs/cheques_calculados_tab.dart';
 import 'package:bordero/widgets/bordero_button.dart';
 import 'package:bordero/widgets/custom_drawer.dart';
@@ -10,6 +9,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return PageView(
       //cancela o desliza entre as paginas
       physics: NeverScrollableScrollPhysics(),
@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
           drawer: CustomDrawer(_pageController),
           floatingActionButton: BorderoButton(_pageController),
         ),
-        BorderoTab(_pageController),
+        BorderoScreen(_pageController),
         Scaffold(
           appBar: AppBar(
             title: Text("Cheques"),
@@ -31,6 +31,15 @@ class HomeScreen extends StatelessWidget {
           drawer: CustomDrawer(_pageController),
           body: ChequesCalculadosTab(),
         ),
+        Scaffold(
+          appBar: AppBar(
+            title: Text("Clientes"),
+            centerTitle: true,
+          ),
+          drawer: CustomDrawer(_pageController),
+          body: Container(),
+        ),
+
       ],
     );
   }

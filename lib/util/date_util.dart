@@ -30,8 +30,8 @@ class DateUtil {
   }
 
   /// Adiciona os dias na data informada
-  static addDays(DateTime date, int days) {
-    date.add(Duration(days: days));
+  static DateTime addDays(DateTime date, int days) {
+    return date.add(Duration(days: days));
   }
 
   /// Verfica se a data é sábado
