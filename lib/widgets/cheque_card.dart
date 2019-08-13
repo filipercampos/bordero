@@ -14,6 +14,8 @@ class ChequeCard extends StatefulWidget {
 class _ChequeCardState extends State<ChequeCard> {
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+    
     final cheque = widget.cheque;
     return Card(
       child: Row(
@@ -22,7 +24,7 @@ class _ChequeCardState extends State<ChequeCard> {
             child: Icon(
               Icons.monetization_on,
               size: 48,
-              color: Colors.teal,
+              color: primaryColor,
             ),
             height: 80,
             width: 80,

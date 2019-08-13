@@ -19,6 +19,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
   final _formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Cheque> _cheques = List<Cheque>();
+  
 
   final _dataEmissaoController = TextEditingController();
   final _dataVencimentoController = TextEditingController();
@@ -94,7 +95,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w900,
-                  color: Colors.teal,
+                  color:Theme.of(context).primaryColor,
                 ),
               ),
               decoration: BoxDecoration(
@@ -112,6 +113,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text("Borderô"),
         centerTitle: true,
@@ -530,6 +532,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                       content: Text("Cheques removidos"),
                     ),
                   );
+                  newCalc();
                 },
               ),
             ],
@@ -544,7 +547,6 @@ class _BorderoScreenState extends State<BorderoScreen> {
         ),
       );
     }
-    newCalc();
   }
 
   /// Adiciona um cheque calculado

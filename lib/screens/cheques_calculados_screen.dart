@@ -4,6 +4,7 @@ import 'package:bordero/widgets/cheque_card.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 
+///Cheques calculados
 class ChequesCalculadosScreen extends StatefulWidget {
   final List<Cheque> cheques;
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ChequesCalculadosTab extends StatelessWidget {
+class ChequesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(

@@ -1,11 +1,13 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:bordero/blocs/user_bloc.dart';
 import 'package:bordero/helpers/user_helper.dart';
 import 'package:flutter/material.dart';
 
-/// Animação da tela de Login
+/// Animação da tela de SignUp
 class StaggerAnimation extends StatelessWidget {
   //scaffold key para snack bar
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final User user;
+  final String userName;
 
   //Controle da animação
   final AnimationController controller;
@@ -15,7 +17,7 @@ class StaggerAnimation extends StatelessWidget {
   StaggerAnimation({
     this.controller,
     @required this.scaffoldKey,
-    @required this.user,
+    @required this.userName,
   })  
   //define o tamanho inicial e final do botão
   : buttonSqueeze = Tween(begin: 320.0, end: 60.0).animate(
@@ -44,7 +46,8 @@ class StaggerAnimation extends StatelessWidget {
   }
 
   Future<Null> saveData() async {
-    await UserHelper.internal().saveUser(user);
+    var user = User.fromName(this.userName);
+    //await UserHelper.internal().saveUser(user);
   }
 
   /// Animação do login
@@ -52,38 +55,46 @@ class StaggerAnimation extends StatelessWidget {
     //cor do botão login e do container animado
     //Color.fromRGBO(247, 64, 106, 1.0),
     Color buttonColor = Theme.of(context).primaryColor;
-    return InkWell(
-      //ação de animar
-      onTap: () async {
-        //inicia a animação
-        controller.forward();
-        //await saveData();
+    final _userBloc = BlocProvider.getBloc<UserBloc>();
+    return StreamBuilder<bool>(
+      stream: _userBloc.outSubmitValid,
+      builder: (context, snapshot) {
+        return InkWell(
+          //ação de animar
+          onTap: snapshot.hasData
+              ? () {
+                    //inicia a animação
+                    controller.forward();
+                    saveData();
+                }
+              : null,
+          //animação de encolher
+          child: Hero(
+            tag: "fade",
+            child: buttonZoomOut.value == 60
+                //container do botão animado
+                ? Container(
+                    width: buttonSqueeze.value,
+                    height: 60,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: snapshot.hasData ? buttonColor : Colors.grey,
+                        borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                    child: _buildInside(context),
+                  )
+                //container que cresce e cobre a tela toda
+                : Container(
+                    width: buttonZoomOut.value,
+                    height: buttonZoomOut.value,
+                    decoration: BoxDecoration(
+                        color: buttonColor,
+                        shape: buttonZoomOut.value < 500
+                            ? BoxShape.circle
+                            : BoxShape.rectangle),
+                  ),
+          ),
+        );
       },
-      //animação de encolher
-      child: Hero(
-        tag: "fade",
-        child: buttonZoomOut.value == 60
-            //container do botão animado
-            ? Container(
-                width: buttonSqueeze.value,
-                height: 60,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: buttonColor,
-                    borderRadius: BorderRadius.all(Radius.circular(30.0))),
-                child: _buildInside(context),
-              )
-            //container que cresce e cobre a tela toda
-            : Container(
-                width: buttonZoomOut.value,
-                height: buttonZoomOut.value,
-                decoration: BoxDecoration(
-                    color: buttonColor,
-                    shape: buttonZoomOut.value < 500
-                        ? BoxShape.circle
-                        : BoxShape.rectangle),
-              ),
-      ),
     );
   }
 

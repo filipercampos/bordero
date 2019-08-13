@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:bordero/blocs/user_bloc.dart';
 import 'package:bordero/helpers/user_helper.dart';
 import 'package:bordero/widgets/image_source_sheet.dart';
 import 'package:flutter/material.dart';
 
 class UserScreen extends StatefulWidget {
-  final User contact;
+  final User user;
 
-  UserScreen({this.contact});
+  UserScreen({this.user});
 
   @override
   _UserScreenState createState() => _UserScreenState();
@@ -29,10 +31,10 @@ class _UserScreenState extends State<UserScreen> {
   void initState() {
     super.initState();
 
-    if (widget.contact == null) {
-      _editedUser = User();
+    if (widget.user == null) {
+      _editedUser = User.fromName("Convidado");
     } else {
-      _editedUser = User.fromMap(widget.contact.toMap());
+      _editedUser = User.fromMap(widget.user.toMap());
 
       _nameController.text = _editedUser.name;
       _emailController.text = _editedUser.email;
@@ -42,24 +44,33 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+    final _userBloc = BlocProvider.getBloc<UserBloc>();
     return WillPopScope(
       onWillPop: _requestPop,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.teal,
+          backgroundColor: primaryColor,
           title: Text(_editedUser.name ?? "Meus Dados"),
           centerTitle: true,
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            if (_editedUser.name != null && _editedUser.name.isNotEmpty) {
-              Navigator.pop(context, _editedUser);
-            } else {
-              FocusScope.of(context).requestFocus(_nameFocus);
-            }
-          },
-          child: Icon(Icons.save),
-          backgroundColor: Colors.teal,
+        floatingActionButton: StreamBuilder<User>(
+          stream: _userBloc.outUser,
+          builder: (context, snapshot) {
+            return FloatingActionButton(
+              onPressed: () {
+                if (_editedUser.name != null && _editedUser.name.isNotEmpty) {
+                  _userBloc.saveUser(_editedUser);
+                  Navigator.pop(context, _editedUser);
+
+                } else {
+                  FocusScope.of(context).requestFocus(_nameFocus);
+                }
+              },
+              child: Icon(Icons.save),
+              backgroundColor: primaryColor,
+            );
+          }
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(10.0),

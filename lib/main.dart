@@ -1,5 +1,11 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:bordero/screens/home_screen.dart';
 import 'package:bordero/screens/signup/signup_screen.dart';
+import 'package:bordero/util/color_util.dart';
 import 'package:flutter/material.dart';
+
+import 'blocs/user_bloc.dart';
+import 'helpers/user_helper.dart';
 
 void main() => runApp(MyApp());
 
@@ -7,14 +13,35 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Borderô',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        primaryColor: Colors.teal// Color.fromARGB(255, 4, 125, 141),
-      ),
-      home: SignUpScreen(),
-      debugShowCheckedModeBanner: false,
+    final _userBloc = UserBloc();
+    return BlocProvider(
+      blocs: [
+        Bloc((i) => _userBloc),
+      ],
+      child: StreamBuilder<User>(
+          stream: _userBloc.outUser,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container(
+                color: HexColor('#00a6bf'),
+                height: 100.0,
+                alignment: Alignment.center,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      Colors.white),
+                ),
+              );
+            }
+            return MaterialApp(
+              title: 'Borderô',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+                primaryColor: HexColor('#00a6bf'), //ITE color
+              ),
+              home: !snapshot.hasData ? HomeScreen() : SignUpScreen(),
+              debugShowCheckedModeBanner: false,
+            );
+          }),
     );
   }
 }

@@ -14,7 +14,6 @@ class UserHelper {
   static final UserHelper _instance = UserHelper.internal();
 
   factory UserHelper() => _instance;
-
   UserHelper.internal();
 
   Database _db;
@@ -89,7 +88,6 @@ class UserHelper {
       var allUsers = await getAllUsers();
       return allUsers.first;
     }catch(ex){
-      print("Algo de errado nao está certo");
       return null;
     }
   }
@@ -114,6 +112,8 @@ class User {
   String urlProfile;
 
   User();
+
+  User.fromName(this.name);
 
   User.fromMap(Map map) {
     id = map[idColumn];

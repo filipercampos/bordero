@@ -1,4 +1,5 @@
-import 'package:bordero/helpers/user_helper.dart';
+import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:bordero/blocs/user_bloc.dart';
 import 'package:bordero/screens/home_screen.dart';
 import 'package:bordero/screens/signup/widgets/stagger_animation.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen>
   //key para snack bar
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _nameController = TextEditingController();
-  User _user;
+  final _emailController = TextEditingController();
 
   @override
   void initState() {
@@ -30,19 +31,10 @@ class _SignUpScreenState extends State<SignUpScreen>
 
     //listener da animação e login
     _animationController.addStatusListener((status) {
-      print("Animaton State $status");
       if (status == AnimationStatus.completed) {
         _onSuccess();
       }
     });
-    _loadUser();
-  }
-
-  void _loadUser() async {
-    print("Dados do usuário carregados");
-    _user = await UserHelper.internal().getFirst();
-
-    print(_user.toString());
   }
 
   @override
@@ -53,6 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen>
 
   @override
   Widget build(BuildContext context) {
+    final _userBloc = BlocProvider.getBloc<UserBloc>();
     timeDilation = 1;
 
     return Scaffold(
@@ -79,39 +72,61 @@ class _SignUpScreenState extends State<SignUpScreen>
                     "Bem-vindo ao Borderô",
                     style: TextStyle(
                         fontSize: 18,
-                        color: Colors.teal,
+                        color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.w500),
                   ),
                   Container(
                     margin: EdgeInsets.all(16),
-                    child: TextFormField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                        hintText: "Nome de Exibição",
-                        labelText: "Nome",
-                      ),
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.done,
-                      validator: (text) {
-                        if (text.isEmpty || text.length < 4) {
-                          return "Informe um nome e sobrenome";
-                        }
-                        return null;
-                      },
+                    child: Column(
+                      children: <Widget>[
+                        StreamBuilder<String>(
+                            stream: _userBloc.outName,
+                            builder: (context, snapshot) {
+                              return TextField(
+                                maxLength: 50,
+                                controller: _nameController,
+                                onChanged: _userBloc.changeName,
+                                decoration: InputDecoration(
+                                  hintText: "Nome",
+                                  errorText:
+                                      snapshot.hasError ? snapshot.error : null,
+                                ),
+                                keyboardType: TextInputType.text,
+                                textInputAction: TextInputAction.done,
+                              );
+                            }),
+                        StreamBuilder<String>(
+                            stream: _userBloc.outEmail,
+                            builder: (context, snapshot) {
+                              return TextField(
+                                maxLength: 100,
+                                controller: _emailController,
+                                onChanged: _userBloc.changeEmail,
+                                decoration: InputDecoration(
+                                  hintText: "Email",
+                                  errorText:
+                                      snapshot.hasError ? snapshot.error : null,
+                                ),
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.done,
+                              );
+                            }),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  //Ação de de login animado
+                  Container(
+                    child: StaggerAnimation(
+                      controller: _animationController.view,
+                      scaffoldKey: _scaffoldKey,
+                      userName: _nameController.text,
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-
-          //Ação de de login animado
-          Container(
-            margin: EdgeInsets.only(bottom: 100),
-            child: StaggerAnimation(
-              controller: _animationController.view,
-              scaffoldKey: _scaffoldKey,
-              user: _user,
             ),
           ),
         ],
@@ -121,8 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen>
 
   ///Chama a HomeScreen
   void _onSuccess() {
-    print("Logon on firebase ...");
-
+    print("Logon on Borderô ...");
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => HomeScreen(),
     ));
