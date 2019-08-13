@@ -47,7 +47,7 @@ class StaggerAnimation extends StatelessWidget {
 
   Future<Null> saveData() async {
     var user = User.fromName(this.userName);
-    //await UserHelper.internal().saveUser(user);
+    await UserHelper.internal().saveUser(user);
   }
 
   /// Animação do login

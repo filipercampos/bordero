@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
                 primarySwatch: Colors.blue,
                 primaryColor: HexColor('#00a6bf'), //ITE color
               ),
-              home: !snapshot.hasData ? HomeScreen() : SignUpScreen(),
+              home: snapshot.hasData ? HomeScreen() : SignUpScreen(),
               debugShowCheckedModeBanner: false,
             );
           }),

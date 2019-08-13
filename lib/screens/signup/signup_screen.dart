@@ -80,37 +80,39 @@ class _SignUpScreenState extends State<SignUpScreen>
                     child: Column(
                       children: <Widget>[
                         StreamBuilder<String>(
-                            stream: _userBloc.outName,
-                            builder: (context, snapshot) {
-                              return TextField(
-                                maxLength: 50,
-                                controller: _nameController,
-                                onChanged: _userBloc.changeName,
-                                decoration: InputDecoration(
-                                  hintText: "Nome",
-                                  errorText:
-                                      snapshot.hasError ? snapshot.error : null,
-                                ),
-                                keyboardType: TextInputType.text,
-                                textInputAction: TextInputAction.done,
-                              );
-                            }),
+                          stream: _userBloc.outName,
+                          builder: (context, snapshot) {
+                            return TextField(
+                              maxLength: 50,
+                              controller: _nameController,
+                              onChanged: _userBloc.changeName,
+                              decoration: InputDecoration(
+                                hintText: "Nome",
+                                errorText:
+                                    snapshot.hasError ? snapshot.error : null,
+                              ),
+                              keyboardType: TextInputType.text,
+                              textInputAction: TextInputAction.done,
+                            );
+                          },
+                        ),
                         StreamBuilder<String>(
-                            stream: _userBloc.outEmail,
-                            builder: (context, snapshot) {
-                              return TextField(
-                                maxLength: 100,
-                                controller: _emailController,
-                                onChanged: _userBloc.changeEmail,
-                                decoration: InputDecoration(
-                                  hintText: "Email",
-                                  errorText:
-                                      snapshot.hasError ? snapshot.error : null,
-                                ),
-                                keyboardType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.done,
-                              );
-                            }),
+                          stream: _userBloc.outEmail,
+                          builder: (context, snapshot) {
+                            return TextField(
+                              maxLength: 100,
+                              controller: _emailController,
+                              onChanged: _userBloc.changeEmail,
+                              decoration: InputDecoration(
+                                hintText: "Email",
+                                errorText:
+                                    snapshot.hasError ? snapshot.error : null,
+                              ),
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.done,
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),
