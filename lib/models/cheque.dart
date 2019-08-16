@@ -17,6 +17,7 @@ class Cheque {
   String numeroCheque;
   String nominal;
   int prazoTotal;
+  String imagePath;
 
   Cheque() {
     var dataAtual = DateTime.now();

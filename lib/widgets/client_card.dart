@@ -22,15 +22,24 @@ class ClientCard extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     client.name ?? "",
-                    style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black),
                   ),
                   Text(
-                    client.phone1 ?? "Celular: Não Informado",
-                    style: TextStyle(fontSize: 18.0),
+                    client.phone1 ?? "Celular não Informado",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.grey[500],
+                    ),
                   ),
                   Text(
-                    client.email ?? "Email: Não informado",
-                    style: TextStyle(fontSize: 18.0),
+                    client.email ?? "Email não informado",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.grey[500],
+                    ),
                   ),
                 ],
               ),
@@ -39,6 +48,9 @@ class ClientCard extends StatelessWidget {
         ),
       ),
       onTap: () {
+        _showEditClientSceen(context, client);
+      },
+      onLongPress: () {
         _showOptions(context);
       },
     );
@@ -59,9 +71,16 @@ class ClientCard extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.all(10.0),
                       child: FlatButton(
-                        child: Text(
-                          "Ligar",
-                          style: TextStyle(color: Colors.black, fontSize: 20.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Icon(Icons.phone),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Ligar",  style: TextStyle(color: Colors.black),),
+                          ],
                         ),
                         onPressed: () {
                           launch("tel:${client.phone1}");
@@ -72,9 +91,16 @@ class ClientCard extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.all(10.0),
                       child: FlatButton(
-                        child: Text(
-                          "Editar",
-                          style: TextStyle(color: Colors.black, fontSize: 20.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Icon(Icons.edit),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Editar",  style: TextStyle(color: Colors.black),),
+                          ],
                         ),
                         onPressed: () {
                           Navigator.pop(context);

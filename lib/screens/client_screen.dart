@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bordero/models/client.dart';
-import 'package:bordero/repository/client_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -27,7 +26,6 @@ class _ClientScreenState extends State<ClientScreen> {
   bool _userEdited = false;
 
   Client _editedClient;
-  final ClientRepository _clientRepository = ClientRepository();
 
   @override
   void initState() {

@@ -2,16 +2,16 @@ import 'package:bordero/models/cheque.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:flutter/material.dart';
 
-class ChequeCard extends StatefulWidget {
+class ChequeBorderoCardDetails extends StatefulWidget {
   final Cheque cheque;
 
-  ChequeCard(this.cheque);
+  ChequeBorderoCardDetails(this.cheque);
 
   @override
-  _ChequeCardState createState() => _ChequeCardState();
+  _ChequeBorderoCardDetailsState createState() => _ChequeBorderoCardDetailsState();
 }
 
-class _ChequeCardState extends State<ChequeCard> {
+class _ChequeBorderoCardDetailsState extends State<ChequeBorderoCardDetails> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;

@@ -23,49 +23,50 @@ class _ClientsTabState extends State<ClientsTab> {
   @override
   void initState() {
     super.initState();
-
     _getAllClients();
   }
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Clientes"),
-        backgroundColor: primaryColor,
-        centerTitle: true,
-        actions: <Widget>[
-          PopupMenuButton<OrderOptions>(
-            itemBuilder: (context) => <PopupMenuEntry<OrderOptions>>[
-              const PopupMenuItem<OrderOptions>(
-                child: Text("Ordenar de A-Z"),
-                value: OrderOptions.ASC,
-              ),
-              const PopupMenuItem<OrderOptions>(
-                child: Text("Ordenar de Z-A"),
-                value: OrderOptions.DESC,
-              ),
-            ],
-            onSelected: _orderList,
-          )
-        ],
+    return Material(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Clientes"),
+          backgroundColor: primaryColor,
+          centerTitle: true,
+          actions: <Widget>[
+            PopupMenuButton<OrderOptions>(
+              itemBuilder: (context) => <PopupMenuEntry<OrderOptions>>[
+                const PopupMenuItem<OrderOptions>(
+                  child: Text("Ordenar de A-Z"),
+                  value: OrderOptions.ASC,
+                ),
+                const PopupMenuItem<OrderOptions>(
+                  child: Text("Ordenar de Z-A"),
+                  value: OrderOptions.DESC,
+                ),
+              ],
+              onSelected: _orderList,
+            )
+          ],
+        ),
+        drawer: CustomDrawer(widget._controller),
+        backgroundColor: Colors.white,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _showAddClientPage();
+          },
+          child: Icon(Icons.add),
+          backgroundColor: primaryColor,
+        ),
+        body: ListView.builder(
+            itemCount: clients.length,
+            itemBuilder: (context, index) {
+              print(clients[index].toString());
+              return ClientCard(clients[index]);
+            }),
       ),
-      drawer: CustomDrawer(widget._controller),
-      backgroundColor: Colors.white,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showAddClientPage();
-        },
-        child: Icon(Icons.add),
-        backgroundColor: primaryColor,
-      ),
-      body: ListView.builder(
-          itemCount: clients.length,
-          itemBuilder: (context, index) {
-            print(clients[index].toString());
-            return ClientCard(clients[index]);
-          }),
     );
   }
 
@@ -82,12 +83,9 @@ class _ClientsTabState extends State<ClientsTab> {
     }
   }
 
-  void _getAllClients() {
-    clients.clear();
-    helper.getAll().then((list) {
-      setState(() {
-        list.forEach((map) => clients.add(Client.fromJson(map)));
-      });
+  void _getAllClients()async{
+    clients =  await helper.all();
+    setState(() {
     });
   }
 

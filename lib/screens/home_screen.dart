@@ -25,16 +25,10 @@ class HomeScreen extends StatelessWidget {
         ),
         ///Tela de cálculo
         BorderoScreen(_pageController),
-        Scaffold(
-          appBar: AppBar(
-            title: Text("Cheques"),
-            centerTitle: true,
-          ),
-          drawer: CustomDrawer(_pageController),
-          body: ChequesPage(),
-        )  ,
+        //Cheques salvos
+        ChequesTab(_pageController),
+        //Clientes
         ClientsTab(_pageController),
-
       ],
     );
   }

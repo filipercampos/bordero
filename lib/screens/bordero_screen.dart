@@ -1,5 +1,5 @@
 import 'package:bordero/models/cheque.dart';
-import 'package:bordero/screens/cheques_calculados_screen.dart';
+import 'package:bordero/screens/cheques_bordero_screen.dart';
 import 'package:bordero/util/date_util.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:bordero/widgets/custom_drawer.dart';
@@ -78,7 +78,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) =>
-                            ChequesCalculadosScreen(this._cheques),
+                            ChequesBorderoScreen(this._cheques),
                       ),
                     );
                   }

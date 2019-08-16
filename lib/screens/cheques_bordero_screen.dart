@@ -2,22 +2,22 @@ import 'package:bordero/blocs/cheque_bloc.dart';
 import 'package:bordero/models/cheque.dart';
 import 'package:bordero/screens/home_screen.dart';
 import 'package:bordero/util/number_util.dart';
-import 'package:bordero/widgets/cheque_card.dart';
+import 'package:bordero/widgets/cheque_bordero_card_details.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 
 ///Cheques calculados
-class ChequesCalculadosScreen extends StatefulWidget {
+class ChequesBorderoScreen extends StatefulWidget {
   final List<Cheque> cheques;
 
-  ChequesCalculadosScreen(this.cheques);
+  ChequesBorderoScreen(this.cheques);
 
   @override
-  _ChequesCalculadosScreenState createState() =>
-      _ChequesCalculadosScreenState();
+  _ChequesBorderoScreenState createState() =>
+      _ChequesBorderoScreenState();
 }
 
-class _ChequesCalculadosScreenState extends State<ChequesCalculadosScreen> {
+class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final ChequeBloc _chequeBloc = ChequeBloc();
   @override
@@ -96,7 +96,7 @@ class _ChequesCalculadosScreenState extends State<ChequesCalculadosScreen> {
                                 content: Text(
                                     "Cheque ${item.numeroCheque} removido")));
                           },
-                          child: ChequeCard(item),
+                          child: ChequeBorderoCardDetails(item),
                         );
                       },
                     ),
@@ -139,12 +139,12 @@ class _ChequesCalculadosScreenState extends State<ChequesCalculadosScreen> {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
           //efeito de "congelar a tela"
           StreamBuilder<bool>(
-            stream: _chequeBloc.outLoading,
+            stream: _chequeBloc.outCreated,
             initialData: false,
             builder: (context, snapshot) {
               return IgnorePointer(
@@ -173,6 +173,7 @@ class _ChequesCalculadosScreenState extends State<ChequesCalculadosScreen> {
     );
 
     bool success = await _chequeBloc.saveCheques(widget.cheques);
+
     //garante a snack bar 
     await Future.delayed(Duration(seconds: 1));
 
@@ -181,7 +182,7 @@ class _ChequesCalculadosScreenState extends State<ChequesCalculadosScreen> {
     scaffoldKey.currentState.showSnackBar(
       SnackBar(
         content: Text(
-          success ? "Cheque(s) salvos !" : "Falha ao salvar cheque(s)!",
+          success ? "Cheque(s) salvos com sucesso" : "Falha ao salvar cheque(s)!",
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: success ? Theme.of(context).primaryColor : Colors.red,
