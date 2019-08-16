@@ -1,27 +1,40 @@
 import 'dart:async';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:bordero/helpers/user_helper.dart';
+import 'package:bordero/models/user.dart';
+import 'package:bordero/repository/repository_helper.dart';
+import 'package:bordero/util/string_util.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserBloc extends BlocBase with UserValidator {
   final _nameController = BehaviorSubject<String>();
   final _emailController = BehaviorSubject<String>();
+  final _passwordController = BehaviorSubject<String>();
   final _userController = BehaviorSubject<User>();
+
+  final _registerController = BehaviorSubject<bool>();
+
+  Stream<bool> get outRegister => _registerController.stream;
 
   Stream<String> get outName => _nameController.stream.transform(validateName);
 
   Stream<String> get outEmail =>
       _emailController.stream.transform(validateEmail);
 
+  Stream<String> get outPassword =>
+      _passwordController.stream.transform(validatePassword);
+
   Function(String) get changeName => _nameController.sink.add;
 
   Function(String) get changeEmail => _emailController.sink.add;
+  Function(String) get changePassword => _passwordController.sink.add;
 
   Stream<User> get outUser => _userController.stream;
 
   Stream<bool> get outSubmitValid =>
-      Observable.combineLatest2(outName, outEmail, (user, email) => true);
+      Observable.combineLatest2(outEmail, outPassword, (user, email) => true);
+
+  final _userRepository = RepositoryHelper().userRepository;
 
   UserBloc() {
     _loadUser();
@@ -29,8 +42,14 @@ class UserBloc extends BlocBase with UserValidator {
 
   Future<void> _loadUser() async {
     print("Carregando dados do usuário ...");
-    final user = await UserHelper.internal().getFirst();
-    _userController.add(user);
+    final userMap = await _userRepository.getFirst();
+    if (userMap != null) {
+      _userController.add(User.fromJson(userMap));
+      _registerController.add(true);
+      print("Data user loaded !");
+    } else {
+      _registerController.add(false);
+    }
   }
 
   bool isRegister() {
@@ -42,11 +61,44 @@ class UserBloc extends BlocBase with UserValidator {
     super.dispose();
     _nameController.close();
     _emailController.close();
+    _passwordController.close();
+    _registerController.close();
+    _userRepository.close();
   }
 
-  void saveUser(User user) {
-    UserHelper.internal().updateUser(user);
-    _userController.add(user);
+  /// Register user on system
+  Future<bool> submit() async {
+    final name = _nameController.value;
+    final email = _emailController.value;
+    final password =
+        StringUtil.hashSha1(_passwordController.value); // data being hashed
+
+    final user = User.register(
+      name: name,
+      email: email,
+      password: password,
+    );
+    int id = await _userRepository.insert(user.toJson());
+    if (id != 0) {
+      _userController.add(user);
+      _registerController.add(true);
+    }
+    _registerController.add(false);
+    _userRepository.close();
+    return id > 0;
+  }
+
+
+   void updateUser(User user) async {
+
+     final userMap = user.toJson();
+     userMap.remove("password");
+
+    int id = await _userRepository.update(userMap);
+    if (id != 0) {
+      _userController.add(user);
+    }
+    _userRepository.close();
   }
 }
 
@@ -69,6 +121,17 @@ class UserValidator {
         sink.add(email);
       } else {
         sink.addError("Insira um e-mail válido");
+      }
+    },
+  );
+
+  //Transforma string em Stream
+  final validatePassword = StreamTransformer<String, String>.fromHandlers(
+    handleData: (password, sink) {
+      if (password.length > 3) {
+        sink.add(password);
+      } else {
+        sink.addError("Insira uma senha 4 dígitos");
       }
     },
   );

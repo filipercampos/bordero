@@ -18,7 +18,9 @@ class NumberUtil{
     if(value.isEmpty ) {
       return 0.0;
     }
-    value = value.replaceAll(",", "");
+    value = value.replaceAll(".", "");
+    value = value.replaceAll(",", ".");
+
     return double.parse(value);
   }
 
@@ -28,7 +30,8 @@ class NumberUtil{
     if(value.isEmpty ) {
       return Decimal.parse("0");
     }
-    value = value.replaceAll(",", "");
+    value = value.replaceAll(".", "");
+    value = value.replaceAll(",", ".");
 
     if(scale == 0) {
       return Decimal.parse(value);
@@ -36,15 +39,26 @@ class NumberUtil{
       return Decimal.parse(Decimal.parse(value).toStringAsFixed(scale));
     }
   }
+
+ // Converte double para Decimal
+  static Decimal toDecimalFromDouble(double value, {int scale=2}){
+
+    if(value == null ) {
+      return Decimal.zero;
+    }
+
+    if(scale == 0) {
+      return Decimal.parse(value.toString());
+    }else{
+      return Decimal.parse(Decimal.parse(value.toString()).toStringAsFixed(scale));
+    }
+  }
+
   static String toFormatCurrency(Decimal value){
     return NumberFormat.currency().format(value.toDouble());
   }
 
   static String toFormatBr(Decimal value){
-    var format1 = NumberFormat.currency().format(value.toDouble());
-    print(format1);
-    final format2 = NumberFormat("#,##0.00", "pt_BR").format(value.toDouble());
-    print(format2);
-    return format2;
+    return NumberFormat("#,##0.00", "pt_BR").format(value.toDouble());
   }
 }

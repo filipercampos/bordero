@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class ChequesTile extends DrawerTile {
   ChequesTile(PageController controller, int pageIndex)
       : super(
-            text: "Cheques Calculados",
+            text: "Cheques",
             icon: Icons.account_balance,
             pageIndex: pageIndex,
             controller: controller);

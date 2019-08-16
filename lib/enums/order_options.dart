@@ -1,0 +1,2 @@
+
+enum OrderOptions {ASC, DESC}

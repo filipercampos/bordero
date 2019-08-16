@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:bordero/blocs/user_bloc.dart';
-import 'package:bordero/helpers/user_helper.dart';
+import 'package:bordero/models/user.dart';
 import 'package:bordero/screens/user_screen.dart';
 import 'package:bordero/tiles/bordero_tile.dart';
 import 'package:bordero/tiles/cheques_tile.dart';
+import 'package:bordero/tiles/client_tile.dart';
 import 'package:bordero/tiles/home_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -63,8 +64,8 @@ class CustomDrawer extends StatelessWidget {
                         );
                       },
                       child: CircleAvatar(
-                        backgroundImage: user.urlProfile != null
-                            ? FileImage(File(user.urlProfile))
+                        backgroundImage: user.profileUrl != null
+                            ? FileImage(File(user.profileUrl))
                             : AssetImage("images/avatar.png"),
                         //https://gicons.carlosjeurissen.com/product-material/
                         // backgroundImage: NetworkImage('https://ssl.gstatic.com/images/branding/product/1x/avatar_circle_grey_512dp.png'),
@@ -76,6 +77,7 @@ class CustomDrawer extends StatelessWidget {
               HomeTile(_pageController, _pages++),
               BorderoTile(_pageController, _pages++),
               ChequesTile(_pageController, _pages++),
+              ClientTile(_pageController, _pages++),
             ],
           ),
         ],

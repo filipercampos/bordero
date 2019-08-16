@@ -1,13 +1,11 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:bordero/blocs/user_bloc.dart';
-import 'package:bordero/helpers/user_helper.dart';
 import 'package:flutter/material.dart';
 
 /// Animação da tela de SignUp
 class StaggerAnimation extends StatelessWidget {
   //scaffold key para snack bar
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final String userName;
 
   //Controle da animação
   final AnimationController controller;
@@ -17,7 +15,6 @@ class StaggerAnimation extends StatelessWidget {
   StaggerAnimation({
     this.controller,
     @required this.scaffoldKey,
-    @required this.userName,
   })  
   //define o tamanho inicial e final do botão
   : buttonSqueeze = Tween(begin: 320.0, end: 60.0).animate(
@@ -46,8 +43,20 @@ class StaggerAnimation extends StatelessWidget {
   }
 
   Future<Null> saveData() async {
-    var user = User.fromName(this.userName);
-    await UserHelper.internal().saveUser(user);
+    final _userBloc = BlocProvider.getBloc<UserBloc>();
+
+    if (!await _userBloc.submit()) {
+      _onFail();
+    }
+  }
+
+  ///Para a animação
+  void _onFail() {
+    controller.reset();
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text("Falha ao registrar usuário"),
+      backgroundColor: Colors.redAccent,
+    ));
   }
 
   /// Animação do login
@@ -62,10 +71,10 @@ class StaggerAnimation extends StatelessWidget {
         return InkWell(
           //ação de animar
           onTap: snapshot.hasData
-              ? () {
-                    //inicia a animação
-                    controller.forward();
-                    saveData();
+              ? () async {
+                  //inicia a animação
+                  controller.forward();
+                  await saveData();
                 }
               : null,
           //animação de encolher

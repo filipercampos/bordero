@@ -1,4 +1,3 @@
-import 'package:bordero/screens/bordero_screen.dart';
 import 'package:flutter/material.dart';
 
 class BorderoButton extends StatelessWidget {

@@ -1,9 +1,8 @@
 import 'package:intl/intl.dart';
 
 class DateUtil {
-
   static DateTime toDate(String dateString) {
-    if(dateString.isEmpty || dateString== null){
+    if (dateString.isEmpty || dateString == null) {
       return null;
     }
     return DateFormat("dd/MM/yyyy").parse(dateString);
@@ -59,5 +58,13 @@ class DateUtil {
   static lastDateFromMonth() {
     var now = DateTime.now();
     return DateTime(now.year, now.month, now.day);
+  }
+
+  ///Converte o int em DateTime
+  static DateTime toDateFromMillisecondsSinceEpoch(int millisecondsSinceEpoch) {
+    if(millisecondsSinceEpoch == null){
+      return null;
+    }
+    return DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
   }
 }

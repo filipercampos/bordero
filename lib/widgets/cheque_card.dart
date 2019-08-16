@@ -1,4 +1,4 @@
-import 'package:bordero/helpers/cheque_helper.dart';
+import 'package:bordero/models/cheque.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:flutter/material.dart';
 
@@ -47,7 +47,7 @@ class _ChequeCardState extends State<ChequeCard> {
                 height: 5,
               ),
               Text(
-                "Valor Líquido: ${NumberUtil.toFormatBr(cheque.valorCheque)}",
+                "Valor Líquido: ${NumberUtil.toFormatBr(cheque.valorLiquido)}",
                 style: TextStyle(color: Colors.grey[700]),
               ),
             ],
@@ -69,7 +69,7 @@ class _ChequeCardState extends State<ChequeCard> {
                   height: 5,
                 ),
                 Text(
-                  "Taxa %: ${cheque.taxaJuros.toStringAsFixed(2)}",
+                  "Taxa %: ${NumberUtil.toFormatBr(cheque.taxaJuros)}",
                   style: TextStyle(color: Colors.grey[700]),
                 ),
               ],

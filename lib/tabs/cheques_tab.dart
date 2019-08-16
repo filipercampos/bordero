@@ -1,6 +1,29 @@
+import 'package:bordero/models/cheque.dart';
+import 'package:bordero/repository/cheque_repository.dart';
+import 'package:bordero/repository/repository_helper.dart';
+import 'package:bordero/widgets/cheque_card.dart';
 import 'package:flutter/material.dart';
 
-class ChequesTab extends StatelessWidget {
+class ChequesPage extends StatefulWidget {
+  @override
+  _ChequesPageState createState() => _ChequesPageState();
+}
+
+class _ChequesPageState extends State<ChequesPage> {
+  ChequeRepository _repository = RepositoryHelper().chequeRepository;
+  List<Cheque> cheques = List<Cheque>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _repository.getAll().then((list) {
+      setState(() {
+        list.forEach((map) => cheques.add(Cheque.fromJson(map)));
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -9,24 +32,9 @@ class ChequesTab extends StatelessWidget {
           child: ListView.custom(
             childrenDelegate: SliverChildListDelegate(
               List.generate(
-                5,
+                cheques.length,
                 (index) {
-                  return Column(
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.all(1.0),
-                        padding: EdgeInsets.all(10.0),
-                        child: Center(
-                          child: ListTile(
-                            leading: const Icon(Icons.monetization_on,
-                                size: 40.0, color: Colors.grey),
-                            title: Text('Valor Cheque: $index'),
-                            subtitle: Text('Juros: $index'),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
+                  return ChequeCard(cheques[index]);
                 },
               ),
             ),

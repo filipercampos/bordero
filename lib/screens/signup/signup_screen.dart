@@ -19,6 +19,8 @@ class _SignUpScreenState extends State<SignUpScreen>
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _emailFocus = FocusNode();
 
   @override
   void initState() {
@@ -39,8 +41,9 @@ class _SignUpScreenState extends State<SignUpScreen>
 
   @override
   void dispose() {
-    _animationController.dispose();
     super.dispose();
+    _animationController.dispose();
+    _emailFocus.dispose();
   }
 
   @override
@@ -83,7 +86,8 @@ class _SignUpScreenState extends State<SignUpScreen>
                           stream: _userBloc.outName,
                           builder: (context, snapshot) {
                             return TextField(
-                              maxLength: 50,
+                              autofocus: true,
+                              maxLength: 30,
                               controller: _nameController,
                               onChanged: _userBloc.changeName,
                               decoration: InputDecoration(
@@ -100,15 +104,35 @@ class _SignUpScreenState extends State<SignUpScreen>
                           stream: _userBloc.outEmail,
                           builder: (context, snapshot) {
                             return TextField(
+                              autofocus: true,
                               maxLength: 100,
                               controller: _emailController,
                               onChanged: _userBloc.changeEmail,
                               decoration: InputDecoration(
                                 hintText: "Email",
                                 errorText:
-                                    snapshot.hasError ? snapshot.error : null,
+                                snapshot.hasError ? snapshot.error : null,
                               ),
                               keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.done,
+                            );
+                          },
+                        ),
+                        StreamBuilder<String>(
+                          stream: _userBloc.outPassword,
+                          builder: (context, snapshot) {
+                            return TextField(
+                              autofocus: true,
+                              maxLength: 4,
+                              obscureText: true,
+                              controller: _passwordController,
+                              onChanged: _userBloc.changePassword,
+                              decoration: InputDecoration(
+                                hintText: "Senha",
+                                errorText:
+                                snapshot.hasError ? snapshot.error : null,
+                              ),
+                              keyboardType: TextInputType.number,
                               textInputAction: TextInputAction.done,
                             );
                           },
@@ -124,7 +148,6 @@ class _SignUpScreenState extends State<SignUpScreen>
                     child: StaggerAnimation(
                       controller: _animationController.view,
                       scaffoldKey: _scaffoldKey,
-                      userName: _nameController.text,
                     ),
                   ),
                 ],
@@ -144,12 +167,4 @@ class _SignUpScreenState extends State<SignUpScreen>
     ));
   }
 
-  ///Para a animação
-  void _onFail() {
-    _animationController.reset();
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("Informe seu nome para continuar"),
-      backgroundColor: Colors.redAccent,
-    ));
-  }
 }

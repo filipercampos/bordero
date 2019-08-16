@@ -1,9 +1,10 @@
-import 'package:bordero/helpers/cheque_helper.dart';
+import 'package:bordero/models/cheque.dart';
 import 'package:bordero/screens/cheques_calculados_screen.dart';
 import 'package:bordero/util/date_util.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:bordero/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class BorderoScreen extends StatefulWidget {
@@ -19,7 +20,6 @@ class _BorderoScreenState extends State<BorderoScreen> {
   final _formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Cheque> _cheques = List<Cheque>();
-  
 
   final _dataEmissaoController = TextEditingController();
   final _dataVencimentoController = TextEditingController();
@@ -28,20 +28,20 @@ class _BorderoScreenState extends State<BorderoScreen> {
   final _numeroChequeController = TextEditingController();
 
   final _valorChequeController = MoneyMaskedTextController(
-    decimalSeparator: '.',
-    thousandSeparator: ',',
+    decimalSeparator: ',',
+    thousandSeparator: '.',
   );
   final _taxaJurosController = MoneyMaskedTextController(
-    decimalSeparator: '.',
-    thousandSeparator: ',',
+    decimalSeparator: ',',
+    thousandSeparator: '.',
   );
   final _valorJurosController = MoneyMaskedTextController(
-    decimalSeparator: '.',
-    thousandSeparator: ',',
+    decimalSeparator: ',',
+    thousandSeparator: '.',
   );
   final _valorLiquidoController = MoneyMaskedTextController(
-    decimalSeparator: '.',
-    thousandSeparator: ',',
+    decimalSeparator: ',',
+    thousandSeparator: '.',
   );
 
   final FocusNode _focusPrazo = FocusNode();
@@ -82,7 +82,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                       ),
                     );
                   }
-                : null,//desabilita o botao
+                : null, //desabilita o botao
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6),
@@ -95,7 +95,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w900,
-                  color:Theme.of(context).primaryColor,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               decoration: BoxDecoration(
@@ -107,6 +107,20 @@ class _BorderoScreenState extends State<BorderoScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //teste
+    var de = DateTime(2018, 12, 1);
+    var dv = DateTime.now();
+    _dataEmissaoController.text = DateUtil.toFormat(de);
+    _dataVencimentoController.text = DateUtil.toFormat(dv);
+
+    _valorChequeController.text = "5000.00";
+    _taxaJurosController.text = "5.00";
+    calcPrazoFromDate(de, dv);
   }
 
   @override
@@ -237,6 +251,9 @@ class _BorderoScreenState extends State<BorderoScreen> {
                           Flexible(
                             child: TextField(
                               controller: _taxaJurosController,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(5),
+                              ],
                               decoration: InputDecoration(
                                 hintText: "% Taxa de Juros",
                                 labelText: "% Taxa de Juros",
@@ -420,7 +437,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
     DateTime picked = await showDatePicker(
       context: context,
       initialDate: now,
-      firstDate: DateTime(now.year, now.month, 1),
+      firstDate: DateTime(now.year - 1, now.month, 1),
       lastDate: DateTime(now.year + 9999, now.month, now.day),
     );
     if (picked != null) {
@@ -476,7 +493,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
 
   /// Inicia um novo cálculo de cheque
   void newCalc() {
-    _dataEmissaoController.text = DateUtil.toFormat(DateUtil.firstDateFromMonth());
+    _dataEmissaoController.text =
+        DateUtil.toFormat(DateUtil.firstDateFromMonth());
     _dataPagamentoController.text = "";
     _dataVencimentoController.text = "";
 
@@ -486,7 +504,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
 
     _taxaJurosController.text = "0.00";
     _prazoController.text = "0";
-    _numeroChequeController.text = "00001";
+    _numeroChequeController.text =
+        "0000${(this._cheques.length + 1).toString()}";
 
     scaffoldKey.currentState.showSnackBar(
       SnackBar(
@@ -552,12 +571,16 @@ class _BorderoScreenState extends State<BorderoScreen> {
   /// Adiciona um cheque calculado
   void addCheque(cheque) {
     if (cheque != null) {
-      setState(() {
-        this._cheques.add(cheque);
-      });
+      this._cheques.add(cheque);
+      this._numeroChequeController.text =
+          "0000${(this._cheques.length + 1).toString()}";
+
+      //notifica que a tela deve ser redesenhada
+      setState(() {});
+
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
-          duration: Duration(seconds: 2),
+          duration: Duration(seconds: 1),
           content: Container(
             child: Text("Cheque ${cheque.numeroCheque} adicionado !"),
           ),

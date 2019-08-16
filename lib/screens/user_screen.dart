@@ -3,9 +3,10 @@ import 'dart:io';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:bordero/blocs/user_bloc.dart';
-import 'package:bordero/helpers/user_helper.dart';
+import 'package:bordero/models/user.dart';
 import 'package:bordero/widgets/image_source_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class UserScreen extends StatefulWidget {
   final User user;
@@ -19,7 +20,8 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
+  final _phoneController =
+      MaskedTextController(mask: '(00) 00000-0000');
 
   final _nameFocus = FocusNode();
 
@@ -32,9 +34,9 @@ class _UserScreenState extends State<UserScreen> {
     super.initState();
 
     if (widget.user == null) {
-      _editedUser = User.fromName("Convidado");
+      _editedUser = User();
     } else {
-      _editedUser = User.fromMap(widget.user.toMap());
+      _editedUser = widget.user;
 
       _nameController.text = _editedUser.name;
       _emailController.text = _editedUser.email;
@@ -55,23 +57,21 @@ class _UserScreenState extends State<UserScreen> {
           centerTitle: true,
         ),
         floatingActionButton: StreamBuilder<User>(
-          stream: _userBloc.outUser,
-          builder: (context, snapshot) {
-            return FloatingActionButton(
-              onPressed: () {
-                if (_editedUser.name != null && _editedUser.name.isNotEmpty) {
-                  _userBloc.saveUser(_editedUser);
-                  Navigator.pop(context, _editedUser);
-
-                } else {
-                  FocusScope.of(context).requestFocus(_nameFocus);
-                }
-              },
-              child: Icon(Icons.save),
-              backgroundColor: primaryColor,
-            );
-          }
-        ),
+            stream: _userBloc.outUser,
+            builder: (context, snapshot) {
+              return FloatingActionButton(
+                onPressed: () {
+                  if (_editedUser.name != null && _editedUser.name.isNotEmpty) {
+                    _userBloc.updateUser(_editedUser);
+                    Navigator.pop(context, _editedUser);
+                  } else {
+                    FocusScope.of(context).requestFocus(_nameFocus);
+                  }
+                },
+                child: Icon(Icons.save),
+                backgroundColor: primaryColor,
+              );
+            }),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(10.0),
           child: Column(
@@ -83,8 +83,8 @@ class _UserScreenState extends State<UserScreen> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: _editedUser.urlProfile != null
-                            ? FileImage(File(_editedUser.urlProfile))
+                        image: _editedUser.profileUrl != null
+                            ? FileImage(File(_editedUser.profileUrl))
                             : AssetImage("images/avatar.png"),
                         fit: BoxFit.cover),
                   ),
@@ -96,27 +96,21 @@ class _UserScreenState extends State<UserScreen> {
                             onImageSelected: (image) {
                               if (image != null) {
                                 setState(() {
-                                  _editedUser.urlProfile = image.path;
+                                  _editedUser.profileUrl = image.path;
                                 });
                                 Navigator.of(context).pop();
                               }
                             },
                           ));
-
-                  ///imagem da camera
-//                  ImagePicker.pickImage(source: ImageSource.camera).then((
-//                      file) {
-//                    if (file == null) return;
-//                    setState(() {
-//                      _editedUser.urlProfile = file.path;
-//                    });
-//                  });
                 },
               ),
               TextField(
                 controller: _nameController,
                 focusNode: _nameFocus,
-                decoration: InputDecoration(labelText: "Nome"),
+                decoration: InputDecoration(
+                  labelText: "Nome",
+                  icon: Icon(Icons.account_circle, color: primaryColor),
+                ),
                 onChanged: (text) {
                   _userEdited = true;
                   setState(() {
@@ -126,7 +120,13 @@ class _UserScreenState extends State<UserScreen> {
               ),
               TextField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: "Email"),
+                decoration: InputDecoration(
+                  labelText: "Email",
+                  icon: Icon(
+                    Icons.email,
+                    color: primaryColor,
+                  ),
+                ),
                 onChanged: (text) {
                   _userEdited = true;
                   _editedUser.email = text;
@@ -135,10 +135,31 @@ class _UserScreenState extends State<UserScreen> {
               ),
               TextField(
                 controller: _phoneController,
-                decoration: InputDecoration(labelText: "Phone"),
+                decoration: InputDecoration(
+                  labelText: "Phone",
+                  icon: Icon(Icons.phone, color: primaryColor),
+                ),
                 onChanged: (text) {
                   _userEdited = true;
-                  _editedUser.phone = text;
+                  _editedUser.phone = text
+                      .replaceAll("(", "")
+                      .replaceAll(")", "")
+                      .replaceAll(" ", "")
+                      .replaceAll("-", "");
+                },
+                keyboardType: TextInputType.phone,
+              ),
+               TextField(
+                controller: _phoneController,
+                obscureText: true,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: "Senha",
+                  icon: Icon(Icons.lock, color: primaryColor),
+                ),
+                onChanged: (text) {
+                  _userEdited = true;
+                  _editedUser.password = text;
                 },
                 keyboardType: TextInputType.phone,
               ),

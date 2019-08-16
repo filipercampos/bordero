@@ -1,5 +1,6 @@
 import 'package:bordero/screens/bordero_screen.dart';
 import 'package:bordero/tabs/cheques_tab.dart';
+import 'package:bordero/tabs/client_tab.dart';
 import 'package:bordero/widgets/bordero_button.dart';
 import 'package:bordero/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,9 @@ class HomeScreen extends StatelessWidget {
             centerTitle: true,
           ),
           drawer: CustomDrawer(_pageController),
-          body: ChequesTab(),
-        )        
+          body: ChequesPage(),
+        )  ,
+        ClientsTab(_pageController),
 
       ],
     );
