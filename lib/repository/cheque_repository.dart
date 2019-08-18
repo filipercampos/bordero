@@ -16,7 +16,9 @@ class ChequeRepository extends Repository {
             "prazo": "      INTEGER NOT NULL",
             "compensacao": "INTEGER DEFAULT 0",
             "numeroCheque": "TEXT",
-            "nominal": "    TEXT"
+            "nominal": "TEXT",
+            "clientId": "INTEGER",
+            "imagePath": "TEXT",
           },
         );
 }

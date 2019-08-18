@@ -11,51 +11,133 @@ class ChequeSimpleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
+      onTap: () {
+        //TODO something wit cheque
+      },
+      onLongPress: () {
+        //TODO something
+      },
       child: Card(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              width: 150.0,
-              height: 70.0,
-              padding: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                image: DecorationImage(
-                    image: cheque.imagePath != null
-                        ? FileImage(File(cheque.imagePath))
-                        : AssetImage("images/check.png"),
-                    fit: BoxFit.cover),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Cheque: " + NumberUtil.toFormatBr(cheque.valorCheque),
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            _buildHead(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                //imageCheque
+                _buildAttachment(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8.0, 8.0, 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "Cheque: " + NumberUtil.toFormatBr(cheque.valorCheque),
+                        style: TextStyle(
+                            fontSize: 16.0, fontWeight: FontWeight.w500),
+                      ),
+                      Divider(
+                        height: 5,
+                        color: Colors.grey,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                "Taxa: ${NumberUtil.toFormatBr(cheque.taxaJuros)}%",
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                "Prazo: ${cheque.prazo}",
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                "Juros: " +
+                                    NumberUtil.toFormatBr(cheque.valorJuros),
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                "Líquido: " +
+                                    NumberUtil.toFormatBr(cheque.valorLiquido),
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-                  Text(
-                    "Taxa: ${NumberUtil.toFormatBr(cheque.taxaJuros)} %",
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                  Text(
-                    "Juros: " + NumberUtil.toFormatBr(cheque.valorJuros),
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
       ),
-      onTap: () {
-        //TODO something wit cheque
-      },
+    );
+  }
+
+  Widget _buildHead() {
+    if (cheque.nominal != null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.fromLTRB(8.0, 5.0, 0.0, 5.0),
+            child: Text(
+              "Cliente: ${cheque.nominal}",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+          ),
+          Divider(
+            height: 1,
+          ),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildAttachment() {
+    bool attachment = cheque.imagePath != null;
+    DecorationImage decorationImage;
+    if (attachment) {
+      decorationImage = DecorationImage(
+          image: FileImage(
+            File(cheque.imagePath),
+          ),
+          fit: BoxFit.fill);
+    } else {
+      decorationImage = DecorationImage(
+        image: AssetImage("images/check.png"),
+        fit: BoxFit.fill,
+      );
+    }
+    return Container(
+      margin: EdgeInsets.all(8.0),
+      width: 120.0,
+      height: 60.0,
+      padding: EdgeInsets.zero,
+      decoration:
+          BoxDecoration(shape: BoxShape.rectangle, image: decorationImage),
     );
   }
 }

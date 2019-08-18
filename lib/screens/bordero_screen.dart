@@ -1,11 +1,17 @@
+import 'dart:io';
+
 import 'package:bordero/models/cheque.dart';
+import 'package:bordero/models/client.dart';
+import 'package:bordero/repository/repository_helper.dart';
 import 'package:bordero/screens/cheques_bordero_screen.dart';
 import 'package:bordero/util/date_util.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:bordero/widgets/custom_drawer.dart';
+import 'package:bordero/widgets/image_source_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class BorderoScreen extends StatefulWidget {
   final PageController _controller;
@@ -26,6 +32,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
   final _dataPagamentoController = TextEditingController();
   final _prazoController = TextEditingController();
   final _numeroChequeController = TextEditingController();
+  final _nominalController = TextEditingController();
 
   final _valorChequeController = MoneyMaskedTextController(
     decimalSeparator: ',',
@@ -45,10 +52,10 @@ class _BorderoScreenState extends State<BorderoScreen> {
   );
 
   final FocusNode _focusPrazo = FocusNode();
+  int _clientId;
+  String _imagePath;
 
   _BorderoScreenState() {
-    this._dataEmissaoController.text =
-        DateUtil.toFormat(DateUtil.firstDateFromMonth());
     _prazoController.text = "0";
     this._numeroChequeController.text = "00001";
 
@@ -112,15 +119,6 @@ class _BorderoScreenState extends State<BorderoScreen> {
   @override
   void initState() {
     super.initState();
-    //teste
-    var de = DateTime(2018, 12, 1);
-    var dv = DateTime.now();
-    _dataEmissaoController.text = DateUtil.toFormat(de);
-    _dataVencimentoController.text = DateUtil.toFormat(dv);
-
-    _valorChequeController.text = "5000.00";
-    _taxaJurosController.text = "5.00";
-    calcPrazoFromDate(de, dv);
   }
 
   @override
@@ -144,6 +142,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
           child: Column(
             children: <Widget>[
               Expanded(
+                //ocupa um pedaço da tela
+                //mas permite rolar os elementos
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -351,76 +351,99 @@ class _BorderoScreenState extends State<BorderoScreen> {
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              //Botoes
-              Container(
-                color: Colors.transparent,
-                margin: EdgeInsets.only(bottom: 10, top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    ButtonTheme(
-                      buttonColor: Colors.transparent,
-                      height: 50.0,
-                      minWidth: 100, //MediaQuery.of(context).size.width-20,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Text(
-                          "Limpar",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        textColor: Colors.white,
-                        color: Theme.of(context).primaryColor,
-                        onPressed:
-                            this._cheques.length > 0 ? clearCheques : null,
+                      SizedBox(
+                        height: 10,
                       ),
-                    ),
-                    ButtonTheme(
-                      height: 50.0,
-                      minWidth: 100, //MediaQuery.of(context).size.width-20,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                      TypeAheadField(
+                        textFieldConfiguration: TextFieldConfiguration(
+                          controller: _nominalController,
+                          decoration: InputDecoration(
+                            hintText: "Nominal",
+                            labelText: "Cliente",
+                            labelStyle: TextStyle(fontSize: 12),
+                          ),
                         ),
-                        child: Text(
-                          "Novo",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        textColor: Colors.white,
-                        color: Theme.of(context).primaryColor,
-                        onPressed: newCalc,
-                      ),
-                    ),
-                    ButtonTheme(
-                      height: 50.0,
-                      minWidth: 100, //MediaQuery.of(context).size.width-20,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Text(
-                          "Salvar",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        textColor: Colors.white,
-                        color: Theme.of(context).primaryColor,
-                        onPressed: () {
-                          var cheque = _buildCheque();
-
-                          if (validator(cheque)) {
-                            addCheque(cheque);
-                          } else {
-                            _showDialogChequeInvalido();
+                        suggestionsCallback: (search) async {
+                          return await getSuggestions(search);
+                        },
+                        itemBuilder: (context, Client suggestion) {
+                          return ListTile(
+                            leading: Icon(Icons.account_box),
+                            title: Text(suggestion.name ?? ""),
+                            subtitle: Text(suggestion.phone1 ?? ""),
+                          );
+                        },
+                        onSuggestionSelected: (Client suggestion) {
+                          if (suggestion != null) {
+                            _nominalController.text = suggestion.name;
+                            _clientId = suggestion.id;
+                            print(suggestion);
                           }
                         },
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        height: 10,
+                      ),
+                      GestureDetector(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Expanded(
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    "Toque para upar Cheque",
+                                    style: TextStyle(
+                                      color: Colors.grey[500],
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    alignment: Alignment.topCenter,
+                                    height: 80,
+                                    color: Colors.transparent,
+                                    child: _imagePath != null
+                                        ? Image.file(File(_imagePath))
+                                        : Image.asset(
+                                            "images/check-teal.png",
+                                          ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => ImageSourceSheet(
+                              iconColor: Theme.of(context).primaryColor,
+                              onImageSelected: (image) {
+                                if (image != null) {
+                                  setState(() {
+                                    //se tinha uma imagem
+                                    if (_imagePath != null) {
+                                      //apague
+                                      File(_imagePath).delete();
+                                    }
+                                    _imagePath = image.path;
+                                  });
+                                  print("Image=> $_imagePath");
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      //Botoes
+                      _buildFooter(),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -428,6 +451,75 @@ class _BorderoScreenState extends State<BorderoScreen> {
         ),
       ),
       drawer: CustomDrawer(widget._controller),
+    );
+  }
+
+  Widget _buildFooter() {
+    return Container(
+      color: Colors.transparent,
+      height: 100,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          ButtonTheme(
+            buttonColor: Colors.transparent,
+            height: 50.0,
+            minWidth: 100, //MediaQuery.of(context).size.width-20,
+            child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Text(
+                "Limpar",
+                style: TextStyle(fontSize: 16),
+              ),
+              textColor: Colors.white,
+              color: Theme.of(context).primaryColor,
+              onPressed: this._cheques.length > 0 ? clearCheques : null,
+            ),
+          ),
+          ButtonTheme(
+            height: 50.0,
+            minWidth: 100, //MediaQuery.of(context).size.width-20,
+            child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Text(
+                "Novo",
+                style: TextStyle(fontSize: 16),
+              ),
+              textColor: Colors.white,
+              color: Theme.of(context).primaryColor,
+              onPressed: newCalc,
+            ),
+          ),
+          ButtonTheme(
+            height: 50.0,
+            minWidth: 100, //MediaQuery.of(context).size.width-20,
+            child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Text(
+                "Salvar",
+                style: TextStyle(fontSize: 16),
+              ),
+              textColor: Colors.white,
+              color: Theme.of(context).primaryColor,
+              onPressed: () {
+                var cheque = _buildCheque();
+
+                if (validator(cheque)) {
+                  addCheque(cheque);
+                } else {
+                  _showDialogChequeInvalido();
+                }
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -446,10 +538,6 @@ class _BorderoScreenState extends State<BorderoScreen> {
         controller.text = DateUtil.toFormat(picked);
 
         this._validateDataNCalc();
-//          DateTime dataEmissao = DateUtil.toDate(_dataEmissaoController.text);
-//          DateTime dataVencimento =
-//          DateUtil.toDate(_dataVencimentoController.text);
-//          calcPrazoFromDate(dataEmissao, dataVencimento);
       });
     }
   }
@@ -470,6 +558,10 @@ class _BorderoScreenState extends State<BorderoScreen> {
     //calculando cheque
     Cheque ch = Cheque.calc(dtEmissao, dtVencimento, dtPagamento, prazo,
         taxaJuros, valorCheque, numeroCheque);
+
+    ch.clientId = _clientId;
+    ch.imagePath = _imagePath;
+    ch.nominal = _nominalController.text;
 
     return ch;
   }
@@ -494,7 +586,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
   /// Inicia um novo cálculo de cheque
   void newCalc() {
     _dataEmissaoController.text =
-        DateUtil.toFormat(DateUtil.firstDateFromMonth());
+        ""; //DateUtil.toFormat(DateUtil.firstDateFromMonth());
     _dataPagamentoController.text = "";
     _dataVencimentoController.text = "";
 
@@ -569,7 +661,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
   }
 
   /// Adiciona um cheque calculado
-  void addCheque(cheque) {
+  void addCheque(Cheque cheque) {
     if (cheque != null) {
       this._cheques.add(cheque);
       this._numeroChequeController.text =
@@ -767,5 +859,27 @@ class _BorderoScreenState extends State<BorderoScreen> {
     return cheque.prazo != 0 &&
         cheque.taxaJuros.toDouble() != 0.0 &&
         cheque.valorCheque.toDouble() != 0.0;
+  }
+
+  ///Auto complete for client
+  Future<List<Client>> getSuggestions(String search) async {
+    final helper = RepositoryHelper().clientRepository;
+    List<Client> clients = List();
+    await helper.where({"name": search}, likeStart: true).then((list) {
+      list.forEach((map) => clients.add(Client.fromJson(map)));
+    });
+    return clients;
+  }
+
+  void test() {
+    //teste
+    var de = DateTime(2018, 12, 1);
+    var dv = DateTime.now();
+    _dataEmissaoController.text = DateUtil.toFormat(de);
+    _dataVencimentoController.text = DateUtil.toFormat(dv);
+
+    _valorChequeController.text = "5000.00";
+    _taxaJurosController.text = "5.00";
+    calcPrazoFromDate(de, dv);
   }
 }

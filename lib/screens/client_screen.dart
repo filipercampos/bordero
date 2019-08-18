@@ -18,7 +18,8 @@ class ClientScreen extends StatefulWidget {
 class _ClientScreenState extends State<ClientScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _cpfCnpjController = MaskedTextController(mask: '000.000.000-00');
+  MaskedTextController _cpfCnpjController =
+      MaskedTextController(mask: '000.000.000-00');
   final _phoneController1 = MaskedTextController(mask: '(00) 00000-0000');
   final _phoneController2 = MaskedTextController(mask: '(00) 00000-0000');
   final _nameFocus = FocusNode();
@@ -71,14 +72,19 @@ class _ClientScreenState extends State<ClientScreen> {
           child: Column(
             children: <Widget>[
               Container(
-                width: 80.0,
-                height: 80.0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  image: DecorationImage(
-                      image: AssetImage("images/avatar.png"),
-                      fit: BoxFit.cover),
+                width: 70.0,
+                height: 70.0,
+                child: Icon(
+                  Icons.account_box,
+                  size: 70,
+                  color: Theme.of(context).primaryColor,
                 ),
+//                decoration: BoxDecoration(
+//                  shape: BoxShape.rectangle,
+//                  image: DecorationImage(
+//                      image: AssetImage("images/avatar.png"),
+//                      fit: BoxFit.cover),
+//                ),
               ),
               TextField(
                 controller: _nameController,
@@ -119,23 +125,37 @@ class _ClientScreenState extends State<ClientScreen> {
                 keyboardType: TextInputType.phone,
               ),
               TextField(
-                controller: _cpfCnpjController,
-                decoration: InputDecoration(labelText: "CPF/CNPJ"),
-                onChanged: (text) {
-                  _userEdited = true;
-                  _editedClient.email = text;
-                },
-                keyboardType: TextInputType.number
+                  controller: _cpfCnpjController,
+                  decoration: InputDecoration(labelText: "CPF/CNPJ"),
+                  onChanged: (text) {
+                    _userEdited = true;
+                    _editedClient.email = text;
+                    //garante que passe apenas uma vez
+                    if (text.length > 14 && text.length < 16) {
+                      _cpfCnpjController.mask = '00.000.000.0000/00';
+                    } else if (text.length < 15 && text.length > 13) {
+                      _cpfCnpjController.mask = '000.000.000-00';
+                    }
+                  },
+                  keyboardType: TextInputType.number),
+              SizedBox(
+                height: 15,
               ),
-              SizedBox(height: 20,),
+              Text(
+                "Classificação",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 18,
+                ),
+              ),
               SmoothStarRating(
                   allowHalfRating: false,
                   onRatingChanged: (v) {
-                    _editedClient.classificacao = v;
+                    _editedClient.classificacao = v.toInt();
                     setState(() {});
                   },
                   starCount: 5,
-                  rating: _editedClient.classificacao,
+                  rating: _editedClient.classificacao.toDouble(),
                   size: 60.0,
                   color: Colors.yellow[700],
                   borderColor: Colors.yellow[700],
@@ -177,5 +197,4 @@ class _ClientScreenState extends State<ClientScreen> {
       return Future.value(true);
     }
   }
-
 }

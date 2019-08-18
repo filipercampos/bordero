@@ -1,9 +1,12 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:bordero/blocs/client_bloc.dart';
 import 'package:bordero/enums/order_options.dart';
 import 'package:bordero/models/client.dart';
 import 'package:bordero/repository/repository_helper.dart';
 import 'package:bordero/screens/client_screen.dart';
 import 'package:bordero/widgets/client_card.dart';
 import 'package:bordero/widgets/custom_drawer.dart';
+import 'package:bordero/widgets/order_options_popup.dart';
 import 'package:flutter/material.dart';
 
 class ClientsTab extends StatefulWidget {
@@ -17,13 +20,15 @@ class ClientsTab extends StatefulWidget {
 
 class _ClientsTabState extends State<ClientsTab> {
   final helper = RepositoryHelper().clientRepository;
-
-  List<Client> clients = List();
+  final _clientBloc = ClientBloc();
+  final clients = List<Client>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  final _searchQuery = TextEditingController();
+  bool _isSearch = false;
 
   @override
   void initState() {
     super.initState();
-    _getAllClients();
   }
 
   @override
@@ -32,24 +37,11 @@ class _ClientsTabState extends State<ClientsTab> {
     return Material(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Clientes"),
+          leading: _isSearch ? BackButton(color: Colors.white) : null,
+          title: _isSearch ? _buildSearchField() : Text("Clientes"),
+          actions: _buildActions(),
           backgroundColor: primaryColor,
           centerTitle: true,
-          actions: <Widget>[
-            PopupMenuButton<OrderOptions>(
-              itemBuilder: (context) => <PopupMenuEntry<OrderOptions>>[
-                const PopupMenuItem<OrderOptions>(
-                  child: Text("Ordenar de A-Z"),
-                  value: OrderOptions.ASC,
-                ),
-                const PopupMenuItem<OrderOptions>(
-                  child: Text("Ordenar de Z-A"),
-                  value: OrderOptions.DESC,
-                ),
-              ],
-              onSelected: _orderList,
-            )
-          ],
         ),
         drawer: CustomDrawer(widget._controller),
         backgroundColor: Colors.white,
@@ -60,11 +52,28 @@ class _ClientsTabState extends State<ClientsTab> {
           child: Icon(Icons.add),
           backgroundColor: primaryColor,
         ),
-        body: ListView.builder(
-            itemCount: clients.length,
-            itemBuilder: (context, index) {
-              print(clients[index].toString());
-              return ClientCard(clients[index]);
+        body: StreamBuilder<List<Client>>(
+            stream: _clientBloc.outClients,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation(Theme.of(context).primaryColor),
+                  ),
+                );
+              } else if (snapshot.data.length == 0) {
+                return Center(
+                  child: Text("Nenhum resultado"),
+                );
+              } else {
+                return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    return ClientCard(snapshot.data[index]);
+                  },
+                );
+              }
             }),
       ),
     );
@@ -77,31 +86,78 @@ class _ClientsTabState extends State<ClientsTab> {
         builder: (context) => ClientScreen(),
       ),
     );
+
     if (recClient != null) {
       await helper.insert(recClient.toJson());
-      _getAllClients();
+      _clientBloc.getAllClients();
     }
   }
 
-  void _getAllClients()async{
-    clients =  await helper.all();
-    setState(() {
-    });
+  /*Search bar*/
+
+  Widget _buildSearchField() {
+    return TextField(
+      controller: _searchQuery,
+      autofocus: true,
+      decoration: const InputDecoration(
+        hintText: 'Pesquisando ...',
+        border: InputBorder.none,
+        hintStyle: const TextStyle(color: Colors.white30),
+      ),
+      style: const TextStyle(color: Colors.white, fontSize: 16.0),
+      onChanged: (search) {
+        print(search);
+        _clientBloc.inSearch.add(search);
+      },
+    );
   }
 
-  void _orderList(OrderOptions result) {
-    switch (result) {
-      case OrderOptions.ASC:
-        clients.sort((a, b) {
-          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-        });
-        break;
-      case OrderOptions.DESC:
-        clients.sort((a, b) {
-          return b.name.toLowerCase().compareTo(a.name.toLowerCase());
-        });
-        break;
+  List<Widget> _buildActions() {
+    if (_isSearch) {
+      return <Widget>[
+        IconButton(
+          icon: const Icon(
+            Icons.clear,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            if (_searchQuery == null || _searchQuery.text.isEmpty) {
+              Navigator.pop(context);
+              return;
+            }
+          },
+        ),
+      ];
     }
-    setState(() {});
+    //barra padrão
+    return <Widget>[
+      IconButton(
+        icon: const Icon(
+          Icons.search,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          //registra uma ação no widget
+          //registra ação do back button and button clear
+          ModalRoute.of(context).addLocalHistoryEntry(
+            LocalHistoryEntry(
+              onRemove: () {
+                print("Close search bar");
+                _searchQuery.clear();
+                _clientBloc.inSearch.add("");
+                setState(() {
+                  _isSearch = false;
+                });
+              },
+            ),
+          );
+          //nao dispara quando local entry é chamado
+          setState(() {
+            _isSearch = true;
+          });
+        },
+      ),
+      OrderOptionsPopup(_clientBloc.orderList)
+    ];
   }
 }

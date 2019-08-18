@@ -1,0 +1,1 @@
+enum ClientRatingCriteria { TERRIBLE, BAD, MEDIUM, GOOD, EXCELENT }

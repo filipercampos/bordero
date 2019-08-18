@@ -18,6 +18,7 @@ class Cheque {
   String nominal;
   int prazoTotal;
   String imagePath;
+  int clientId;
 
   Cheque() {
     var dataAtual = DateTime.now();
@@ -50,11 +51,12 @@ class Cheque {
     compensacao = json["compensacao"];
     numeroCheque = json["numeroCheque"];
     nominal = json["nominal"];
-
+    imagePath = json["imagePath"];
+    clientId = json["clientId"];
     setPrazoTotal(prazo, compensacao);
   }
 
-  Map toJson() {
+  Map<String, dynamic>  toJson() {
     Map<String, dynamic> map = {
       "dataEmissao": dataEmissao.millisecondsSinceEpoch,
       "dataVencimento": dataVencimento.millisecondsSinceEpoch,
@@ -68,6 +70,8 @@ class Cheque {
       "compensacao": compensacao,
       "numeroCheque": numeroCheque,
       "nominal": nominal,
+      "clientId": clientId,
+      "imagePath": imagePath
     };
     if (id != null) {
       map["id"] = id;
@@ -141,6 +145,8 @@ class Cheque {
 
   @override
   String toString() {
-    return 'Cheque{dataEmissao: $dataEmissao, dataVencimento: $dataVencimento, dataPagamento: $dataPagamento, valorCheque: $valorCheque, taxaJuros: $taxaJuros, valorJuros: $valorJuros, valorLiquido: $valorLiquido, prazo: $prazo, compensacao: $compensacao, numeroCheque: $numeroCheque}';
+    return 'Cheque{id: $id, dataEmissao: $dataEmissao, dataVencimento: $dataVencimento, dataPagamento: $dataPagamento, valorCheque: $valorCheque, taxaJuros: $taxaJuros, valorJuros: $valorJuros, valorLiquido: $valorLiquido, prazo: $prazo, compensacao: $compensacao, numeroCheque: $numeroCheque, nominal: $nominal, prazoTotal: $prazoTotal, imagePath: $imagePath, clientId: $clientId}';
   }
+
+
 }

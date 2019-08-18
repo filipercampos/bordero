@@ -8,8 +8,10 @@ import 'package:image_picker/image_picker.dart';
 /// Selecionar e recorta uma imagem da camera ou da galeria
 class ImageSourceSheet extends StatelessWidget {
   final Function(File) onImageSelected;
-
-  ImageSourceSheet({this.onImageSelected});
+  final Color backgroundColor;
+  final Color iconColor;
+  final Color buttonColor;
+  ImageSourceSheet({this.onImageSelected,this.backgroundColor, this.iconColor, this.buttonColor});
 
   void imageSelected(File image) async {
     if (image != null) {
@@ -18,7 +20,6 @@ class ImageSourceSheet extends StatelessWidget {
         ratioX: 1.0,
         ratioY: 1.0,
       );
-
       onImageSelected(croppedImage);
     }
   }
@@ -26,20 +27,25 @@ class ImageSourceSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomSheet(
+      backgroundColor: backgroundColor,
       onClosing: () {},
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           FlatButton(
+            color: buttonColor,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Icon(Icons.camera_alt),
+                Icon(Icons.camera_alt, color: iconColor),
                 SizedBox(
                   width: 10,
                 ),
-                Text("Câmera"),
+                Text(
+                  "Câmera",
+                  style: TextStyle(color: iconColor),
+                ),
               ],
             ),
             onPressed: () async {
@@ -49,15 +55,19 @@ class ImageSourceSheet extends StatelessWidget {
             },
           ),
           FlatButton(
+            color: buttonColor,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Icon(Icons.image),
+                Icon(Icons.image, color: iconColor),
                 SizedBox(
                   width: 10,
                 ),
-                Text("Galeria"),
+                Text(
+                  "Galeria",
+                  style: TextStyle(color: iconColor),
+                ),
               ],
             ),
             onPressed: () async {

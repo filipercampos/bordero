@@ -14,7 +14,6 @@ abstract class Repository implements Dao {
 
   Repository(this.tableName, this._columnsMap);
 
-
   Future<Database> get database async {
     if (_database != null && _database.isOpen == true) {
       return _database;
@@ -53,7 +52,7 @@ abstract class Repository implements Dao {
       Database dbT = await database;
       return await dbT.transaction((txn) async {
         var batch = txn.batch();
-
+        print("Update $tableName id ${map["id"]}");
         int rowsAffected = await txn.update(tableName, map,
             where: "$_idColumn = ?", whereArgs: [map["id"]]);
 
@@ -95,15 +94,9 @@ abstract class Repository implements Dao {
 
   @override
   Future<Map<String, dynamic>> get(int id) async {
-    final columns = new List<String>();
-    columns.add(_idColumn);
-    _columnsMap.forEach((key, value) {
-      columns.add(key);
-    });
-
     Database dbT = await database;
     List<Map> maps = await dbT.query(tableName,
-        //columns: columns,
+        //columns: columns, All columns quando omitida
         where: "$_idColumn = ?",
         whereArgs: [id]);
     if (maps.length > 0) {
@@ -121,7 +114,71 @@ abstract class Repository implements Dao {
     return listMap;
   }
 
-  ///Executa um instruação do tipo DML
+  ///Executa uma consulta do tipo DML
+  ///Todas as colunas do tipo string utilizam o parametro like
+  Future<List<Map<String, dynamic>>> where(Map<String, dynamic> columnsValues,
+      {bool like = false,bool likeStart=false, bool likeEnd=false}) async {
+    final where = StringBuffer();
+//    final List<dynamic> whereArgs = List();
+    final keys = List<String>();
+    //save keys for reference
+    columnsValues.forEach((key, value) {
+      keys.add(key);
+    });
+
+    //generate dml
+    for (int i = 0; i < keys.length; i++) {
+      var key = keys[i];
+      var value = columnsValues[key];
+      if (i == keys.length - 1) {
+        //end build dml
+
+        if (value is String) {
+          if (like) {
+            where.write("$key LIKE '%${columnsValues[key]}%'");
+          }
+          else if (likeStart) {
+            where.write("$key LIKE '${columnsValues[key]}%'");
+          }
+          else if (likeEnd) {
+            where.write("$key LIKE '%${columnsValues[key]}'");
+          }
+          else {
+            where.write("$key = '${columnsValues[key]}'");
+          }
+        } else {
+          where.write("$key = ${columnsValues[key]}");
+        }
+      } else {
+        if (value is String) {
+          if (like) {
+            where.write("$key LIKE '%${columnsValues[key]}%',");
+          }
+          else if (likeStart) {
+            where.write("$key LIKE '${columnsValues[key]}%',");
+          }
+          else if (likeEnd) {
+            where.write("$key LIKE '%${columnsValues[key]}',");
+          }
+          else {
+            where.write("$key = '${columnsValues[key]}',");
+
+          }
+        } else {
+          where.write("$key = ${columnsValues[key]},");
+        }
+      }
+    }
+
+    Database dbT = await database;
+    List maps = await dbT.rawQuery("SELECT * FROM $tableName where $where ");
+    return maps;
+  }
+
+  ///Executa um instrução do tipo DML
+  ///Clausula SELECT * FROM deve ser omitida
+  ///Example select
+  ///table where condition = value
   Future<List<Map<String, dynamic>>> execute(String sqlFlite) async {
     Database dbT = await database;
     List listMap = await dbT.query(

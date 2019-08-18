@@ -34,7 +34,7 @@ void main() {
 void mainClient() async {
   ClientRepository rep = ClientRepository();
   Client client = Client.customer(
-      "Ciclano", "teste@mail.com", "12345678910", "0000456789", "123456789");
+      "Ciclano", "teste@mail.com", "12345678910", "0000456789", "123456789",1);
 
   int id = await rep.insert(client.toJson());
   var clientMap = await rep.get(id);

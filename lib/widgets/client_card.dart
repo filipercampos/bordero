@@ -104,6 +104,7 @@ class ClientCard extends StatelessWidget {
                         ),
                         onPressed: () {
                           Navigator.pop(context);
+                          //top no bottom sheet
                           _showEditClientSceen(context, client);
                         },
                       ),
@@ -135,8 +136,9 @@ class ClientCard extends StatelessWidget {
     final Client recClient = await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => ClientScreen(client: client)));
     final helper = RepositoryHelper().clientRepository;
+    print("$recClient");
     if (recClient != null) {
-      await helper.update(recClient.toJson());
+      print( await helper.update(recClient.toJson()));
     }
   }
 }

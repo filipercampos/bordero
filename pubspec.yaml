@@ -35,12 +35,13 @@ dependencies:
   bloc_pattern: ^2.2.3
   smooth_star_rating: ^1.0.3 #A Star rating with touch and swipe rate enabled
   crypto: ^2.1.1+1 #hash
+  flutter_typeahead: ^1.6.1 #autocomplete
   path_provider: ^1.2.0
-  json_annotation: ^3.0.0
-
+  flutter_speed_dial: ^1.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  json_annotation: ^3.0.0
   build_runner: ^1.0.0
   json_serializable: ^3.2.0
 
@@ -59,6 +60,7 @@ flutter:
   assets:
     - images/avatar.png
     - images/check.png
+    - images/check-teal.png
     - icons/bordero.png
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg

@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
               primaryColor: HexColor('#00a6bf'), //ITE color
             ),
             home: Scaffold(
-              body: _userBloc.isRegister() ? HomeScreen() : SignUpScreen(),
+              body:  _userBloc.isRegister() ? HomeScreen() : SignUpScreen(),
             ),
             debugShowCheckedModeBanner: false,
           );
