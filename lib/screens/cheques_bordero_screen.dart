@@ -22,11 +22,17 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
   final ChequeBloc _chequeBloc = ChequeBloc();
   @override
   Widget build(BuildContext context) {
+    //TODO
+    bool blockSave = false;
     Decimal totalJuros = Decimal.zero;
     Decimal totalLiquido = Decimal.zero;
     widget.cheques.forEach((ch) {
       totalJuros += ch.valorJuros;
       totalLiquido += ch.valorCheque;
+
+      if(ch.clientId == null || ch.clientId == 0){
+        blockSave = true;
+      }
     });
 
     return Scaffold(
@@ -43,8 +49,8 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
                 icon: Icon(
                   Icons.save,
                 ),
-                onPressed: snapshot.data
-                    ? null
+                onPressed: snapshot.data || blockSave
+                    ? null //bloquea o botão se estiver carregando
                     : () async {
                         if (await _saveChequesNBlockScreen()) {
                           Navigator.of(context).pushReplacement(
@@ -96,7 +102,7 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
                                 content: Text(
                                     "Cheque ${item.numeroCheque} removido")));
                           },
-                          child: ChequeBorderoCardDetails(item),
+                          child: ChequeBorderoCardDetails(item)
                         );
                       },
                     ),
@@ -174,7 +180,7 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
 
     bool success = await _chequeBloc.saveCheques(widget.cheques);
 
-    //garante a snack bar 
+    //garante a snack bar
     await Future.delayed(Duration(seconds: 1));
 
     scaffoldKey.currentState.removeCurrentSnackBar();
@@ -188,7 +194,7 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
         backgroundColor: success ? Theme.of(context).primaryColor : Colors.red,
       ),
     );
-    //garante a snack bar 
+    //garante a snack bar
     await Future.delayed(Duration(seconds: 1));
     return success;
   }

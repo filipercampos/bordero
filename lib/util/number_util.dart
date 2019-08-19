@@ -61,4 +61,8 @@ class NumberUtil{
   static String toFormatBr(Decimal value){
     return NumberFormat("#,##0.00", "pt_BR").format(value.toDouble());
   }
+
+  static String toDoubleFormatBr(double value){
+    return NumberFormat("#,##0.00", "pt_BR").format(value);
+  }
 }

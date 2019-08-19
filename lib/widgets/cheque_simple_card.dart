@@ -13,7 +13,7 @@ class ChequeSimpleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        //TODO something wit cheque
+        //TODO something with cheque
       },
       onLongPress: () {
         //TODO something
@@ -95,14 +95,14 @@ class ChequeSimpleCard extends StatelessWidget {
   }
 
   Widget _buildHead() {
-    if (cheque.nominal != null) {
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
             padding: const EdgeInsets.fromLTRB(8.0, 5.0, 0.0, 5.0),
             child: Text(
-              "Cliente: ${cheque.nominal}",
+              "Cliente: ${cheque.client.name }",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
           ),
@@ -111,18 +111,16 @@ class ChequeSimpleCard extends StatelessWidget {
           ),
         ],
       );
-    } else {
-      return Container();
-    }
+
   }
 
   Widget _buildAttachment() {
-    bool attachment = cheque.imagePath != null;
+    bool attachment = cheque.imageFrontPath != null;
     DecorationImage decorationImage;
     if (attachment) {
       decorationImage = DecorationImage(
           image: FileImage(
-            File(cheque.imagePath),
+            File(cheque.imageFrontPath),
           ),
           fit: BoxFit.fill);
     } else {

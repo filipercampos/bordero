@@ -4,14 +4,14 @@ import 'package:bordero/widgets/client_card.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-class AppBarSearch extends StatefulWidget {
-  AppBarSearch();
+class TestAppBarSearch extends StatefulWidget {
+  TestAppBarSearch();
 
   @override
-  _AppBarSearchState createState() => _AppBarSearchState();
+  _TestAppBarSearchState createState() => _TestAppBarSearchState();
 }
 
-class _AppBarSearchState extends State<AppBarSearch>
+class _TestAppBarSearchState extends State<TestAppBarSearch>
     with SingleTickerProviderStateMixin {
   static final GlobalKey<ScaffoldState> scaffoldKey =
       GlobalKey<ScaffoldState>();
@@ -101,14 +101,14 @@ class _AppBarSearchState extends State<AppBarSearch>
     );
   }
 
-  void updateSearchQuery(String Query) {
+  void updateSearchQuery(String query) {
     filteredRecored.clear();
-    if (Query.length > 0) {
+    if (query.length > 0) {
       Set<Client> set = Set.from(allRecord);
-      set.forEach((element) => filterList(element, Query));
+      set.forEach((element) => filterList(element, query));
     }
 
-    if (Query.isEmpty) {
+    if (query.isEmpty) {
       filteredRecored.addAll(allRecord);
     }
 

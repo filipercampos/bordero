@@ -20,72 +20,78 @@ class _ChequeBorderoCardDetailsState extends State<ChequeBorderoCardDetails> {
     final cheque = widget.cheque;
     return InkWell(
       onTap: () {
-        //TODO something wit cheque
+        //TODO something with cheque
       },
       onLongPress: () {
         //TODO something
       },
       child: Card(
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              child: Icon(
-                Icons.monetization_on,
-                size: 48,
-                color: primaryColor,
-              ),
-              height: 80,
-              width: 80,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Text(
-                      "Cheque: " + NumberUtil.toFormatBr(cheque.valorCheque),
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.w500),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                  ],
+                Container(
+                  child: Icon(
+                    Icons.monetization_on,
+                    size: 48,
+                    color: primaryColor,
+                  ),
+                  height: 80,
+                  width: 80,
                 ),
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          "Juros: ${NumberUtil.toFormatBr(cheque.valorJuros)}",
-                          style: TextStyle(color: Colors.grey[700]),
+                          "Cheque: " +
+                              NumberUtil.toFormatBr(cheque.valorCheque),
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.w500),
                         ),
                         SizedBox(
                           height: 5,
-                        ),
-                        Text(
-                          "Líquido: ${NumberUtil.toFormatBr(cheque.valorLiquido)}",
-                          style: TextStyle(color: Colors.grey[700]),
                         ),
                       ],
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: <Widget>[
-                        Text(
-                          "Prazo: ${cheque.prazoTotal.toString()}",
-                          style: TextStyle(color: Colors.grey[700]),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Juros: ${NumberUtil.toFormatBr(cheque.valorJuros)}",
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "Líquido: ${NumberUtil.toFormatBr(cheque.valorLiquido)}",
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                          ],
                         ),
                         SizedBox(
-                          height: 5,
+                          width: 10,
                         ),
-                        Text(
-                          "Taxa %: ${NumberUtil.toFormatBr(cheque.taxaJuros)}",
-                          style: TextStyle(color: Colors.grey[700]),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Prazo: ${cheque.prazoTotal.toString()}",
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "Taxa %: ${NumberUtil.toFormatBr(cheque.taxaJuros)}",
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -93,9 +99,34 @@ class _ChequeBorderoCardDetailsState extends State<ChequeBorderoCardDetails> {
                 ),
               ],
             ),
+            _buildBottom(),
+
           ],
         ),
       ),
     );
+  }
+
+  _buildBottom() {
+    if (widget.cheque.client == null) {
+      return Column(
+        children: <Widget>[
+          Divider(height: 1, color: Colors.grey[300],),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
+            child: Container(
+              child: Text(
+                "*Atenção: Cheque sem cliente não pode ser salvo",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          )
+        ],
+      );
+    }
+    return Container();
   }
 }

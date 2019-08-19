@@ -34,6 +34,7 @@ class ClientBloc extends BlocBase {
     _allClients.addAll(result);
     _clientsController.add(result);
     helper.close();
+    orderList(OrderOptions.ASC);
     return result;
   }
 

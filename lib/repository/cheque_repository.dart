@@ -1,7 +1,11 @@
- 
+import 'package:bordero/dto/cheque_client.dart';
+import 'package:bordero/models/cheque.dart';
+import 'package:bordero/models/client.dart';
+import 'package:bordero/repository/ilist.dart';
 import 'package:bordero/repository/repository.dart';
+import 'package:bordero/repository/repository_helper.dart';
 
-class ChequeRepository extends Repository {
+class ChequeRepository extends Repository implements IList {
   ChequeRepository()
       : super(
           "cheque",
@@ -16,9 +20,64 @@ class ChequeRepository extends Repository {
             "prazo": "      INTEGER NOT NULL",
             "compensacao": "INTEGER DEFAULT 0",
             "numeroCheque": "TEXT",
-            "nominal": "TEXT",
             "clientId": "INTEGER",
             "imagePath": "TEXT",
           },
         );
+
+  @override
+  Future<List<Cheque>> all() async {
+    List<Cheque> cheques = List();
+    await super.getAll().then((list) {
+      list.forEach((map) => cheques.add(Cheque.fromJson(map)));
+    });
+
+    final clientHelper = RepositoryHelper().clientRepository;
+    for (Cheque cheque in cheques) {
+      if (cheque.clientId != null) {
+        cheque.client = Client.fromJson(
+          await clientHelper.get(cheque.clientId),
+        );
+      }
+    }
+    return cheques;
+  }
+
+  @override
+  Future<Cheque> first() async {
+    return Cheque.fromJson(await super.getFirst());
+  }
+
+  Future<List<ChequeClient>> groupByClient() async {
+    List<ChequeClient> chequeGroupBy = List();
+    String sql = "SELECT "
+        "   client.id AS clientId,"
+        "   client.name,"
+        "   SUM(valorCheque) AS valorCheque,"
+        "   AVG(taxaJuros) AS taxaJuros, "
+        "   SUM(valorJuros) AS valorJuros,"
+        "   SUM(valorLiquido) AS valorLiquido,"
+        "   SUM(prazo+compensacao) AS prazo "
+        "FROM "
+        "   cheque "
+        "INNER JOIN client ON client.id = cheque.clientId "
+        "GROUP BY "
+        "   clientId,"
+        "   valorCheque,"
+        "   taxaJuros,"
+        "   valorJuros,"
+        "   valorLiquido,"
+        "   prazo,"
+        "   compensacao "
+        "ORDER BY"
+        "   client.name";
+    List<Map> map = await super.rawQuery(sql);
+    map.forEach(
+      (map) => chequeGroupBy.add(
+        ChequeClient.fromMap(map),
+      ),
+    );
+
+    return chequeGroupBy;
+  }
 }

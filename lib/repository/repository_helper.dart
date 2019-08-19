@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bordero/repository/cheque_repository.dart';
 import 'package:bordero/repository/migration_repository.dart';
-import 'package:bordero/repository/migrations/cheque_migration.dart';
 import 'package:bordero/repository/user_repository.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';

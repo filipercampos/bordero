@@ -1,6 +1,4 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:bordero/blocs/client_bloc.dart';
-import 'package:bordero/enums/order_options.dart';
 import 'package:bordero/models/client.dart';
 import 'package:bordero/repository/repository_helper.dart';
 import 'package:bordero/screens/client_screen.dart';

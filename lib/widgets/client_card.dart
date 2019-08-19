@@ -17,6 +17,16 @@ class ClientCard extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: <Widget>[
+              Container(
+                width: 70.0,
+                height: 70.0,
+                margin: EdgeInsets.only(right: 16),
+                child: Icon(
+                  Icons.account_box,
+                  size: 70,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[

@@ -73,7 +73,7 @@ class ClientDataSearch extends SearchDelegate<String> {
   Future<List<Client>> suggestions(String search) async {
     final helper = RepositoryHelper().clientRepository;
     List<Client> clients = List();
-    await helper.where({"name": search}, like: true).then((list) {
+    await helper.rawQueryMap({"name": search}, like: true).then((list) {
       list.forEach((map) => clients.add(Client.fromJson(map)));
     });
     return clients;

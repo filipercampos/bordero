@@ -2,6 +2,8 @@ import 'package:bordero/util/date_util.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:decimal/decimal.dart';
 
+import 'client.dart';
+
 class Cheque {
   int id;
   DateTime dataEmissao;
@@ -15,10 +17,11 @@ class Cheque {
   int prazo;
   int compensacao;
   String numeroCheque;
-  String nominal;
   int prazoTotal;
-  String imagePath;
+  String imageFrontPath;
+  String imageBackPath;
   int clientId;
+  Client client;
 
   Cheque() {
     var dataAtual = DateTime.now();
@@ -31,7 +34,6 @@ class Cheque {
     this.valorLiquido = Decimal.zero;
     this.prazo = 0;
     this.compensacao = 0;
-    this.nominal = "";
   }
 
   Cheque.fromJson(Map<String, dynamic> json) {
@@ -50,13 +52,13 @@ class Cheque {
     prazo = json["prazo"];
     compensacao = json["compensacao"];
     numeroCheque = json["numeroCheque"];
-    nominal = json["nominal"];
-    imagePath = json["imagePath"];
+    imageFrontPath = json["imageFrontPath"];
+    imageBackPath = json["imageBackPath"];
     clientId = json["clientId"];
     setPrazoTotal(prazo, compensacao);
   }
 
-  Map<String, dynamic>  toJson() {
+  Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
       "dataEmissao": dataEmissao.millisecondsSinceEpoch,
       "dataVencimento": dataVencimento.millisecondsSinceEpoch,
@@ -69,9 +71,9 @@ class Cheque {
       "prazo": prazo,
       "compensacao": compensacao,
       "numeroCheque": numeroCheque,
-      "nominal": nominal,
       "clientId": clientId,
-      "imagePath": imagePath
+      "imageFrontPath": imageFrontPath,
+      "imageBackPath": imageBackPath
     };
     if (id != null) {
       map["id"] = id;
@@ -108,7 +110,6 @@ class Cheque {
     setValorLiquido(this.valorCheque, this.valorJuros);
 
     this.numeroCheque = numeroCheque;
-    this.nominal = nominal;
   }
 
   setJuros(Decimal valorCheque, Decimal taxaJuros, int prazo) {
@@ -145,8 +146,20 @@ class Cheque {
 
   @override
   String toString() {
-    return 'Cheque{id: $id, dataEmissao: $dataEmissao, dataVencimento: $dataVencimento, dataPagamento: $dataPagamento, valorCheque: $valorCheque, taxaJuros: $taxaJuros, valorJuros: $valorJuros, valorLiquido: $valorLiquido, prazo: $prazo, compensacao: $compensacao, numeroCheque: $numeroCheque, nominal: $nominal, prazoTotal: $prazoTotal, imagePath: $imagePath, clientId: $clientId}';
+    return 'Cheque{id: $id, '
+        'dataEmissao: $dataEmissao, '
+        'dataVencimento: $dataVencimento, '
+        'dataPagamento: $dataPagamento, '
+        'valorCheque: $valorCheque, '
+        'taxaJuros: $taxaJuros, '
+        'valorJuros: $valorJuros, '
+        'valorLiquido: $valorLiquido, '
+        'prazo: $prazo, '
+        'compensacao: $compensacao, '
+        'numeroCheque: $numeroCheque, '
+        'imageFrontPath: $imageFrontPath, '
+        'imageBackPath: $imageBackPath, '
+        'clientId: $clientId,'
+        'client: ${client != null ? client.name : null}';
   }
-
-
 }

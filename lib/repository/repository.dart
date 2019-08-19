@@ -8,6 +8,7 @@ abstract class Repository implements Dao {
   Database _database;
   final String tableName;
   final String _idColumn = "id";
+  bool printExecuteQuery = false;
 
   ///Map<Column name, Colum type>
   final Map<String, String> _columnsMap;
@@ -52,7 +53,9 @@ abstract class Repository implements Dao {
       Database dbT = await database;
       return await dbT.transaction((txn) async {
         var batch = txn.batch();
-        print("Update $tableName id ${map["id"]}");
+        if (printExecuteQuery) {
+          print("Update $tableName id ${map["id"]}");
+        }
         int rowsAffected = await txn.update(tableName, map,
             where: "$_idColumn = ?", whereArgs: [map["id"]]);
 
@@ -64,7 +67,7 @@ abstract class Repository implements Dao {
         return rowsAffected;
       });
     } catch (exception) {
-      print("Insert $tableName failed => $exception.toString()");
+      print("Update $tableName failed => $exception.toString()");
       return 0;
     }
   }
@@ -75,7 +78,9 @@ abstract class Repository implements Dao {
       Database dbT = await database;
       return await dbT.transaction((txn) async {
         var batch = txn.batch();
-
+        if (printExecuteQuery) {
+          print("Delete $tableName id $id");
+        }
         int result = await txn
             .delete(tableName, where: "$_idColumn = ?", whereArgs: [id]);
 
@@ -109,15 +114,40 @@ abstract class Repository implements Dao {
   @override
   Future<List<Map<String, dynamic>>> getAll() async {
     Database dbT = await database;
-    // List listMap = await dbT.rawQuery("SELECT * FROM $_tableName");
     List listMap = await dbT.query('$tableName');
     return listMap;
   }
 
+  ///Executa um instrução do tipo DML
+  ///Clausula SELECT * FROM deve ser omitida
+  ///Example select
+  ///table where condition = value
+  Future<List<Map<String, dynamic>>> executeQuery(String sql) async {
+    Database dbT = await database;
+    if (printExecuteQuery) {
+      print("Executing execute ... ");
+      print("=> $sql");
+    }
+    return await dbT.query(sql);
+  }
+
+  ///Executa um instrução do tipo DML
+  Future<List<Map<String, dynamic>>> rawQuery(String sql) async {
+    Database dbT = await database;
+    if (printExecuteQuery) {
+      print("Executing executeRaw ... ");
+      print("=> $sql");
+    }
+    return await dbT.rawQuery(sql);
+  }
+
   ///Executa uma consulta do tipo DML
-  ///Todas as colunas do tipo string utilizam o parametro like
-  Future<List<Map<String, dynamic>>> where(Map<String, dynamic> columnsValues,
-      {bool like = false,bool likeStart=false, bool likeEnd=false}) async {
+  ///Todas as colunas do tipo string utilizarao o parametro like
+  Future<List<Map<String, dynamic>>> rawQueryMap(
+      Map<String, dynamic> columnsValues,
+      {bool like = false,
+      bool likeStart = false,
+      bool likeEnd = false}) async {
     final where = StringBuffer();
 //    final List<dynamic> whereArgs = List();
     final keys = List<String>();
@@ -136,14 +166,11 @@ abstract class Repository implements Dao {
         if (value is String) {
           if (like) {
             where.write("$key LIKE '%${columnsValues[key]}%'");
-          }
-          else if (likeStart) {
+          } else if (likeStart) {
             where.write("$key LIKE '${columnsValues[key]}%'");
-          }
-          else if (likeEnd) {
+          } else if (likeEnd) {
             where.write("$key LIKE '%${columnsValues[key]}'");
-          }
-          else {
+          } else {
             where.write("$key = '${columnsValues[key]}'");
           }
         } else {
@@ -153,16 +180,12 @@ abstract class Repository implements Dao {
         if (value is String) {
           if (like) {
             where.write("$key LIKE '%${columnsValues[key]}%',");
-          }
-          else if (likeStart) {
+          } else if (likeStart) {
             where.write("$key LIKE '${columnsValues[key]}%',");
-          }
-          else if (likeEnd) {
+          } else if (likeEnd) {
             where.write("$key LIKE '%${columnsValues[key]}',");
-          }
-          else {
+          } else {
             where.write("$key = '${columnsValues[key]}',");
-
           }
         } else {
           where.write("$key = ${columnsValues[key]},");
@@ -172,31 +195,25 @@ abstract class Repository implements Dao {
 
     Database dbT = await database;
     List maps = await dbT.rawQuery("SELECT * FROM $tableName where $where ");
+    if (printExecuteQuery) {
+      print("Executing executeRaw ... ");
+      print("=> SELECT * FROM $tableName where $where ");
+    }
     return maps;
   }
 
-  ///Executa um instrução do tipo DML
-  ///Clausula SELECT * FROM deve ser omitida
-  ///Example select
-  ///table where condition = value
-  Future<List<Map<String, dynamic>>> execute(String sqlFlite) async {
-    Database dbT = await database;
-    List listMap = await dbT.query(
-      sqlFlite,
-    );
-    return listMap;
-  }
-
   ///Executa um instrução do tipo DDL
-  Future<void> executeNonQuery(String sqlFlite) async {
+  Future<void> executeNonQuery(String sql) async {
     Database dbT = await database;
-    print("Executing non query .. ");
-    print("=>$sqlFlite");
+    if (printExecuteQuery) {
+      print("Executing non query .. ");
+      print("=>$sql");
+    }
     await dbT.transaction((txn) async {
       // DON'T  use the database object in a transaction => (dbT)
       // this will deadlock!
       // Ok
-      await txn.execute(sqlFlite);
+      await txn.execute(sql);
     });
   }
 
@@ -215,7 +232,8 @@ abstract class Repository implements Dao {
   Future<int> count() async {
     Database dbT = await database;
     return Sqflite.firstIntValue(
-        await dbT.rawQuery("SELECT COUNT(*) FROM $tableName"));
+      await dbT.rawQuery("SELECT COUNT(*) FROM $tableName"),
+    );
   }
 
   ///Closed connection
