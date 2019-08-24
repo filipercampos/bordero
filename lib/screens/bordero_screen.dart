@@ -83,9 +83,6 @@ class _BorderoScreenState extends State<BorderoScreen> {
         _valorJurosController,
         _valorLiquidoController,
         _nominalController);
-
-    helper.test();
-
   }
 
   @override
