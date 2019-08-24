@@ -18,12 +18,13 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
   final TextEditingController dataPagamentoController ;
   final TextEditingController prazoController ;
   final TextEditingController numeroChequeController ;
+  final TextEditingController nominalController ;
   final MoneyMaskedTextController valorChequeController;
   final MoneyMaskedTextController taxaJurosController ;
   final MoneyMaskedTextController valorJurosController ;
   final MoneyMaskedTextController valorLiquidoController;
 
-  int clientId;
+  Client client;
   String imageFrontPath;
   String imageBackPath;
 
@@ -32,7 +33,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
       this.dataPagamentoController, this.prazoController,
       this.numeroChequeController, this.valorChequeController,
       this.taxaJurosController, this.valorJurosController,
-      this.valorLiquidoController);
+      this.valorLiquidoController, this.nominalController);
   
 
   ///Obtem os dados do cheque dos campos
@@ -52,10 +53,10 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
     Cheque ch = Cheque.calc(dtEmissao, dtVencimento, dtPagamento, prazo,
         taxaJuros, valorCheque, numeroCheque);
 
-    ch.clientId = clientId;
+    ch.setClient(client);
+
     ch.imageFrontPath = imageFrontPath;
     ch.imageBackPath = imageBackPath;
-
     return ch;
   }
 
@@ -316,7 +317,8 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
   Future<List<Client>> getSuggestions(String search) async {
     final helper = RepositoryHelper().clientRepository;
     List<Client> clients = List();
-    await helper.rawQueryMap({"name": search}, likeStart: true).then((list) {
+    helper.debugExecuteQuery = true;
+    await helper.rawQueryMap({"name": search},like: true).then((list) {
       list.forEach((map) => clients.add(Client.fromJson(map)));
     });
     return clients;
@@ -386,12 +388,12 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 
   void test() {
     //teste
-    var de = DateTime(2018, 12, 1);
+    var de = DateTime(2019, 06, 1);
     var dv = DateTime.now();
     dataEmissaoController.text = DateUtil.toFormat(de);
     dataVencimentoController.text = DateUtil.toFormat(dv);
 
-    valorChequeController.text = "5000.00";
+    valorChequeController.text = "4500.00";
     taxaJurosController.text = "5.00";
     calcPrazoFromDate(de, dv);
   }

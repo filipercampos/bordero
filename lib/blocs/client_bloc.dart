@@ -31,7 +31,7 @@ class ClientBloc extends BlocBase {
   Future<List<Client>> getAllClients() async {
     final helper = RepositoryHelper().clientRepository;
     final result = await helper.all();
-    _allClients.addAll(result);
+    _allClients = result;
     _clientsController.add(result);
     helper.close();
     orderList(OrderOptions.ASC);

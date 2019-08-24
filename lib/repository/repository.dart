@@ -8,7 +8,7 @@ abstract class Repository implements Dao {
   Database _database;
   final String tableName;
   final String _idColumn = "id";
-  bool printExecuteQuery = false;
+  bool debugExecuteQuery = false;
 
   ///Map<Column name, Colum type>
   final Map<String, String> _columnsMap;
@@ -53,7 +53,7 @@ abstract class Repository implements Dao {
       Database dbT = await database;
       return await dbT.transaction((txn) async {
         var batch = txn.batch();
-        if (printExecuteQuery) {
+        if (debugExecuteQuery) {
           print("Update $tableName id ${map["id"]}");
         }
         int rowsAffected = await txn.update(tableName, map,
@@ -78,7 +78,7 @@ abstract class Repository implements Dao {
       Database dbT = await database;
       return await dbT.transaction((txn) async {
         var batch = txn.batch();
-        if (printExecuteQuery) {
+        if (debugExecuteQuery) {
           print("Delete $tableName id $id");
         }
         int result = await txn
@@ -124,7 +124,7 @@ abstract class Repository implements Dao {
   ///table where condition = value
   Future<List<Map<String, dynamic>>> executeQuery(String sql) async {
     Database dbT = await database;
-    if (printExecuteQuery) {
+    if (debugExecuteQuery) {
       print("Executing execute ... ");
       print("=> $sql");
     }
@@ -134,7 +134,7 @@ abstract class Repository implements Dao {
   ///Executa um instrução do tipo DML
   Future<List<Map<String, dynamic>>> rawQuery(String sql) async {
     Database dbT = await database;
-    if (printExecuteQuery) {
+    if (debugExecuteQuery) {
       print("Executing executeRaw ... ");
       print("=> $sql");
     }
@@ -195,7 +195,7 @@ abstract class Repository implements Dao {
 
     Database dbT = await database;
     List maps = await dbT.rawQuery("SELECT * FROM $tableName where $where ");
-    if (printExecuteQuery) {
+    if (debugExecuteQuery) {
       print("Executing executeRaw ... ");
       print("=> SELECT * FROM $tableName where $where ");
     }
@@ -205,7 +205,7 @@ abstract class Repository implements Dao {
   ///Executa um instrução do tipo DDL
   Future<void> executeNonQuery(String sql) async {
     Database dbT = await database;
-    if (printExecuteQuery) {
+    if (debugExecuteQuery) {
       print("Executing non query .. ");
       print("=>$sql");
     }

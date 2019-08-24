@@ -32,6 +32,7 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
 
       if(ch.clientId == null || ch.clientId == 0){
         blockSave = true;
+        print(ch);
       }
     });
 

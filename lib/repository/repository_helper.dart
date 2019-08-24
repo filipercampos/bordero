@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bordero/repository/cheque_repository.dart';
 import 'package:bordero/repository/migration_repository.dart';
@@ -40,12 +41,16 @@ class RepositoryHelper {
       onCreate: _onCreate,
       onUpgrade: alterTable ? _onUpgrade : null,
     );
-
-//     deleteDatabase(path);
-//     File(path).delete();
-//     print("Delete => ${File(path).exists().toString()}");
+//    _reCreate(path);
 
     return db;
+  }
+
+  void reCreate(path){
+
+    deleteDatabase(path);
+    File(path).delete();
+    print("Delete => ${File(path).exists().toString()}");
   }
 
   void _onCreate(Database db, int newerVersion) async {

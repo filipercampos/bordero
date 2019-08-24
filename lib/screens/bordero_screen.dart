@@ -3,13 +3,11 @@ import 'dart:io';
 import 'package:bordero/helpers/bordero_helper.dart';
 import 'package:bordero/models/cheque.dart';
 import 'package:bordero/models/client.dart';
-import 'package:bordero/repository/repository_helper.dart';
 import 'package:bordero/screens/cheques_bordero_screen.dart';
 import 'package:bordero/util/date_util.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:bordero/widgets/custom_drawer.dart';
 import 'package:bordero/widgets/image_source_sheet.dart';
-import 'package:bordero/widgets/images_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -68,56 +66,6 @@ class _BorderoScreenState extends State<BorderoScreen> {
     });
   }
 
-  Widget _buildActionButton() {
-    return Container(
-      margin: EdgeInsets.only(right: 8.0),
-      alignment: Alignment.centerRight,
-      child: Stack(
-        alignment: Alignment.topRight,
-        children: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.list,
-              color: Colors.white,
-            ),
-            onPressed: this.helper.cheques.length > 0
-                ? () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ChequesBorderoScreen(this.helper.cheques),
-                ),
-              );
-            }
-                : null, //desabilita o botao
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 6),
-            child: Container(
-              alignment: Alignment.center,
-              width: 18,
-              height: 18,
-              child: Text(
-                this.helper.cheques.length.toString(),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  color: Theme
-                      .of(context)
-                      .primaryColor,
-                ),
-              ),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white, //cor do botão no top
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -133,7 +81,11 @@ class _BorderoScreenState extends State<BorderoScreen> {
         _valorChequeController,
         _taxaJurosController,
         _valorJurosController,
-        _valorLiquidoController);
+        _valorLiquidoController,
+        _nominalController);
+
+    helper.test();
+
   }
 
   @override
@@ -390,6 +342,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                           return await helper.getSuggestions(search);
                         },
                         itemBuilder: (context, Client suggestion) {
+                          print(suggestion);
                           return ListTile(
                             leading: Icon(Icons.account_box),
                             title: Text(suggestion.name ?? ""),
@@ -399,8 +352,11 @@ class _BorderoScreenState extends State<BorderoScreen> {
                         onSuggestionSelected: (Client suggestion) {
                           if (suggestion != null) {
                             _nominalController.text = suggestion.name;
-                            helper.clientId = suggestion.id;
-                            print(suggestion);
+                            helper.client = suggestion;
+                            if(helper.cheques.length>0)
+                              {
+                                helper.cheques.forEach((ch)=> ch.setClient(suggestion));
+                              }
                           }
                         },
                       ),
@@ -423,6 +379,58 @@ class _BorderoScreenState extends State<BorderoScreen> {
       drawer: CustomDrawer(widget._controller),
     );
   }
+
+
+  Widget _buildActionButton() {
+    return Container(
+      margin: EdgeInsets.only(right: 8.0),
+      alignment: Alignment.centerRight,
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.list,
+              color: Colors.white,
+            ),
+            onPressed: this.helper.cheques.length > 0
+                ? () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ChequesBorderoScreen(this.helper.cheques),
+                ),
+              );
+            }
+                : null, //desabilita o botao
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Container(
+              alignment: Alignment.center,
+              width: 18,
+              height: 18,
+              child: Text(
+                this.helper.cheques.length.toString(),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  color: Theme
+                      .of(context)
+                      .primaryColor,
+                ),
+              ),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white, //cor do botão no top
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Widget _buildUpload() {
     return Row(

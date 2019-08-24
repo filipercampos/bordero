@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:bordero/models/cheque.dart';
+import 'package:bordero/util/date_util.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:flutter/material.dart';
-
+///Cheques/Clientes
 class ChequeSimpleCard extends StatelessWidget {
   final Cheque cheque;
 
@@ -22,7 +23,7 @@ class ChequeSimpleCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _buildHead(),
+            _buildHeader(context),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -94,24 +95,37 @@ class ChequeSimpleCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHead() {
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.fromLTRB(8.0, 5.0, 0.0, 5.0),
-            child: Text(
-              "Cliente: ${cheque.client.name }",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+  Widget _buildHeader(context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.fromLTRB(8.0, 5.0, 0.0, 5.0),
+              child: Text(
+                "Cliente: ${cheque.client.name}",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
             ),
-          ),
-          Divider(
-            height: 1,
-          ),
-        ],
-      );
-
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0.0, 5.0, 8.0, 5.0),
+              child: Text(
+                "Bom para: ${DateUtil.toFormat(cheque.dataVencimento)}",
+                style: TextStyle(fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+          ],
+        ),
+        Divider(
+          height: 1,
+        ),
+      ],
+    );
   }
 
   Widget _buildAttachment() {

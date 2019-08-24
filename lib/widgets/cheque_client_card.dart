@@ -43,7 +43,7 @@ class ChequeClientCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      _buildHead(snapshot.data[index]),
+                      _buildHeader(snapshot.data[index]),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
@@ -99,7 +99,7 @@ class ChequeClientCard extends StatelessWidget {
                                       ],
                                     ),
                                     SizedBox(
-                                      width: 5,
+                                      width: 10,
                                     ),
                                     Column(
                                       crossAxisAlignment:
@@ -138,7 +138,7 @@ class ChequeClientCard extends StatelessWidget {
         });
   }
 
-  Widget _buildHead(ChequeClient chequeClient) {
+  Widget _buildHeader(ChequeClient chequeClient) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[

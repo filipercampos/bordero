@@ -1,7 +1,7 @@
-import 'dart:math';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:bordero/dto/cheque_client.dart';
+import 'package:bordero/enums/cheque_view_type.dart';
 import 'package:bordero/models/cheque.dart';
 import 'package:bordero/repository/cheque_repository.dart';
 import 'package:bordero/repository/repository_helper.dart';
@@ -13,6 +13,7 @@ class ChequeBloc extends BlocBase {
   final _createdController = BehaviorSubject<bool>();
   final _chequesController = BehaviorSubject<List<Cheque>>();
   final _chequesClientController = BehaviorSubject<List<ChequeClient>>();
+  final _chequeViewController = BehaviorSubject<bool>();
 
   Stream<bool> get outLoading => _loadingController.stream;
 
@@ -23,8 +24,12 @@ class ChequeBloc extends BlocBase {
   Stream<List<ChequeClient>> get outChequesClient =>
       _chequesClientController.stream;
 
+  Stream<bool> get outChequeViewType => _chequeViewController.stream;
+
   final ChequeRepository _repository = RepositoryHelper().chequeRepository;
 
+  ChequeBloc(){
+  }
   @override
   void dispose() {
     super.dispose();
@@ -32,17 +37,28 @@ class ChequeBloc extends BlocBase {
     _createdController.close();
     _chequesController.close();
     _chequesClientController.close();
+    _chequeViewController.close();
   }
 
   void loadCheques() async {
     await getAllCheques();
     await getChequesGroupByClient();
     setOrderCriteria(SortCriteriaCheque.LOW_VALUE);
+    print("load cheques");
   }
 
   Future<List<Cheque>> getAllCheques() async {
     List<Cheque> cheques = await _repository.all();
     _chequesController.add(cheques);
+    return cheques;
+  }
+
+  Future<List<Cheque>> getChequesFromDate(initialValue, endValue) async {
+    List<Cheque> cheques = await _repository.getChequeFromDate(initialValue, endValue);
+    _chequesController.add(cheques);
+    print(cheques);
+    print(initialValue);
+    print(endValue);
     return cheques;
   }
 
@@ -52,14 +68,21 @@ class ChequeBloc extends BlocBase {
     return chequesClients;
   }
 
+  Future<List<ChequeClient>> getChequesGroupByClientFromDate(initialValue, endValue) async {
+    List<ChequeClient> chequesClients = await _repository.groupByClientFromDate(initialValue, endValue);
+    _chequesClientController.add(chequesClients);
+    print(chequesClients);
+    return chequesClients;
+  }
+
   void setOrderCriteria(SortCriteriaCheque criteria) {
     //compara double
     switch (criteria) {
       //menor pro maior
       case SortCriteriaCheque.HIGH_VALUE:
         _chequesController.value.sort((Cheque a, Cheque b) {
-          var sa = a.valorCheque.toDouble();
-          var sb = b.valorCheque.toDouble();
+          var sa = a.dataVencimento.millisecondsSinceEpoch; //valorCheque.toDouble();
+          var sb = b.dataVencimento.millisecondsSinceEpoch;// valorCheque.toDouble();
 
           if (sa < sb)
             return 1;
@@ -73,8 +96,8 @@ class ChequeBloc extends BlocBase {
       //maior pro menor
       case SortCriteriaCheque.LOW_VALUE:
         _chequesController.value.sort((a, b) {
-          var sa = a.valorCheque.toDouble();
-          var sb = b.valorCheque.toDouble();
+          var sa = a.dataVencimento.millisecondsSinceEpoch; //valorCheque.toDouble();
+          var sb = b.dataVencimento.millisecondsSinceEpoch;// valorCheque.toDouble();
 
           if (sa > sb)
             return 1;
@@ -150,6 +173,10 @@ class ChequeBloc extends BlocBase {
       _loadingController.add(false);
       return false;
     }
+  }
+
+  void repaintView(ChequeViewType view) {
+    _chequeViewController.add(true);
   }
 
 }

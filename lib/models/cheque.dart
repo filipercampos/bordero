@@ -55,6 +55,12 @@ class Cheque {
     imageFrontPath = json["imageFrontPath"];
     imageBackPath = json["imageBackPath"];
     clientId = json["clientId"];
+
+    if (json.containsKey("clientName")) {
+      this.client = Client();
+      this.client.id = this.clientId;
+      this.client.name = json["clientName"];
+    }
     setPrazoTotal(prazo, compensacao);
   }
 
@@ -142,6 +148,13 @@ class Cheque {
 
   setPrazoTotal(int prazo, int compensacao) {
     this.prazoTotal = prazo + compensacao;
+  }
+
+  void setClient(Client client) {
+    if (client != null) {
+      this.client = client;
+      this.clientId = client.id;
+    }
   }
 
   @override

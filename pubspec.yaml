@@ -39,6 +39,7 @@ dependencies:
   path_provider: ^1.2.0
   flutter_speed_dial: ^1.2.1 #botões animados flutuantes
   shimmer: ^1.0.0 #efeito de carregamento
+  shared_preferences: ^0.5.3+4 #salvar preferencias
 
 dev_dependencies:
   flutter_test:

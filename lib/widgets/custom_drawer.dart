@@ -54,7 +54,7 @@ class CustomDrawer extends StatelessWidget {
                     accountName: Text(user.name ?? "Convidado"),
                     accountEmail: Text(user.email ?? "Termine seu cadastro"),
                     currentAccountPicture: GestureDetector(
-                      onTap: () {
+                      onLongPress: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => UserScreen(

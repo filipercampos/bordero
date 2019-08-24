@@ -1,5 +1,4 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:bordero/FilterTest.dart';
 import 'package:bordero/screens/home_screen.dart';
 import 'package:bordero/screens/signup/signup_screen.dart';
 import 'package:bordero/util/color_util.dart';
