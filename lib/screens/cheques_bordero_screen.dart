@@ -54,6 +54,7 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
                     ? null //bloquea o botão se estiver carregando
                     : () async {
                         if (await _saveChequesNBlockScreen()) {
+                          Navigator.of(context).pop();
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (context) => HomeScreen())
                           );
