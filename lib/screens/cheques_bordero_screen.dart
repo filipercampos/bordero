@@ -3,7 +3,6 @@ import 'package:bordero/models/cheque.dart';
 import 'package:bordero/screens/home_screen.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:bordero/widgets/cheque_bordero_card_details.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 
 ///Cheques calculados
@@ -24,8 +23,8 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
   Widget build(BuildContext context) {
     //TODO
     bool blockSave = false;
-    Decimal totalJuros = Decimal.zero;
-    Decimal totalLiquido = Decimal.zero;
+    double totalJuros = 0.0;
+    double totalLiquido = 0.0;
     widget.cheques.forEach((ch) {
       totalJuros += ch.valorJuros;
       totalLiquido += ch.valorCheque;

@@ -6,35 +6,50 @@ import 'package:bordero/util/number_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
- class BorderoHelper {
-
+class BorderoHelper {
   final BuildContext context;
   final GlobalKey<FormState> formKey;
-  final GlobalKey<ScaffoldState> scaffoldKey ;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
   final List<Cheque> cheques = List<Cheque>();
 
-  final TextEditingController dataEmissaoController ;
-  final TextEditingController dataVencimentoController ;
-  final TextEditingController dataPagamentoController ;
-  final TextEditingController prazoController ;
-  final TextEditingController numeroChequeController ;
-  final TextEditingController nominalController ;
+  final TextEditingController dataEmissaoController;
+
+  final TextEditingController dataVencimentoController;
+
+  final TextEditingController dataPagamentoController;
+
+  final TextEditingController prazoController;
+
+  final TextEditingController numeroChequeController;
+
+  final TextEditingController nominalController;
+
   final MoneyMaskedTextController valorChequeController;
-  final MoneyMaskedTextController taxaJurosController ;
-  final MoneyMaskedTextController valorJurosController ;
+  final MoneyMaskedTextController taxaJurosController;
+
+  final MoneyMaskedTextController valorJurosController;
+
   final MoneyMaskedTextController valorLiquidoController;
 
   Client client;
   String imageFrontPath;
   String imageBackPath;
 
-  BorderoHelper(this.context, this.formKey, this.scaffoldKey,
-      this.dataEmissaoController, this.dataVencimentoController,
-      this.dataPagamentoController, this.prazoController,
-      this.numeroChequeController, this.valorChequeController,
-      this.taxaJurosController, this.valorJurosController,
-      this.valorLiquidoController, this.nominalController);
-  
+  BorderoHelper(
+      this.context,
+      this.formKey,
+      this.scaffoldKey,
+      this.dataEmissaoController,
+      this.dataVencimentoController,
+      this.dataPagamentoController,
+      this.prazoController,
+      this.numeroChequeController,
+      this.valorChequeController,
+      this.taxaJurosController,
+      this.valorJurosController,
+      this.valorLiquidoController,
+      this.nominalController);
 
   ///Obtem os dados do cheque dos campos
   Cheque buildCheque() {
@@ -42,8 +57,8 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
     var dtVencimento = DateUtil.toDate(dataVencimentoController.text);
     var dtPagamento = DateUtil.toDate(dataPagamentoController.text);
 
-    var valorCheque = NumberUtil.toDecimal(valorChequeController.text);
-    var taxaJuros = NumberUtil.toDecimal(taxaJurosController.text);
+    var valorCheque = NumberUtil.toDouble(valorChequeController.text);
+    var taxaJuros = NumberUtil.toDouble(taxaJurosController.text);
     var numeroCheque = (numeroChequeController.text);
 
     //o prazo q eh usado para calcular o juros
@@ -60,7 +75,6 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
     return ch;
   }
 
-
   /// Adiciona um cheque calculado
   void addCheque() {
     var cheque = buildCheque();
@@ -68,7 +82,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
     if (validator(cheque)) {
       this.cheques.add(cheque);
       this.numeroChequeController.text =
-      "0000${(this.cheques.length + 1).toString()}";
+          "0000${(this.cheques.length + 1).toString()}";
 
       //notifica que a tela deve ser redesenhada
 //      setState(() {});
@@ -88,7 +102,8 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 
   /// Inicia um novo cálculo de cheque
   void newCalc() {
-    dataEmissaoController.text = ""; //DateUtil.toFormat(DateUtil.firstDateFromMonth());
+    dataEmissaoController.text =
+        ""; //DateUtil.toFormat(DateUtil.firstDateFromMonth());
     dataPagamentoController.text = "";
     dataVencimentoController.text = "";
 
@@ -98,8 +113,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 
     taxaJurosController.text = "0.00";
     prazoController.text = "0";
-    numeroChequeController.text =
-    "0000${(this.cheques.length + 1).toString()}";
+    numeroChequeController.text = "0000${(this.cheques.length + 1).toString()}";
 
     scaffoldKey.currentState.showSnackBar(
       SnackBar(
@@ -120,10 +134,8 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
     //seta o valor liquido
     cheque.setValorLiquido(cheque.valorCheque, cheque.valorJuros);
 
-
-      valorLiquidoController.text = cheque.valorLiquido.toStringAsFixed(2);
-      valorJurosController.text = cheque.valorJuros.toStringAsFixed(2);
-
+    valorLiquidoController.text = cheque.valorLiquido.toStringAsFixed(2);
+    valorJurosController.text = cheque.valorJuros.toStringAsFixed(2);
   }
 
   /// Calcula a data do prazo.
@@ -131,7 +143,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
     Cheque cheque = buildCheque();
     //calcula a data de vencimento
     var dataVencimento =
-    DateUtil.addDays(cheque.dataEmissao, cheque.prazoTotal);
+        DateUtil.addDays(cheque.dataEmissao, cheque.prazoTotal);
 
     //seta a data no campo
     dataVencimentoController.text = DateUtil.toFormat(dataVencimento);
@@ -173,7 +185,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
               textAlign: TextAlign.center,
             ),
             content:
-            Text("Deseja realmente remover todos os cheques calculados ?"),
+                Text("Deseja realmente remover todos os cheques calculados ?"),
             actions: <Widget>[
               FlatButton(
                 child: Text("Não"),
@@ -186,8 +198,8 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
                 onPressed: () {
                   Navigator.of(context).pop();
 //                  setState(() {
-                    //remove os cheques
-                    this.cheques.clear();
+                  //remove os cheques
+                  this.cheques.clear();
 //                  });
                   scaffoldKey.currentState.showSnackBar(
                     SnackBar(
@@ -211,7 +223,6 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
       );
     }
   }
-
 
   /// Alerta de cheque inválido
   void showDialogChequeInvalido() {
@@ -318,7 +329,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
     final helper = RepositoryHelper().clientRepository;
     List<Client> clients = List();
     helper.debugExecuteQuery = true;
-    await helper.rawQueryMap({"name": search},like: true).then((list) {
+    await helper.rawQueryMap({"name": search}, like: true).then((list) {
       list.forEach((map) => clients.add(Client.fromJson(map)));
     });
     return clients;
@@ -326,7 +337,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 
   /// Verifica se os dados do cheque são válidos para cálculo.
   bool validator(Cheque cheque) {
-    if(cheque == null) return false;
+    if (cheque == null) return false;
     return cheque.prazo != 0 &&
         cheque.taxaJuros.toDouble() != 0.0 &&
         cheque.valorCheque.toDouble() != 0.0;
@@ -340,12 +351,12 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 
     if (dataEmissaoController.text.isEmpty ||
         dataVencimentoController.text.isEmpty) {
-
-      if(dataVencimentoController.text.isEmpty && prazoController.text != "0"){
-        calcDateFromPrazo();//vai setar o vencimento
+      if (dataVencimentoController.text.isEmpty &&
+          prazoController.text != "0") {
+        calcDateFromPrazo(); //vai setar o vencimento
         //redefine novamente a data
         dataVencimento = DateUtil.toDate(dataVencimentoController.text);
-      }else{
+      } else {
         return false;
       }
     }
@@ -388,14 +399,16 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 
   void test() {
     //teste
-    var de = DateTime(2019, 06, 1);
+     var de = DateTime(2019, 8, 26);
     var dv = DateTime.now();
     dataEmissaoController.text = DateUtil.toFormat(de);
     dataVencimentoController.text = DateUtil.toFormat(dv);
 
-    valorChequeController.text = "4500.00";
+    valorChequeController.text = "5000.00";
     taxaJurosController.text = "5.00";
-    calcPrazoFromDate(de, dv);
-  }
+    prazoController.text = "80";
+//    calcPrazoFromDate(de, dv);
 
+    calcDateFromPrazo();
+  }
 }

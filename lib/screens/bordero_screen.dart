@@ -87,10 +87,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
@@ -100,7 +97,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
         actions: <Widget>[
           Container(
             child:
-            this.helper.cheques.length == 0 ? null : _buildActionButton(),
+                this.helper.cheques.length == 0 ? null : _buildActionButton(),
           ),
         ],
       ),
@@ -263,7 +260,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                               textInputAction: TextInputAction.done,
                               onChanged: (text) {
                                 int prazo =
-                                NumberUtil.toInt(_prazoController.text);
+                                    NumberUtil.toInt(_prazoController.text);
                                 if (prazo != 0) {
                                   helper.calcDateFromPrazo();
                                 } else {
@@ -350,23 +347,30 @@ class _BorderoScreenState extends State<BorderoScreen> {
                           if (suggestion != null) {
                             _nominalController.text = suggestion.name;
                             helper.client = suggestion;
-                            if(helper.cheques.length>0)
-                              {
-                                helper.cheques.forEach((ch)=> ch.setClient(suggestion));
-                              }
+                            if (helper.cheques.length > 0) {
+                              helper.cheques
+                                  .forEach((ch) => ch.setClient(suggestion));
+                            }
                           }
                         },
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      _buildUpload(),
                     ],
                   ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  _buildUpload(),
+                  SizedBox(
+                    height: 30,
+                  ),
                   //Botoes
-                  Expanded(
+                  Container(
+                    alignment: Alignment.bottomCenter,
                     child: _buildFooter(),
                   ),
+//                  Expanded(
+//                    child: _buildFooter(),
+//                  ),
                 ],
               ),
             ),
@@ -376,7 +380,6 @@ class _BorderoScreenState extends State<BorderoScreen> {
       drawer: CustomDrawer(widget._controller),
     );
   }
-
 
   Widget _buildActionButton() {
     return Container(
@@ -392,13 +395,13 @@ class _BorderoScreenState extends State<BorderoScreen> {
             ),
             onPressed: this.helper.cheques.length > 0
                 ? () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ChequesBorderoScreen(this.helper.cheques),
-                ),
-              );
-            }
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ChequesBorderoScreen(this.helper.cheques),
+                      ),
+                    );
+                  }
                 : null, //desabilita o botao
           ),
           Padding(
@@ -412,9 +415,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w900,
-                  color: Theme
-                      .of(context)
-                      .primaryColor,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               decoration: BoxDecoration(
@@ -428,27 +429,26 @@ class _BorderoScreenState extends State<BorderoScreen> {
     );
   }
 
-
   Widget _buildUpload() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Expanded(
-          child: Column(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (context) =>
-                            ImageSourceSheet(
-                              iconColor: Theme
-                                  .of(context)
-                                  .primaryColor,
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 2,
+                      child: InkWell(
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => ImageSourceSheet(
+                              iconColor: Theme.of(context).primaryColor,
                               onImageSelected: (image) {
                                 if (image != null) {
                                   setState(() {
@@ -463,46 +463,47 @@ class _BorderoScreenState extends State<BorderoScreen> {
                                 }
                               },
                             ),
-                      );
-                    },
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          "Foto frente cheque",
-                          style: TextStyle(
-                            color: Colors.grey[500],
-                          ),
+                          );
+                        },
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              "Foto frente cheque",
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 8,right: 8),
+                              alignment: Alignment.topCenter,
+//                              width: 140,
+//                              height: 60,
+                              color: Colors.transparent,
+                              child: helper.imageFrontPath != null
+                                  ? Image.file(
+                                      File(helper.imageFrontPath),
+                                      fit: BoxFit.fill,
+                                    )
+                                  : Image.asset(
+                                      "images/check-teal.png",
+                                      fit: BoxFit.fill,
+                                    ),
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Container(
-                          alignment: Alignment.topCenter,
-                          width: 140,
-                          height: 80,
-                          color: Colors.transparent,
-                          child: helper.imageFrontPath != null
-                              ? Image.file(
-                            File(helper.imageFrontPath),
-                            fit: BoxFit.fill,
-                          )
-                              : Image.asset(
-                            "images/check-teal.png",
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (context) =>
-                            ImageSourceSheet(
-                              iconColor: Theme
-                                  .of(context)
-                                  .primaryColor,
+                    Flexible(
+                      flex: 2,
+                      child: InkWell(
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => ImageSourceSheet(
+                              iconColor: Theme.of(context).primaryColor,
                               onImageSelected: (image) {
                                 if (image != null) {
                                   setState(() {
@@ -517,50 +518,52 @@ class _BorderoScreenState extends State<BorderoScreen> {
                                 }
                               },
                             ),
-                      );
-                    },
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          "Foto verso cheque",
-                          style: TextStyle(
-                            color: Colors.grey[500],
-                          ),
+                          );
+                        },
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              "Foto verso cheque",
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 8,right: 8),
+                              alignment: Alignment.topCenter,
+//                              width: 140,
+//                              height: 60,
+                              color: Colors.transparent,
+                              child: helper.imageBackPath != null
+                                  ? Image.file(
+                                      File(helper.imageBackPath),
+                                      fit: BoxFit.fill,
+                                    )
+                                  : Image.asset(
+                                      "images/check-teal-verso.png",
+                                      fit: BoxFit.fill,
+                                    ),
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Container(
-                          alignment: Alignment.topCenter,
-                          width: 140,
-                          height: 80,
-                          color: Colors.transparent,
-                          child: helper.imageBackPath != null
-                              ? Image.file(
-                            File(helper.imageBackPath),
-                            fit: BoxFit.fill,
-                          )
-                              : Image.asset(
-                            "images/check-teal-verso.png",
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildFooter() {
     return Container(
       color: Colors.transparent,
-      height: 60,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -568,9 +571,9 @@ class _BorderoScreenState extends State<BorderoScreen> {
             text: "Limpar",
             onPressed: this.helper.cheques.length > 0
                 ? () {
-              this.helper.clearCheques();
-              setState(() {});
-            }
+                    this.helper.clearCheques();
+                    setState(() {});
+                  }
                 : null,
           ),
           _buildButtonTheme(
@@ -581,9 +584,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
             text: "Adicionar",
             onPressed: () {
               this.helper.addCheque();
-              setState(() {
-
-              });
+              setState(() {});
             },
           ),
         ],
@@ -605,9 +606,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
           style: TextStyle(fontSize: 16),
         ),
         textColor: Colors.white,
-        color: Theme
-            .of(context)
-            .primaryColor,
+        color: Theme.of(context).primaryColor,
         onPressed: onPressed,
       ),
     );

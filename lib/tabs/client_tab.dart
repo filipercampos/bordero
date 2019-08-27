@@ -62,8 +62,10 @@ class _ClientsTabState extends State<ClientsTab> {
                 );
               } else if (snapshot.data.length == 0) {
                 return Center(
-                  child: Text("Nenhum resultado"),
-                );
+                    child: Text(
+                      "Nenhum resultado",
+                      style: TextStyle(color: Colors.grey),
+                    ));
               } else {
                 return ListView.builder(
                   itemCount: snapshot.data.length,

@@ -10,10 +10,10 @@ class Cheque {
   DateTime dataVencimento;
   DateTime dataPagamento;
 
-  Decimal valorCheque;
-  Decimal taxaJuros;
-  Decimal valorJuros;
-  Decimal valorLiquido;
+  double valorCheque;
+  double taxaJuros;
+  double valorJuros;
+  double valorLiquido;
   int prazo;
   int compensacao;
   String numeroCheque;
@@ -28,10 +28,10 @@ class Cheque {
     //atributos incializados com a data do sistema
     this.dataEmissao = dataAtual;
     this.dataVencimento = dataAtual;
-    this.taxaJuros = Decimal.zero;
-    this.valorCheque = Decimal.zero;
-    this.valorJuros = Decimal.zero;
-    this.valorLiquido = Decimal.zero;
+    this.taxaJuros = 0.0;
+    this.valorCheque = 0.0;
+    this.valorJuros = 0.0;
+    this.valorLiquido = 0.0;
     this.prazo = 0;
     this.compensacao = 0;
   }
@@ -45,10 +45,10 @@ class Cheque {
         DateUtil.toDateFromMillisecondsSinceEpoch(json["dataVencimento"]);
     dataPagamento =
         DateUtil.toDateFromMillisecondsSinceEpoch(json["dataPagamento"]);
-    valorCheque = NumberUtil.toDecimalFromDouble(json["valorCheque"]);
-    taxaJuros = NumberUtil.toDecimalFromDouble(json["taxaJuros"]);
-    valorJuros = NumberUtil.toDecimalFromDouble(json["valorJuros"]);
-    valorLiquido = NumberUtil.toDecimalFromDouble(json["valorLiquido"]);
+    valorCheque = json["valorCheque"];
+    taxaJuros = json["taxaJuros"];
+    valorJuros = json["valorJuros"];
+    valorLiquido = json["valorLiquido"];
     prazo = json["prazo"];
     compensacao = json["compensacao"];
     numeroCheque = json["numeroCheque"];
@@ -70,10 +70,10 @@ class Cheque {
       "dataVencimento": dataVencimento.millisecondsSinceEpoch,
       "dataPagamento":
           dataPagamento != null ? dataPagamento.millisecondsSinceEpoch : null,
-      "valorCheque": valorCheque.toDouble(),
-      "taxaJuros": taxaJuros.toDouble(),
-      "valorJuros": valorJuros.toDouble(),
-      "valorLiquido": valorLiquido.toDouble(),
+      "valorCheque": valorCheque,
+      "taxaJuros": taxaJuros,
+      "valorJuros": valorJuros,
+      "valorLiquido": valorLiquido,
       "prazo": prazo,
       "compensacao": compensacao,
       "numeroCheque": numeroCheque,
@@ -92,8 +92,8 @@ class Cheque {
       DateTime dataVencimento,
       DateTime dataPagamento,
       int prazo,
-      Decimal taxaJuros,
-      Decimal valorCheque,
+      double taxaJuros,
+      double valorCheque,
       String numeroCheque) {
     this.prazo = prazo;
     this.dataEmissao = dataEmissao;
@@ -118,29 +118,34 @@ class Cheque {
     this.numeroCheque = numeroCheque;
   }
 
-  setJuros(Decimal valorCheque, Decimal taxaJuros, int prazo) {
+  setJuros(double valorCheque, double taxaJuros, int prazo) {
     this.valorJuros = calcularJuros(valorCheque, taxaJuros, prazo);
   }
 
-  calcularJuros(Decimal valorCheque, Decimal taxaJuros, int prazo) {
-    Decimal valorChequeCalc = valorCheque;
+  calcularJuros(double valorCheque, double taxaJuros, int prazo) {
+    double valorChequeCalc = valorCheque;
     //taxaJurosCalc / 100
-    taxaJuros = taxaJuros / Decimal.parse("100");
+    taxaJuros = taxaJuros / 100;
 
     //valorChequeCalc * taxaJurosCalc
     valorChequeCalc = valorChequeCalc * taxaJuros;
 
     //valorChequeCalc / 30
-    valorChequeCalc = valorChequeCalc / Decimal.parse("30");
+    valorChequeCalc = valorChequeCalc / 30;
 
     //valorChequeCalc * prazo
-    valorChequeCalc = valorChequeCalc * Decimal.parse(prazo.toString());
+    valorChequeCalc = valorChequeCalc * double.parse(prazo.toString());
+
+    valorChequeCalc = NumberUtil.toDoubleDecimal(
+      valorChequeCalc.toString(),
+      scale: 2,
+    );
 
     //valor do valorChequeCalc eh o valor final do cheque
-    return Decimal.parse(valorChequeCalc.toStringAsPrecision(2));
+    return valorChequeCalc;
   }
 
-  setValorLiquido(Decimal valorCheque, Decimal valorJuros) {
+  setValorLiquido(double valorCheque, double valorJuros) {
     this.valorCheque = valorCheque;
     this.valorJuros = valorJuros;
     this.valorLiquido = valorCheque - valorJuros;
