@@ -148,9 +148,6 @@ class BorderoHelper {
     //seta a data no campo
     dataVencimentoController.text = DateUtil.toFormat(dataVencimento);
 
-    //data de pagamento acompanha o vencimento
-    dataPagamentoController.text = DateUtil.toFormat(dataVencimento);
-
     if (validator(cheque)) {
       calcularCheque(cheque);
     }

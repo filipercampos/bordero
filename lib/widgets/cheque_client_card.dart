@@ -1,12 +1,12 @@
 import 'package:bordero/blocs/cheque_bloc.dart';
 import 'package:bordero/dto/cheque_client.dart';
+import 'package:bordero/screens/compensacao_cheque_screen.dart';
 import 'package:bordero/util/animation_util.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:flutter/material.dart';
 
 class ChequeClientCard extends StatelessWidget {
   final ChequeBloc _chequeBloc;
-
   ChequeClientCard(this._chequeBloc);
 
   @override
@@ -33,12 +33,14 @@ class ChequeClientCard extends StatelessWidget {
               ChequeClient chequeClient = snapshot.data[index];
 
               return InkWell(
-                onTap: () {
-                  //TODO something with cheque
-                },
-                onLongPress: () {
-                  //TODO something
-                },
+                onTap:  () async {
+
+                  var cheque  = await _chequeBloc.getCheque(chequeClient.id);
+                  //compensacao
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => CompensacaoChequeScreen(cheque))
+                  );
+                } ,
                 child: Card(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

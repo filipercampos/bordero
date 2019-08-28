@@ -1,6 +1,7 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:bordero/screens/home_screen.dart';
 import 'package:bordero/screens/signup/signup_screen.dart';
+import 'package:bordero/themes/theme_default.dart';
 import 'package:bordero/util/color_util.dart';
 import 'package:flutter/material.dart';
 
@@ -35,10 +36,7 @@ class MyApp extends StatelessWidget {
               }
               return MaterialApp(
                 title: 'Borderô',
-                theme: ThemeData(
-                  primarySwatch: Colors.blue,
-                  primaryColor: HexColor('#00a6bf'), //ITE color
-                ),
+                theme: ThemeDefault().themeDefault(),
                 home: Scaffold(
                   body:  _userBloc.isRegister() ? HomeScreen() : SignUpScreen(),
                 ),
@@ -50,4 +48,6 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+
+
 }

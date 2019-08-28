@@ -149,20 +149,20 @@ class _UserScreenState extends State<UserScreen> {
                 },
                 keyboardType: TextInputType.phone,
               ),
-               TextField(
-                controller: _phoneController,
-                obscureText: true,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: "Senha",
-                  icon: Icon(Icons.lock, color: primaryColor),
-                ),
-                onChanged: (text) {
-                  _userEdited = true;
-                  _editedUser.password = text;
-                },
-                keyboardType: TextInputType.phone,
-              ),
+//               TextField(
+//                controller: _phoneController,
+//                obscureText: true,
+//                readOnly: true,
+//                decoration: InputDecoration(
+//                  labelText: "Senha",
+//                  icon: Icon(Icons.lock, color: primaryColor),
+//                ),
+//                onChanged: (text) {
+//                  _userEdited = true;
+//                  _editedUser.password = text;
+//                },
+//                keyboardType: TextInputType.phone,
+//              ),
             ],
           ),
         ),

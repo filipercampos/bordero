@@ -2,7 +2,9 @@ import 'package:bordero/blocs/cheque_bloc.dart';
 import 'package:bordero/enums/cheque_view_type.dart';
 import 'package:bordero/models/cheque.dart';
 import 'package:bordero/preferences/shared_preferences_bordero.dart';
+import 'package:bordero/screens/compensacao_cheque_screen.dart';
 import 'package:bordero/util/animation_util.dart';
+import 'package:bordero/util/number_util.dart';
 import 'package:bordero/widgets/cheque_bordero_card_details.dart';
 import 'package:bordero/widgets/cheque_client_card.dart';
 import 'package:bordero/widgets/cheque_filter_widget.dart';
@@ -97,29 +99,42 @@ class _ChequesTabState extends State<ChequesTab> {
         ),
         drawer: CustomDrawer(widget._controller),
         body: Container(
-          child: Column(
+          child: Stack(
             children: <Widget>[
-              _buildFilter(),
-              Expanded(
-                child: StreamBuilder<List<Cheque>>(
+              Column(
+                children: <Widget>[
+                  _buildFilter(),
+                  Expanded(
+                    child: StreamBuilder<List<Cheque>>(
+                        stream: _chequeBloc.outCheques,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return _buildShimmerEffect();
+                          } else if (snapshot.data.length == 0) {
+                            return Center(
+                                child: Text(
+                              "Nenhum resultado",
+                              style: TextStyle(color: Colors.grey),
+                            ));
+                          }
+                          return StreamBuilder<bool>(
+                              stream: _chequeBloc.outChequeViewType,
+                              initialData: false,
+                              builder: (context, snapshotView) {
+                                return _buildViews(snapshot);
+                              });
+                        }),
+                  ),
+                  StreamBuilder<List<Cheque>>(
                     stream: _chequeBloc.outCheques,
                     builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return _buildShimmerEffect();
-                      } else if (snapshot.data.length == 0) {
-                        return Center(
-                            child: Text(
-                          "Nenhum resultado",
-                          style: TextStyle(color: Colors.grey),
-                        ));
+                      if (snapshot.hasData) {
+                        return _buildFooter(snapshot);
                       }
-                      return StreamBuilder<bool>(
-                          stream: _chequeBloc.outChequeViewType,
-                          initialData: false,
-                          builder: (context, snapshotView) {
-                            return _buildViews(snapshot);
-                          });
-                    }),
+                      return Container();
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -138,33 +153,39 @@ class _ChequesTabState extends State<ChequesTab> {
 
   Widget _buildFloatingButton() {
     final primaryColor = Theme.of(context).primaryColor;
-    return SpeedDial(
-      child: Icon(Icons.sort),
-      backgroundColor: primaryColor,
-      overlayOpacity: 0.4,
-      overlayColor: Colors.black,
-      children: [
-        SpeedDialChild(
-            child: Icon(Icons.arrow_downward, color: Colors.white),
-            backgroundColor: primaryColor,
-            label: _selectedView != ChequeViewType.CHEQUES_BY_CLIENT
-                ? "Maior Vencimento"
-                : "Cliente A-Z",
-            labelStyle: TextStyle(fontSize: 14),
-            onTap: () {
-              _chequeBloc.setOrderCriteria(SortCriteriaCheque.HIGH_VALUE);
-            }),
-        SpeedDialChild(
-            child: Icon(Icons.arrow_upward, color: Colors.white),
-            backgroundColor: primaryColor,
-            label: _selectedView != ChequeViewType.CHEQUES_BY_CLIENT
-            ? "Menor Vencimento"
-            : "Cliente Z-A",
-            labelStyle: TextStyle(fontSize: 14),
-            onTap: () {
-              _chequeBloc.setOrderCriteria(SortCriteriaCheque.LOW_VALUE);
-            }),
-      ],
+    return Container(
+      padding: EdgeInsets.only(bottom: 50.0),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: SpeedDial(
+          child: Icon(Icons.sort),
+          backgroundColor: primaryColor,
+          overlayOpacity: 0.4,
+          overlayColor: Colors.black,
+          children: [
+            SpeedDialChild(
+                child: Icon(Icons.arrow_downward, color: Colors.white),
+                backgroundColor: primaryColor,
+                label: _selectedView != ChequeViewType.CHEQUES_BY_CLIENT
+                    ? "Maior Vencimento"
+                    : "Cliente A-Z",
+                labelStyle: TextStyle(fontSize: 14),
+                onTap: () {
+                  _chequeBloc.setOrderCriteria(SortCriteriaCheque.HIGH_VALUE);
+                }),
+            SpeedDialChild(
+                child: Icon(Icons.arrow_upward, color: Colors.white),
+                backgroundColor: primaryColor,
+                label: _selectedView != ChequeViewType.CHEQUES_BY_CLIENT
+                    ? "Menor Vencimento"
+                    : "Cliente Z-A",
+                labelStyle: TextStyle(fontSize: 14),
+                onTap: () {
+                  _chequeBloc.setOrderCriteria(SortCriteriaCheque.LOW_VALUE);
+                }),
+          ],
+        ),
+      ),
     );
   }
 
@@ -192,7 +213,18 @@ class _ChequesTabState extends State<ChequesTab> {
           padding: EdgeInsets.all(4.0),
           itemCount: snapshot.data.length,
           itemBuilder: (context, index) {
-            return ChequeSimpleCard(snapshot.data[index]);
+            return InkWell(
+              onTap: () {
+                //compensacao
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        CompensacaoChequeScreen(snapshot.data[index]),
+                  ),
+                );
+              },
+              child: ChequeSimpleCard(snapshot.data[index]),
+            );
           },
         );
         break;
@@ -202,7 +234,17 @@ class _ChequesTabState extends State<ChequesTab> {
           padding: EdgeInsets.all(4.0),
           itemCount: snapshot.data.length,
           itemBuilder: (context, index) {
-            return ChequeBorderoCardDetails(snapshot.data[index]);
+            return InkWell(
+              onTap: () {
+                //compensacao
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        CompensacaoChequeScreen(snapshot.data[index])));
+              },
+              child: ChequeBorderoCardDetails(
+                snapshot.data[index],
+              ),
+            );
           },
         );
         break;
@@ -212,5 +254,58 @@ class _ChequesTabState extends State<ChequesTab> {
         break;
     }
     return view;
+  }
+
+  Widget _buildFooter(snapshot) {
+    //verifica se todos os cheque possuem cliente
+    double totalJuros = 0.0;
+    double totalLiquido = 0.0;
+
+    var data = _selectedView != ChequeViewType.CHEQUES_BY_CLIENT
+        ? snapshot.data
+        : _chequeBloc.chequesClient;
+
+    data.forEach((ch) {
+      totalJuros += ch.valorJuros;
+      totalLiquido += ch.valorCheque;
+    });
+
+    return Column(
+      children: [
+        //footer
+        Padding(
+          padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "TOTAL LÍQUIDO:",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
+              ),
+              Text(
+                NumberUtil.toFormatBr(totalLiquido),
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "TOTAL JUROS:",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
+              ),
+              Text(
+                NumberUtil.toFormatBr(totalJuros),
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -26,6 +26,12 @@ class ChequeRepository extends Repository implements IList {
           },
         );
 
+
+  Future<Cheque>getCheque(int id) async {
+    var map = await this.get(id);
+    return Cheque.fromJson(map);
+  }
+
   @override
   Future<List<Cheque>> all() async {
     List<Cheque> cheques = List();

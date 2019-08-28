@@ -118,25 +118,26 @@ class _SignUpScreenState extends State<SignUpScreen>
                             );
                           },
                         ),
-                        StreamBuilder<String>(
-                          stream: _userBloc.outPassword,
-                          builder: (context, snapshot) {
-                            return TextField(
-                              autofocus: true,
-                              maxLength: 4,
-                              obscureText: true,
-                              controller: _passwordController,
-                              onChanged: _userBloc.changePassword,
-                              decoration: InputDecoration(
-                                hintText: "Senha",
-                                errorText:
-                                snapshot.hasError ? snapshot.error : null,
-                              ),
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.done,
-                            );
-                          },
-                        ),
+//                        //Nao tera autenticacao por enquanto
+//                        StreamBuilder<String>(
+//                          stream: _userBloc.outPassword,
+//                          builder: (context, snapshot) {
+//                            return TextField(
+//                              autofocus: true,
+//                              maxLength: 4,
+//                              obscureText: true,
+//                              controller: _passwordController,
+//                              onChanged: _userBloc.changePassword,
+//                              decoration: InputDecoration(
+//                                hintText: "Senha",
+//                                errorText:
+//                                snapshot.hasError ? snapshot.error : null,
+//                              ),
+//                              keyboardType: TextInputType.number,
+//                              textInputAction: TextInputAction.done,
+//                            );
+//                          },
+//                        ),
                       ],
                     ),
                   ),

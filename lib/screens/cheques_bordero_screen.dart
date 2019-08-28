@@ -21,7 +21,8 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
   final ChequeBloc _chequeBloc = ChequeBloc();
   @override
   Widget build(BuildContext context) {
-    //TODO
+
+    //verifica se todos os cheque possuem cliente
     bool blockSave = false;
     double totalJuros = 0.0;
     double totalLiquido = 0.0;
@@ -29,9 +30,9 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
       totalJuros += ch.valorJuros;
       totalLiquido += ch.valorCheque;
 
+      //bloquea o salvar
       if(ch.clientId == null || ch.clientId == 0){
         blockSave = true;
-        print(ch);
       }
     });
 

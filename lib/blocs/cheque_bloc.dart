@@ -28,8 +28,10 @@ class ChequeBloc extends BlocBase {
 
   final ChequeRepository _repository = RepositoryHelper().chequeRepository;
 
-  ChequeBloc(){
-  }
+  List<ChequeClient> chequesClient;
+
+  ChequeBloc();
+
   @override
   void dispose() {
     super.dispose();
@@ -41,10 +43,11 @@ class ChequeBloc extends BlocBase {
   }
 
   void loadCheques() async {
-    await getAllCheques();
-    await getChequesGroupByClient();
+    var cheques = await getAllCheques();
+    chequesClient = await getChequesGroupByClient();
     setOrderCriteria(SortCriteriaCheque.LOW_VALUE);
-    print("load cheques");
+
+    print(cheques);
   }
 
   Future<List<Cheque>> getAllCheques() async {
@@ -65,6 +68,7 @@ class ChequeBloc extends BlocBase {
   Future<List<ChequeClient>> getChequesGroupByClient() async {
     List<ChequeClient> chequesClients = await _repository.groupByClient();
     _chequesClientController.add(chequesClients);
+    this.chequesClient = chequesClients;
     return chequesClients;
   }
 
@@ -177,6 +181,11 @@ class ChequeBloc extends BlocBase {
 
   void repaintView(ChequeViewType view) {
     _chequeViewController.add(true);
+  }
+
+  Future<Cheque>getCheque(int id) async {
+   return _repository.getCheque(id);
+
   }
 
 }

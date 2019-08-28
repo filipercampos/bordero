@@ -33,6 +33,8 @@ class UserBloc extends BlocBase with UserValidator {
   final _userRepository = RepositoryHelper().userRepository;
 
   UserBloc() {
+    //nao tera autenticação por enquanto
+    _passwordController.add("default");
     _loadUser();
   }
 

@@ -4,6 +4,7 @@ import 'package:bordero/models/cheque.dart';
 import 'package:bordero/util/date_util.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:flutter/material.dart';
+
 ///Cheques/Clientes
 class ChequeSimpleCard extends StatelessWidget {
   final Cheque cheque;
@@ -12,85 +13,77 @@ class ChequeSimpleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        //TODO something with cheque
-      },
-      onLongPress: () {
-        //TODO something
-      },
-      child: Card(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildHeader(context),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                //imageCheque
-                _buildAttachment(),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8.0, 8.0, 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        "Cheque: " + NumberUtil.toFormatBr(cheque.valorCheque),
-                        style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.w500),
-                      ),
-                      Divider(
-                        height: 5,
-                        color: Colors.grey,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "Taxa: ${NumberUtil.toFormatBr(cheque.taxaJuros)}%",
-                                style: TextStyle(fontSize: 12.0),
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                "Prazo: ${cheque.prazo}",
-                                style: TextStyle(fontSize: 12.0),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "Juros: " +
-                                    NumberUtil.toFormatBr(cheque.valorJuros),
-                                style: TextStyle(fontSize: 12.0),
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                "Líquido: " +
-                                    NumberUtil.toFormatBr(cheque.valorLiquido),
-                                style: TextStyle(fontSize: 12.0),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
+    return Card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _buildHeader(context),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              //imageCheque
+              _buildAttachment(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8.0, 8.0, 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "Cheque: " + NumberUtil.toFormatBr(cheque.valorCheque),
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.w500),
+                    ),
+                    Divider(
+                      height: 5,
+                      color: Colors.grey,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Taxa: ${NumberUtil.toFormatBr(cheque.taxaJuros)}%",
+                              style: TextStyle(fontSize: 12.0),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Text(
+                              "Prazo: ${cheque.prazo}",
+                              style: TextStyle(fontSize: 12.0),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Juros: " +
+                                  NumberUtil.toFormatBr(cheque.valorJuros),
+                              style: TextStyle(fontSize: 12.0),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Text(
+                              "Líquido: " +
+                                  NumberUtil.toFormatBr(cheque.valorLiquido),
+                              style: TextStyle(fontSize: 12.0),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  ],
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -113,8 +106,9 @@ class ChequeSimpleCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(0.0, 5.0, 8.0, 5.0),
               child: Text(
                 "Bom para: ${DateUtil.toFormat(cheque.dataVencimento)}",
-                style: TextStyle(fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                   color: Theme.of(context).primaryColor,
                 ),
               ),

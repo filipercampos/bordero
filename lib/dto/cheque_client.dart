@@ -1,4 +1,5 @@
 class ChequeClient {
+  int id;
   int clientId;
   String clientName;
   double valorCheque;
@@ -8,7 +9,7 @@ class ChequeClient {
   int prazo;
 
   ChequeClient.fromMap(Map<String, dynamic> json) {
-    clientId = json["clientId"];
+    id = json["id"];
     clientName = json["name"];
     valorCheque = json["valorCheque"];
     taxaJuros = json["taxaJuros"];
@@ -20,6 +21,6 @@ class ChequeClient {
 
   @override
   String toString() {
-    return 'ChequeGroupByClient{clientId: $clientId, clientName: $clientName, valorCheque: $valorCheque, taxaJuros: $taxaJuros, valorJuros: $valorJuros, valorLiquido: $valorLiquido, prazo: $prazo}';
+    return 'ChequeGroupByClient{id: $id, clientId: $clientId, clientName: $clientName, valorCheque: $valorCheque, taxaJuros: $taxaJuros, valorJuros: $valorJuros, valorLiquido: $valorLiquido, prazo: $prazo}';
   }
 }
