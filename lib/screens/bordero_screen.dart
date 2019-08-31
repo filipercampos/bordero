@@ -133,9 +133,6 @@ class _BorderoScreenState extends State<BorderoScreen> {
                                     labelStyle: TextStyle(fontSize: 12),
                                   ),
                                   keyboardType: TextInputType.datetime,
-                                  validator: (text) {
-                                    return null;
-                                  },
                                 ),
                               ),
                             ),
@@ -357,11 +354,11 @@ class _BorderoScreenState extends State<BorderoScreen> {
                     ],
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 20,
                   ),
                   _buildUpload(),
                   SizedBox(
-                    height: 30,
+                    height: 20,
                   ),
                   //Botoes
                   Container(
@@ -441,9 +438,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Flexible(
-                      flex: 2,
-                      child: InkWell(
+                    InkWell(
                         onTap: () {
                           showModalBottomSheet(
                             context: context,
@@ -479,8 +474,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
                             Container(
                               margin: EdgeInsets.only(left: 8,right: 8),
                               alignment: Alignment.topCenter,
-//                              width: 140,
-//                              height: 60,
+                              width: 140,
+                              height: 100,
                               color: Colors.transparent,
                               child: helper.imageFrontPath != null
                                   ? Image.file(
@@ -495,10 +490,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
                           ],
                         ),
                       ),
-                    ),
-                    Flexible(
-                      flex: 2,
-                      child: InkWell(
+
+                   InkWell(
                         onTap: () {
                           showModalBottomSheet(
                             context: context,
@@ -534,8 +527,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
                             Container(
                               margin: EdgeInsets.only(left: 8,right: 8),
                               alignment: Alignment.topCenter,
-//                              width: 140,
-//                              height: 60,
+                              width: 140,
+                              height: 100,
                               color: Colors.transparent,
                               child: helper.imageBackPath != null
                                   ? Image.file(
@@ -550,7 +543,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                           ],
                         ),
                       ),
-                    ),
+
                   ],
                 ),
               ],
