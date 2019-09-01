@@ -474,8 +474,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
                             Container(
                               margin: EdgeInsets.only(left: 8,right: 8),
                               alignment: Alignment.topCenter,
-                              width: 140,
-                              height: 100,
+                              width: 120,
+                              height: 80,
                               color: Colors.transparent,
                               child: helper.imageFrontPath != null
                                   ? Image.file(
@@ -527,8 +527,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
                             Container(
                               margin: EdgeInsets.only(left: 8,right: 8),
                               alignment: Alignment.topCenter,
-                              width: 140,
-                              height: 100,
+                              width: 120,
+                              height: 80,
                               color: Colors.transparent,
                               child: helper.imageBackPath != null
                                   ? Image.file(
@@ -589,7 +589,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
       {@required String text, @required Function() onPressed}) {
     return ButtonTheme(
       height: 50.0,
-      minWidth: 100,
+      minWidth: 90,
       child: RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),

@@ -46,8 +46,6 @@ class ChequeBloc extends BlocBase {
     var cheques = await getAllCheques();
     chequesClient = await getChequesGroupByClient();
     setOrderCriteria(SortCriteriaCheque.LOW_VALUE);
-
-    print(cheques);
   }
 
   Future<List<Cheque>> getAllCheques() async {
@@ -59,9 +57,6 @@ class ChequeBloc extends BlocBase {
   Future<List<Cheque>> getChequesFromDate(initialValue, endValue) async {
     List<Cheque> cheques = await _repository.getChequeFromDate(initialValue, endValue);
     _chequesController.add(cheques);
-    print(cheques);
-    print(initialValue);
-    print(endValue);
     return cheques;
   }
 

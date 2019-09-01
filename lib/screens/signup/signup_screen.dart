@@ -1,7 +1,7 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:bordero/blocs/user_bloc.dart';
 import 'package:bordero/screens/home_screen.dart';
-import 'package:bordero/screens/signup/widgets/stagger_animation.dart';
+import 'package:bordero/screens/signup/stagger_animation_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
@@ -20,7 +20,9 @@ class _SignUpScreenState extends State<SignUpScreen>
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _emailFocus = FocusNode();
+
+  final FocusNode _nameFocus = FocusNode();
+  final FocusNode _emailFocus = FocusNode();
 
   @override
   void initState() {
@@ -28,15 +30,17 @@ class _SignUpScreenState extends State<SignUpScreen>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 3),
+      duration: Duration(milliseconds: 2500),
     );
 
     //listener da animação e login
-    _animationController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _onSuccess();
-      }
-    });
+    _animationController.addStatusListener(
+      (status) {
+        if (status == AnimationStatus.completed) {
+          _onSuccess();
+        }
+      },
+    );
   }
 
   @override
@@ -54,70 +58,89 @@ class _SignUpScreenState extends State<SignUpScreen>
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 100, bottom: 16),
-                    child: Image.asset(
-                      "icons/bordero.png",
-                      width: 150,
-                      height: 150,
-                      fit: BoxFit.contain,
+      body: Container(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            Stack(
+              alignment: Alignment.bottomCenter,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 100, bottom: 16),
+                      child: Image.asset(
+                        "icons/bordero.png",
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                  ),
-                  Text(
-                    "Bem-vindo ao Borderô",
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(16),
-                    child: Column(
-                      children: <Widget>[
-                        StreamBuilder<String>(
-                          stream: _userBloc.outName,
-                          builder: (context, snapshot) {
-                            return TextField(
-                              autofocus: true,
-                              maxLength: 30,
-                              controller: _nameController,
-                              onChanged: _userBloc.changeName,
-                              decoration: InputDecoration(
-                                hintText: "Nome",
-                                errorText:
-                                    snapshot.hasError ? snapshot.error : null,
-                              ),
-                              keyboardType: TextInputType.text,
-                              textInputAction: TextInputAction.done,
-                            );
-                          },
-                        ),
-                        StreamBuilder<String>(
-                          stream: _userBloc.outEmail,
-                          builder: (context, snapshot) {
-                            return TextField(
-                              autofocus: true,
-                              maxLength: 100,
-                              controller: _emailController,
-                              onChanged: _userBloc.changeEmail,
-                              decoration: InputDecoration(
-                                hintText: "Email",
-                                errorText:
-                                snapshot.hasError ? snapshot.error : null,
-                              ),
-                              keyboardType: TextInputType.emailAddress,
-                              textInputAction: TextInputAction.done,
-                            );
-                          },
-                        ),
+                    Container(
+                      //center
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            child: Text(
+                              "Bem-vindo ao Borderô",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          Container(
+                            child: StreamBuilder<String>(
+                              stream: _userBloc.outName,
+                              builder: (context, snapshot) {
+                                return TextField(
+                                  autofocus: true,
+                                  maxLength: 30,
+                                  controller: _nameController,
+                                  onChanged: _userBloc.changeName,
+                                  decoration: InputDecoration(
+                                    hintText: "Nome",
+                                    errorText: snapshot.hasError
+                                        ? snapshot.error
+                                        : null,
+                                  ),
+                                  keyboardType: TextInputType.text,
+                                  focusNode: _nameFocus,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  textInputAction: TextInputAction.next,
+                                  onSubmitted: (term) {
+                                    _nameFocus.unfocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(_emailFocus);
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          Container(
+                            child: StreamBuilder<String>(
+                              stream: _userBloc.outEmail,
+                              builder: (context, snapshot) {
+                                return TextField(
+                                  autofocus: true,
+                                  focusNode: _emailFocus,
+                                  maxLength: 100,
+                                  controller: _emailController,
+                                  onChanged: _userBloc.changeEmail,
+                                  decoration: InputDecoration(
+                                    hintText: "Email",
+                                    errorText: snapshot.hasError
+                                        ? snapshot.error
+                                        : null,
+                                  ),
+                                  keyboardType: TextInputType.emailAddress,
+                                  textInputAction: TextInputAction.done,
+                                );
+                              },
+                            ),
+                          ),
 //                        //Nao tera autenticacao por enquanto
 //                        StreamBuilder<String>(
 //                          stream: _userBloc.outPassword,
@@ -138,34 +161,33 @@ class _SignUpScreenState extends State<SignUpScreen>
 //                            );
 //                          },
 //                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  //Ação de de login animado
-                  Container(
-                    child: StaggerAnimation(
-                      controller: _animationController.view,
-                      scaffoldKey: _scaffoldKey,
+                    Container(
+                      height: 120,
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+
+                //Ação de de login animado
+                StaggerAnimationSignUp(
+                  controller: _animationController.view,
+                  scaffoldKey: _scaffoldKey,
+                ),
+              ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   ///Chama a HomeScreen
-  void _onSuccess() {
+  void _onSuccess() async {
     print("Logon on Borderô ...");
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => HomeScreen(),
     ));
   }
-
 }

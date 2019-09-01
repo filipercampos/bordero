@@ -15,14 +15,21 @@ class UserBloc extends BlocBase with UserValidator {
   final _loadingController = BehaviorSubject<bool>();
 
   Stream<bool> get outRegister => _registerController.stream;
+
   Stream<String> get outName => _nameController.stream.transform(validateName);
-  Stream<String> get outEmail => _emailController.stream.transform(validateEmail);
-  Stream<String> get outPassword => _passwordController.stream.transform(validatePassword);
+
+  Stream<String> get outEmail =>
+      _emailController.stream.transform(validateEmail);
+
+  Stream<String> get outPassword =>
+      _passwordController.stream.transform(validatePassword);
+
   Stream<bool> get outLoading => _loadingController.stream;
 
   Function(String) get changeName => _nameController.sink.add;
 
   Function(String) get changeEmail => _emailController.sink.add;
+
   Function(String) get changePassword => _passwordController.sink.add;
 
   Stream<User> get outUser => _userController.stream;
@@ -36,6 +43,7 @@ class UserBloc extends BlocBase with UserValidator {
     //nao tera autenticação por enquanto
     _passwordController.add("default");
     _loadUser();
+    _registerController.add(false);
   }
 
   Future<void> _loadUser() async {
@@ -87,10 +95,9 @@ class UserBloc extends BlocBase with UserValidator {
     return id > 0;
   }
 
-
-   void updateUser(User user) async {
-     final userMap = user.toJson();
-     userMap.remove("password");
+  void updateUser(User user) async {
+    final userMap = user.toJson();
+    userMap.remove("password");
 
     int id = await _userRepository.update(userMap);
     if (id != 0) {

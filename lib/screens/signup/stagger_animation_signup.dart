@@ -3,7 +3,7 @@ import 'package:bordero/blocs/user_bloc.dart';
 import 'package:flutter/material.dart';
 
 /// Animação da tela de SignUp
-class StaggerAnimation extends StatelessWidget {
+class StaggerAnimationSignUp extends StatelessWidget {
   //scaffold key para snack bar
   final GlobalKey<ScaffoldState> scaffoldKey;
 
@@ -12,7 +12,7 @@ class StaggerAnimation extends StatelessWidget {
   final Animation<double> buttonSqueeze;
   final Animation<double> buttonZoomOut;
 
-  StaggerAnimation({
+  StaggerAnimationSignUp({
     this.controller,
     @required this.scaffoldKey,
   })  
@@ -44,7 +44,6 @@ class StaggerAnimation extends StatelessWidget {
 
   Future<Null> saveData() async {
     final _userBloc = BlocProvider.getBloc<UserBloc>();
-
     if (!await _userBloc.submit()) {
       _onFail();
     }
@@ -65,45 +64,50 @@ class StaggerAnimation extends StatelessWidget {
     //Color.fromRGBO(247, 64, 106, 1.0),
     Color buttonColor = Theme.of(context).primaryColor;
     final _userBloc = BlocProvider.getBloc<UserBloc>();
-    return StreamBuilder<bool>(
-      stream: _userBloc.outSubmitValid,
-      builder: (context, snapshot) {
-        return InkWell(
-          //ação de animar
-          onTap: snapshot.hasData
-              ? () async {
-                  //inicia a animação
-                  controller.forward();
-                  await saveData();
-                }
-              : null,
-          //animação de encolher
-          child: Hero(
-            tag: "fade",
-            child: buttonZoomOut.value == 60
-                //container do botão animado
-                ? Container(
-                    width: buttonSqueeze.value,
-                    height: 60,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: snapshot.hasData ? buttonColor : Colors.grey,
-                        borderRadius: BorderRadius.all(Radius.circular(30.0))),
-                    child: _buildInside(context),
-                  )
-                //container que cresce e cobre a tela toda
-                : Container(
-                    width: buttonZoomOut.value,
-                    height: buttonZoomOut.value,
-                    decoration: BoxDecoration(
-                        color: buttonColor,
-                        shape: buttonZoomOut.value < 500
-                            ? BoxShape.circle
-                            : BoxShape.rectangle),
-                  ),
-          ),
-        );
-      },
+    return   Padding(
+      padding: EdgeInsets.only(bottom: 20.0),
+      child: StreamBuilder<bool>(
+          stream: _userBloc.outSubmitValid,
+          builder: (context, snapshot) {
+            return InkWell(
+              //ação de animar
+              onTap: snapshot.hasData
+                  ? () async {
+                      //inicia a animação
+                      controller.forward();
+                      await saveData();
+                    }
+                  : null,
+              //animação de encolher
+              child: Hero(
+                tag: "fade",
+                child: buttonZoomOut.value == 60
+                    //container padraõ do botão
+                    ? Container(
+                        margin: EdgeInsets.only(left: 5,right: 5),
+                        width: buttonSqueeze.value,
+                        height: 60,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: snapshot.hasData ? buttonColor : Colors.grey,
+                            borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                        child: _buildInside(context),
+                      )
+                    //container que cresce e cobre a tela toda
+                    : Container(
+                        width: buttonZoomOut.value,
+                        height: buttonZoomOut.value,
+                        decoration: BoxDecoration(
+                            color: buttonColor,
+                            shape: buttonZoomOut.value < 500
+                                ? BoxShape.circle
+                                : BoxShape.rectangle),
+                      ),
+              ),
+            );
+          },
+
+      ),
     );
   }
 

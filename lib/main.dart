@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           return StreamBuilder<bool>(
             stream: _userBloc.outLoading,
+            initialData: false,
             builder: (context, snapshotLoading) {
               if (!snapshot.hasData || snapshotLoading.data) {
                 return Container(

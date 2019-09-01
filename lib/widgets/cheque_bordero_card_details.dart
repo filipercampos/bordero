@@ -137,7 +137,7 @@ class _ChequeBorderoCardDetailsState extends State<ChequeBorderoCardDetails> {
               child: Text(
                 "Emissão: ${DateUtil.toFormat(cheque.dataEmissao)}",
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color: Theme.of(context).primaryColor,
                 ),
