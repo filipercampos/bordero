@@ -19,7 +19,6 @@ class ClientsTab extends StatefulWidget {
 class _ClientsTabState extends State<ClientsTab> {
   final helper = RepositoryHelper().clientRepository;
   final _clientBloc = ClientBloc();
-  final clients = List<Client>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _searchQuery = TextEditingController();
   bool _isSearch = false;
@@ -124,6 +123,8 @@ class _ClientsTabState extends State<ClientsTab> {
             if (_searchQuery == null || _searchQuery.text.isEmpty) {
               Navigator.pop(context);
               return;
+            }else{
+              _searchQuery.text = "";
             }
           },
         ),
@@ -142,7 +143,7 @@ class _ClientsTabState extends State<ClientsTab> {
           ModalRoute.of(context).addLocalHistoryEntry(
             LocalHistoryEntry(
               onRemove: () {
-                print("Close search bar");
+                //print("Close search bar");
                 _searchQuery.clear();
                 _clientBloc.inSearch.add("");
                 setState(() {
