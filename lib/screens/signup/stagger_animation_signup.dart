@@ -80,6 +80,9 @@ class StaggerAnimationSignUp extends StatelessWidget {
                     //realiza o login
                     if (await userBloc.submit()) {
                       controller.forward();
+                    }else{
+                      controller.stop();
+                      _onFail();
                     }
                   }
                 : null,
