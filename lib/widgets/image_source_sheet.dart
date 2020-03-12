@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// Selecionar e recorta uma imagem da camera ou da galeria
 class ImageSourceSheet extends StatelessWidget {
@@ -19,17 +20,29 @@ class ImageSourceSheet extends StatelessWidget {
 
   void imageSelected(File image) async {
     if (image != null) {
+      await image.rename(image.path.replaceAll("cache", "imagens_bordero"));
+      print(image.path);
       File croppedImage = await ImageCropper.cropImage(
-        sourcePath: image.path,
-        aspectRatio: CropAspectRatio(
-          ratioX: 1.0,
-          ratioY: 1.0,
-        ),
-      );
+          sourcePath: image.path,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio16x9,
+          ]);
+      await _localPath();
       if (croppedImage != null) {
         onImageSelected(croppedImage);
       }
     }
+  }
+
+  Future<String> _localPath() async {
+    // final directory = await getApplicationDocumentsDirectory();
+    //  final sdcard = await getExternalStorageDirectory();
+    var directory = await getApplicationSupportDirectory();
+    // For your reference print the AppDoc directory
+    print(directory.path);
+    return directory.path;
   }
 
   @override

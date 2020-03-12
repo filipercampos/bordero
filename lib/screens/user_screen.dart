@@ -20,8 +20,7 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _phoneController =
-      MaskedTextController(mask: '(00) 00000-0000');
+  final _phoneController = MaskedTextController(mask: '(00) 00000-0000');
 
   final _nameFocus = FocusNode();
 
@@ -77,31 +76,21 @@ class _UserScreenState extends State<UserScreen> {
           child: Column(
             children: <Widget>[
               GestureDetector(
-                child: Container(
-                  width: 140.0,
-                  height: 140.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: _editedUser.profileUrl != null
-                            ? FileImage(File(_editedUser.profileUrl))
-                            : AssetImage("images/avatar.png"),
-                        fit: BoxFit.cover),
-                  ),
-                ),
+                child: _buildAvatar(),
                 onTap: () {
                   showModalBottomSheet(
-                      context: context,
-                      builder: (context) => ImageSourceSheet(
-                            onImageSelected: (image) {
-                              if (image != null) {
-                                setState(() {
-                                  _editedUser.profileUrl = image.path;
-                                });
-                                Navigator.of(context).pop();
-                              }
-                            },
-                          ),);
+                    context: context,
+                    builder: (context) => ImageSourceSheet(
+                      onImageSelected: (image) {
+                        if (image != null) {
+                          setState(() {
+                            _editedUser.profileUrl = image.path;
+                          });
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
+                  );
                 },
               ),
               TextField(
@@ -198,6 +187,32 @@ class _UserScreenState extends State<UserScreen> {
       return Future.value(false);
     } else {
       return Future.value(true);
+    }
+  }
+
+  _buildAvatar() {
+    if (_editedUser.profileUrl != null) {
+      return Container(
+        width: 140.0,
+        height: 140.0,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(
+            image: FileImage(File(_editedUser.profileUrl)),
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        width: 140.0,
+        height: 140.0,
+        child: Icon(
+          Icons.face,
+          size: 72,
+          color: Theme.of(context).primaryColor,
+        ),
+      );
     }
   }
 }

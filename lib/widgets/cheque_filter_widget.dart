@@ -120,7 +120,6 @@ class _ChequeFilterWidgetState extends State<ChequeFilterWidget> {
                                   DateUtil.toDate(_dataEmissaoController1.text);
                               var endValue =
                                   DateUtil.toDate(_dataEmissaoController2.text);
-                              print("Filter");
                               widget._chequeBloc.getChequesFromDate(
                                 initialValue,
                                 endValue,

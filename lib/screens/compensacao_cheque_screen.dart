@@ -5,6 +5,7 @@ import 'package:bordero/repository/cheque_repository.dart';
 import 'package:bordero/repository/repository_helper.dart';
 import 'package:bordero/util/date_util.dart';
 import 'package:bordero/util/number_util.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 
 class CompensacaoChequeScreen extends StatefulWidget {
@@ -22,125 +23,151 @@ class _CompensacaoChequeScreenState extends State<CompensacaoChequeScreen> {
   final ChequeRepository _repository = RepositoryHelper().chequeRepository;
   final TextEditingController _dataPagamentoController =
       TextEditingController();
+  final List<dynamic> imagens = List<dynamic>();
+  Cheque cheque;
+
+  @override
+  void initState() {
+    super.initState();
+    this.cheque = Cheque.clone(widget.cheque);
+    if (this.cheque.imageFrontPath != null) {
+      this.imagens.add(this.cheque.imageFrontPath);
+    }
+    if (this.cheque.imageBackPath != null) {
+      this.imagens.add(this.cheque.imageBackPath);
+    }
+    if (this.cheque.dataPagamento != null) {
+      _dataPagamentoController.text =
+          DateUtil.toFormat(this.cheque.dataPagamento);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
         title: Text("Compensação"),
         centerTitle: true,
       ),
-      body: Column(
+      body: ListView(
         children: <Widget>[
           Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _buildHeader(context),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    //imageCheque
-                    _buildAttachment(),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "Cheque: " +
-                                NumberUtil.toFormatBr(
-                                    widget.cheque.valorCheque),
-                            style: TextStyle(
-                                fontSize: 16.0, fontWeight: FontWeight.w500),
-                          ),
-                          Divider(
-                            height: 5,
-                            color: Colors.grey,
-                          ),
-                          Row(
+            child: Container(
+              margin: EdgeInsets.fromLTRB(12.0, 0.0, 8.0, 0.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _buildHeader(context),
+                  Divider(
+                    height: 5,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.bottomLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    "Taxa: ${NumberUtil.toFormatBr(widget.cheque.taxaJuros)}%",
-                                    style: TextStyle(fontSize: 12.0),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Text(
-                                    "Prazo: ${widget.cheque.prazo}",
-                                    style: TextStyle(fontSize: 12.0),
-                                  ),
-                                ],
+                              _buildText("Vencimento: " +
+                                  DateUtil.toFormat(
+                                      this.cheque.dataVencimento)),
+                              _buildText(
+                                  "Taxa: ${NumberUtil.toFormatBr(this.cheque.taxaJuros)}%"),
+                              _buildText("Prazo: ${this.cheque.prazo}"),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.bottomRight,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              _buildText(
+                                "Emissão: ${DateUtil.toFormat(this.cheque.dataEmissao)}",
                               ),
-                              SizedBox(
-                                width: 5,
+                              _buildText(
+                                "Juros: " +
+                                    NumberUtil.toFormatBr(
+                                        this.cheque.valorJuros),
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    "Juros: " +
-                                        NumberUtil.toFormatBr(
-                                            widget.cheque.valorJuros),
-                                    style: TextStyle(fontSize: 12.0),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Text(
-                                    "Líquido: " +
-                                        NumberUtil.toFormatBr(
-                                            widget.cheque.valorLiquido),
-                                    style: TextStyle(fontSize: 12.0),
-                                  ),
-                                ],
+                              _buildText(
+                                "Líquido: " +
+                                    NumberUtil.toFormatBr(
+                                        this.cheque.valorLiquido),
                               ),
                             ],
-                          )
-                        ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 8.0, right: 8.0),
-                  alignment: Alignment.center,
-                  child: InkWell(
-                    onTap: _selectDate,
-                    child: IgnorePointer(
-                      child: TextField(
-                        controller: _dataPagamentoController,
-                        decoration: InputDecoration(
-                          icon: Icon(
-                            Icons.calendar_today,
+                    ],
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                    alignment: Alignment.center,
+                    child: InkWell(
+                      onTap: widget.cheque.dataEmissao == null
+                          ? _selectDate
+                          : null,
+                      child: IgnorePointer(
+                        child: TextField(
+                          controller: _dataPagamentoController,
+                          decoration: InputDecoration(
+                            icon: Icon(
+                              Icons.calendar_today,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            border: InputBorder.none,
+                            hintText: "Data Compensação",
+                            labelText: widget.cheque.dataEmissao == null 
+                            ? "Data Compensação"
+                            : "Cheque Compensado"
+                            ,
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                            contentPadding: EdgeInsets.only(
+                                top: 20, right: 20, bottom: 20, left: 5),
+                          ),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
                             color: Theme.of(context).primaryColor,
                           ),
-                          border: InputBorder.none,
-                          hintText: "Data Compensação",
-                          labelText: "Data Compensação",
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                          ),
-                          contentPadding: EdgeInsets.only(
-                              top: 20, right: 20, bottom: 20, left: 5),
-                        ),
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
+            ),
+          ),
+          Container(
+            height: 260.0,
+            width: 260.0,
+            padding: EdgeInsets.all(16.0),
+            child: AspectRatio(
+              aspectRatio: 1.0,
+              child: Carousel(
+                images: imagens.map((url) {
+                  return AssetImage(url);
+                }).toList(),
+                dotSize: 4.0,
+                //tamanho do ponto da imagem selecionada
+                dotSpacing: 15.0,
+                //espacamento entre os pontos
+                dotBgColor: Colors.transparent,
+                dotColor: Colors.white,
+                autoplay: false, //desativa a rolagem de imagens auto
+              ),
             ),
           ),
           Container(
@@ -159,62 +186,43 @@ class _CompensacaoChequeScreenState extends State<CompensacaoChequeScreen> {
                 ),
                 textColor: Colors.white,
                 color: Theme.of(context).primaryColor,
-                onPressed: _dataPagamentoController.text.isNotEmpty
+                onPressed: _dataPagamentoController.text.isNotEmpty &&
+                        this.cheque.dataPagamento == null
                     ? _compensarCheque
                     : null,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.fromLTRB(8.0, 5.0, 0.0, 5.0),
-              child: Text(
-                "Cliente: ${widget.cheque.client.name}",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              ),
-            ),
-          ],
-        ),
-        Divider(
-          height: 1,
-        ),
-      ],
+  Widget _buildText(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4.0, top: 4.0),
+      child: Text(
+        title,
+        style: TextStyle(fontSize: 14.0),
+      ),
     );
   }
 
-  Widget _buildAttachment() {
-    bool attachment = widget.cheque.imageFrontPath != null;
-    DecorationImage decorationImage;
-    if (attachment) {
-      decorationImage = DecorationImage(
-          image: FileImage(
-            File(widget.cheque.imageFrontPath),
-          ),
-          fit: BoxFit.fill);
-    } else {
-      decorationImage = DecorationImage(
-        image: AssetImage("images/check.png"),
-        fit: BoxFit.fill,
-      );
-    }
-    return Container(
-      margin: EdgeInsets.all(8.0),
-      width: 120.0,
-      height: 60.0,
-      padding: EdgeInsets.zero,
-      decoration:
-          BoxDecoration(shape: BoxShape.rectangle, image: decorationImage),
+  Widget _buildHeader(context) {
+    return ListTile(
+      dense: true,
+      contentPadding: EdgeInsets.zero,
+      leading: Container(
+        child: Text(
+          "Cliente: ${this.cheque.client.name}",
+          overflow: TextOverflow.clip,
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+      ),
+      trailing: Text(
+        NumberUtil.toFormatBr(this.cheque.valorCheque),
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      ),
     );
   }
 
@@ -229,10 +237,11 @@ class _CompensacaoChequeScreenState extends State<CompensacaoChequeScreen> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
     );
+    this.cheque.dataPagamento = DateUtil.toDate(_dataPagamentoController.text);
 
     Map<String, dynamic> map = {
-      "id": widget.cheque.id,
-      "dataPagamento": widget.cheque.dataPagamento.millisecondsSinceEpoch
+      "id": this.cheque.id,
+      "dataPagamento": this.cheque.dataPagamento.millisecondsSinceEpoch
     };
     bool success = await _repository.update(map) > 0;
 
@@ -271,26 +280,50 @@ class _CompensacaoChequeScreenState extends State<CompensacaoChequeScreen> {
     if (picked != null) {
       setState(
         () {
-          bool invalido = picked.compareTo(widget.cheque.dataVencimento) <
-              0;
+          bool invalido = picked.compareTo(this.cheque.dataEmissao) < 0;
           if (invalido) {
             _dataPagamentoController.text = null;
             scaffoldKey.currentState.showSnackBar(
               SnackBar(
                 content: Text(
-                  "Data de compensação não pode ser inferior a data de vencimento",
+                  "Data de compensação não pode ser inferior a data de emissão",
                   style: TextStyle(color: Colors.white),
                 ),
                 backgroundColor: Colors.red,
               ),
             );
-          }else{
+          } else {
             //seta a data no componente
             _dataPagamentoController.text = DateUtil.toFormat(picked);
-            widget.cheque.dataPagamento = picked;
           }
         },
       );
     }
   }
+
+  // Widget _buildAttachment() {
+  //   bool attachment = this.cheque.imageFrontPath != null;
+  //   DecorationImage decorationImage;
+  //   if (attachment) {
+  //     decorationImage = DecorationImage(
+  //         image: FileImage(
+  //           File(this.cheque.imageFrontPath),
+  //         ),
+  //         fit: BoxFit.fill);
+  //   } else {
+  //     decorationImage = DecorationImage(
+  //       image: AssetImage("assets/images/check.png"),
+  //       fit: BoxFit.fill,
+  //     );
+  //   }
+  //   return Container(
+  //     margin: EdgeInsets.all(8.0),
+  //     width: 120.0,
+  //     height: 60.0,
+  //     padding: EdgeInsets.zero,
+  //     decoration:
+  //         BoxDecoration(shape: BoxShape.rectangle, image: decorationImage),
+  //   );
+  // }
+
 }

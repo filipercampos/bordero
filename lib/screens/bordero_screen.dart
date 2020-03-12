@@ -11,7 +11,7 @@ import 'package:bordero/widgets/image_source_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart'; 
 
 class BorderoScreen extends StatefulWidget {
   final PageController _controller;
@@ -83,14 +83,16 @@ class _BorderoScreenState extends State<BorderoScreen> {
         _valorJurosController,
         _valorLiquidoController,
         _nominalController);
+
+    this._dataEmissaoController.text =
+        DateUtil.toFormat(DateUtil.firstDateFromMonth());
+  
   }
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       key: _scaffoldKey,
-      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text("Borderô"),
         centerTitle: true,
@@ -197,8 +199,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
                               labelText: "Valor Cheque",
                               labelStyle: TextStyle(fontSize: 12),
                             ),
-                            keyboardType: TextInputType.numberWithOptions(
-                                decimal: true),
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
                             onChanged: (text) {
                               Cheque cheque = helper.buildCheque();
                               if (helper.validator(cheque)) {
@@ -222,8 +224,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
                               labelText: "% Taxa de Juros",
                               labelStyle: TextStyle(fontSize: 12),
                             ),
-                            keyboardType: TextInputType.numberWithOptions(
-                                decimal: true),
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
                             onChanged: (text) {
                               Cheque cheque = helper.buildCheque();
                               if (helper.validator(cheque)) {
@@ -276,8 +278,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
                               labelText: "Valor Juros",
                               labelStyle: TextStyle(fontSize: 12),
                             ),
-                            keyboardType: TextInputType.numberWithOptions(
-                                decimal: true),
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
                           ),
                         ),
                       ],
@@ -327,8 +329,10 @@ class _BorderoScreenState extends State<BorderoScreen> {
                           labelStyle: TextStyle(fontSize: 12),
                         ),
                       ),
-                      noItemsFoundBuilder: (context){
-                        return Container(margin: EdgeInsets.all(5.0), child:Text("Nenhum cliente encontrado"));
+                      noItemsFoundBuilder: (context) {
+                        return Container(
+                            margin: EdgeInsets.all(5.0),
+                            child: Text("Nenhum cliente encontrado"));
                       },
                       suggestionsCallback: (search) async {
                         return await helper.getSuggestions(search);
@@ -439,111 +443,109 @@ class _BorderoScreenState extends State<BorderoScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) => ImageSourceSheet(
-                              iconColor: Theme.of(context).primaryColor,
-                              onImageSelected: (image) {
-                                if (image != null) {
-                                  setState(() {
-                                    //se tinha uma imagem
-                                    if (helper.imageFrontPath != null) {
-                                      //apague
-                                      File(helper.imageFrontPath).delete();
-                                    }
-                                    helper.imageFrontPath = image.path;
-                                  });
-                                  Navigator.of(context).pop();
-                                }
-                              },
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) => ImageSourceSheet(
+                            iconColor: Theme.of(context).primaryColor,
+                            onImageSelected: (image) {
+                              if (image != null) {
+                                setState(() {
+                                  //se tinha uma imagem
+                                  if (helper.imageFrontPath != null) {
+                                    //apague
+                                    File(helper.imageFrontPath).delete();
+                                  }
+                                  helper.imageFrontPath = image.path;
+                                });
+                                Navigator.of(context).pop();
+                              }
+                            },
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            "Foto frente cheque",
+                            style: TextStyle(
+                              color: Colors.grey[500],
                             ),
-                          );
-                        },
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              "Foto frente cheque",
-                              style: TextStyle(
-                                color: Colors.grey[500],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 8,right: 8),
-                              alignment: Alignment.topCenter,
-                              width: 120,
-                              height: 80,
-                              color: Colors.transparent,
-                              child: helper.imageFrontPath != null
-                                  ? Image.file(
-                                      File(helper.imageFrontPath),
-                                      fit: BoxFit.fill,
-                                    )
-                                  : Image.asset(
-                                      "images/check-teal.png",
-                                      fit: BoxFit.fill,
-                                    ),
-                            ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 8, right: 8),
+                            alignment: Alignment.topCenter,
+                            width: 120,
+                            height: 80,
+                            color: Colors.transparent,
+                            child: helper.imageFrontPath != null
+                                ? Image.file(
+                                    File(helper.imageFrontPath),
+                                    fit: BoxFit.fill,
+                                  )
+                                : Image.asset(
+                                    "assets/images/check-teal.png",
+                                    fit: BoxFit.fill,
+                                  ),
+                          ),
+                        ],
                       ),
-
-                   InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) => ImageSourceSheet(
-                              iconColor: Theme.of(context).primaryColor,
-                              onImageSelected: (image) {
-                                if (image != null) {
-                                  setState(() {
-                                    //se tinha uma imagem
-                                    if (helper.imageBackPath != null) {
-                                      //apague
-                                      File(helper.imageBackPath).delete();
-                                    }
-                                    helper.imageBackPath = image.path;
-                                  });
-                                  Navigator.of(context).pop();
-                                }
-                              },
+                    ),
+                    InkWell(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) => ImageSourceSheet(
+                            iconColor: Theme.of(context).primaryColor,
+                            onImageSelected: (image) {
+                              if (image != null) {
+                                setState(() {
+                                  //se tinha uma imagem
+                                  if (helper.imageBackPath != null) {
+                                    //apague
+                                    File(helper.imageBackPath).delete();
+                                  }
+                                  helper.imageBackPath = image.path;
+                                });
+                                Navigator.of(context).pop();
+                              }
+                            },
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            "Foto verso cheque",
+                            style: TextStyle(
+                              color: Colors.grey[500],
                             ),
-                          );
-                        },
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              "Foto verso cheque",
-                              style: TextStyle(
-                                color: Colors.grey[500],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 8,right: 8),
-                              alignment: Alignment.topCenter,
-                              width: 120,
-                              height: 80,
-                              color: Colors.transparent,
-                              child: helper.imageBackPath != null
-                                  ? Image.file(
-                                      File(helper.imageBackPath),
-                                      fit: BoxFit.fill,
-                                    )
-                                  : Image.asset(
-                                      "images/check-teal-verso.png",
-                                      fit: BoxFit.fill,
-                                    ),
-                            ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 8, right: 8),
+                            alignment: Alignment.topCenter,
+                            width: 120,
+                            height: 80,
+                            color: Colors.transparent,
+                            child: helper.imageBackPath != null
+                                ? Image.file(
+                                    File(helper.imageBackPath),
+                                    fit: BoxFit.fill,
+                                  )
+                                : Image.asset(
+                                    "assets/images/check-teal-verso.png",
+                                    fit: BoxFit.fill,
+                                  ),
+                          ),
+                        ],
                       ),
-
+                    ),
                   ],
                 ),
               ],
@@ -556,7 +558,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
 
   Widget _buildFooter() {
     return Container(
-      color: Colors.transparent,margin: EdgeInsets.only(top: 12.0),
+      color: Colors.transparent,
+      margin: EdgeInsets.only(top: 12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -623,4 +626,5 @@ class _BorderoScreenState extends State<BorderoScreen> {
       });
     }
   }
+
 }

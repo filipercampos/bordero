@@ -61,6 +61,7 @@ class Cheque {
       this.client.name = json["clientName"];
     }
     setPrazoTotal(prazo, compensacao);
+
   }
 
   Map<String, dynamic> toJson() {
@@ -97,7 +98,6 @@ class Cheque {
     this.prazo = prazo;
     this.dataEmissao = dataEmissao;
     this.dataVencimento = dataVencimento;
-    this.dataPagamento = dataPagamento;
     this.compensacao = 0;
 
     //vou persistir no banco da forma que ela entrar
@@ -178,5 +178,24 @@ class Cheque {
         'imageBackPath: $imageBackPath, '
         'clientId: $clientId,'
         'client: ${client != null ? client.name : null}';
+  }
+
+  Cheque.clone(Cheque ch) {
+    this.id = ch.id;
+    this.dataEmissao = ch.dataEmissao;
+    this.dataVencimento = ch.dataVencimento;
+    this.dataPagamento = ch.dataPagamento;
+    this.valorCheque = ch.valorCheque;
+    this.taxaJuros = ch.taxaJuros;
+    this.valorJuros = ch.valorJuros;
+    this.valorLiquido = ch.valorLiquido;
+    this.prazo = ch.prazo;
+    this.compensacao = ch.compensacao;
+    this.numeroCheque = ch.numeroCheque;
+    this.clientId = ch.clientId;
+    this.imageFrontPath = ch.imageFrontPath;
+    this.imageBackPath = ch.imageBackPath;
+    this.client = ch.client;
+    this.clientId = ch.clientId;
   }
 }

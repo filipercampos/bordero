@@ -36,10 +36,11 @@ dependencies:
   smooth_star_rating: ^1.0.3 #A Star rating with touch and swipe rate enabled
   crypto: ^2.1.1+1 #hash
   flutter_typeahead: ^1.6.1 #autocomplete
-  path_provider: ^1.2.0
+  path_provider: ^1.6.5
   flutter_speed_dial: ^1.2.1 #botões animados flutuantes
   shimmer: ^1.0.0 #efeito de carregamento
   shared_preferences: ^0.5.3+4 #salvar preferencias
+  carousel_pro: ^0.0.13 #arrastar imagens pro lado
 
 dev_dependencies:
   flutter_test:
@@ -61,11 +62,11 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - images/avatar.png
-    - images/check.png
-    - images/check-teal.png
-    - images/check-teal-verso.png
-    - icons/bordero.png
+    - assets/images/avatar.png
+    - assets/images/check.png
+    - assets/images/check-teal.png
+    - assets/images/check-teal-verso.png
+    - assets/icons/bordero.png
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 

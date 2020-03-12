@@ -17,7 +17,7 @@ class ChequesBorderoScreen extends StatefulWidget {
 }
 
 class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final ChequeBloc _chequeBloc = ChequeBloc();
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
     });
 
     return Scaffold(
-      key: scaffoldKey,
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Cheques Calculados"),
         centerTitle: true,
@@ -100,7 +100,7 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
                               widget.cheques.removeAt(index);
                             });
                             // Then show a snackbar.
-                            Scaffold.of(context).showSnackBar(SnackBar(
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
                                 content: Text(
                                     "Cheque ${item.numeroCheque} removido")));
                           },
@@ -169,7 +169,7 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
   }
 
   Future<bool> _saveChequesNBlockScreen() async {
-    scaffoldKey.currentState.showSnackBar(
+    _scaffoldKey.currentState.showSnackBar(
       SnackBar(
         content: Text(
           "Salvando cheques ...",
@@ -185,9 +185,9 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
     //garante a snack bar
     await Future.delayed(Duration(seconds: 1));
 
-    scaffoldKey.currentState.removeCurrentSnackBar();
+    _scaffoldKey.currentState.removeCurrentSnackBar();
 
-    scaffoldKey.currentState.showSnackBar(
+    _scaffoldKey.currentState.showSnackBar(
       SnackBar(
         content: Text(
           success ? "Cheque(s) salvos com sucesso" : "Falha ao salvar cheque(s)!",

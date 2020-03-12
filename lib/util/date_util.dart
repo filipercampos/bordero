@@ -57,12 +57,12 @@ class DateUtil {
   /// Recupera a data atual no último dia do mês
   static lastDateFromMonth() {
     var now = DateTime.now();
-    return DateTime(now.year, now.month, now.day);
+    return DateTime(now.year, now.month + 1, 0);
   }
 
   ///Converte o int em DateTime
   static DateTime toDateFromMillisecondsSinceEpoch(int millisecondsSinceEpoch) {
-    if(millisecondsSinceEpoch == null){
+    if (millisecondsSinceEpoch == null) {
       return null;
     }
     return DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);

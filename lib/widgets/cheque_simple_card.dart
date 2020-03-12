@@ -105,7 +105,7 @@ class ChequeSimpleCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 5.0, 8.0, 5.0),
               child: Text(
-                "Bom para: ${DateUtil.toFormat(cheque.dataVencimento)}",
+                "BOM P/: ${DateUtil.toFormat(cheque.dataVencimento)}",
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
@@ -134,7 +134,7 @@ class ChequeSimpleCard extends StatelessWidget {
       );
     } else {
       decorationImage = DecorationImage(
-        image: AssetImage("images/check.png"),
+        image: AssetImage("assets/images/check.png"),
         fit: BoxFit.fill,
       );
     }

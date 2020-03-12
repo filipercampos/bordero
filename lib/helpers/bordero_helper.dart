@@ -84,8 +84,7 @@ class BorderoHelper {
       this.numeroChequeController.text =
           "0000${(this.cheques.length + 1).toString()}";
 
-      //notifica que a tela deve ser redesenhada
-//      setState(() {});
+      scaffoldKey.currentState.removeCurrentSnackBar();
 
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
@@ -360,8 +359,8 @@ class BorderoHelper {
 
     bool maior = dataEmissao.compareTo(dataVencimento) > 0;
     bool inferior = dataVencimento.compareTo(dataEmissao) < 0;
-    //a data de pagamento acompanha a data de vencimento
-    dataPagamentoController.text = dataVencimentoController.text;
+    //a data de pagamento acompanha a data de vencimento (nao mais)
+    // dataPagamentoController.text = dataVencimentoController.text;
 
     //se for diferente de null nao sao iguais e se for true a data de vencimento eh menor
     if (inferior) {

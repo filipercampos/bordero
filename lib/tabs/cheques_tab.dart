@@ -45,99 +45,97 @@ class _ChequesTabState extends State<ChequesTab> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        floatingActionButton: _buildFloatingButton(),
-        appBar: AppBar(
-          title: Text("Cheques"),
-          centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.filter_list),
-              onPressed: () {
-                setState(() {
-                  _showFilter = _showFilter == true ? false : true;
-                });
-              },
-            ),
-            PopupMenuButton<ChequeViewType>(
-              itemBuilder: (context) => <PopupMenuEntry<ChequeViewType>>[
-                const PopupMenuItem(
-                  child: ListTile(
-                    title: Text(
-                      "Cheques/Cliente",
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    leading: Icon(Icons.view_list, color: Colors.teal),
+    return Scaffold(
+      floatingActionButton: _buildFloatingButton(),
+      appBar: AppBar(
+        title: Text("Cheques"),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: () {
+              setState(() {
+                _showFilter = _showFilter == true ? false : true;
+              });
+            },
+          ),
+          PopupMenuButton<ChequeViewType>(
+            itemBuilder: (context) => <PopupMenuEntry<ChequeViewType>>[
+              const PopupMenuItem(
+                child: ListTile(
+                  title: Text(
+                    "Cheques/Cliente",
+                    style: TextStyle(fontSize: 12),
                   ),
-                  value: ChequeViewType.CHEQUES,
+                  leading: Icon(Icons.view_list, color: Colors.teal),
                 ),
-                const PopupMenuItem(
-                  child: ListTile(
-                    title: Text(
-                      "Cheques",
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    leading: Icon(Icons.view_quilt, color: Colors.teal),
+                value: ChequeViewType.CHEQUES,
+              ),
+              const PopupMenuItem(
+                child: ListTile(
+                  title: Text(
+                    "Cheques",
+                    style: TextStyle(fontSize: 12),
                   ),
-                  value: ChequeViewType.CHEQUES_DETAILS,
+                  leading: Icon(Icons.view_quilt, color: Colors.teal),
                 ),
-                const PopupMenuItem(
-                  child: ListTile(
-                    title: Text(
-                      "Agrupados",
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    leading: Icon(Icons.group, color: Colors.teal),
+                value: ChequeViewType.CHEQUES_DETAILS,
+              ),
+              const PopupMenuItem(
+                child: ListTile(
+                  title: Text(
+                    "Agrupados",
+                    style: TextStyle(fontSize: 12),
                   ),
-                  value: ChequeViewType.CHEQUES_BY_CLIENT,
+                  leading: Icon(Icons.group, color: Colors.teal),
                 ),
-              ],
-              onSelected: _onSelectedView,
-            ),
-          ],
-        ),
-        drawer: CustomDrawer(widget._controller),
-        body: Container(
-          child: Stack(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  _buildFilter(),
-                  Expanded(
-                    child: StreamBuilder<List<Cheque>>(
-                        stream: _chequeBloc.outCheques,
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return _buildShimmerEffect();
-                          } else if (snapshot.data.length == 0) {
-                            return Center(
-                                child: Text(
-                              "Nenhum resultado",
-                              style: TextStyle(color: Colors.grey),
-                            ));
-                          }
-                          return StreamBuilder<bool>(
-                              stream: _chequeBloc.outChequeViewType,
-                              initialData: false,
-                              builder: (context, snapshotView) {
-                                return _buildViews(snapshot);
-                              });
-                        }),
-                  ),
-                  StreamBuilder<List<Cheque>>(
-                    stream: _chequeBloc.outCheques,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return _buildFooter(snapshot);
-                      }
-                      return Container();
-                    },
-                  ),
-                ],
+                value: ChequeViewType.CHEQUES_BY_CLIENT,
               ),
             ],
+            onSelected: _onSelectedView,
           ),
+        ],
+      ),
+      drawer: CustomDrawer(widget._controller),
+      body: Container(
+        child: Stack(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                _buildFilter(),
+                Expanded(
+                  child: StreamBuilder<List<Cheque>>(
+                      stream: _chequeBloc.outCheques,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return _buildShimmerEffect();
+                        } else if (snapshot.data.length == 0) {
+                          return Center(
+                              child: Text(
+                            "Nenhum resultado",
+                            style: TextStyle(color: Colors.grey),
+                          ));
+                        }
+                        return StreamBuilder<bool>(
+                            stream: _chequeBloc.outChequeViewType,
+                            initialData: false,
+                            builder: (context, snapshotView) {
+                              return _buildViews(snapshot);
+                            });
+                      }),
+                ),
+                StreamBuilder<List<Cheque>>(
+                  stream: _chequeBloc.outCheques,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return _buildFooter(snapshot);
+                    }
+                    return Container();
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

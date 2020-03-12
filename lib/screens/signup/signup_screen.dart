@@ -1,9 +1,10 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:bordero/blocs/user_bloc.dart';
+import 'package:bordero/enums/app_state.dart';
 import 'package:bordero/screens/home_screen.dart';
 import 'package:bordero/screens/signup/stagger_animation_signup.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart' show timeDilation;
+// import 'package:flutter/scheduler.dart' show timeDilation;
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -53,7 +54,6 @@ class _SignUpScreenState extends State<SignUpScreen>
   @override
   Widget build(BuildContext context) {
     final _userBloc = BlocProvider.getBloc<UserBloc>();
-    timeDilation = 1;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -62,85 +62,88 @@ class _SignUpScreenState extends State<SignUpScreen>
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            Stack(
-              alignment: Alignment.bottomCenter,
-              children: <Widget>[
-                Column(
+            StreamBuilder<AppState>(
+          stream: _userBloc.outLoginState,
+          builder: (context, snapshot) {
+                return Stack(
+                  alignment: Alignment.bottomCenter,
                   children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 100, bottom: 16),
-                      child: Image.asset(
-                        "icons/bordero.png",
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    Container(
-                      //center
-                      margin: EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            child: Text(
-                              "Bem-vindo ao Borderô",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w500),
-                            ),
+                    Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 100, bottom: 16),
+                          child: Image.asset(
+                            "assets/icons/bordero.png",
+                            width: 150,
+                            height: 150,
+                            fit: BoxFit.contain,
                           ),
-                          Container(
-                            child: StreamBuilder<String>(
-                              stream: _userBloc.outName,
-                              builder: (context, snapshot) {
-                                return TextField(
-                                  autofocus: true,
-                                  maxLength: 30,
-                                  controller: _nameController,
-                                  onChanged: _userBloc.changeName,
-                                  decoration: InputDecoration(
-                                    hintText: "Nome",
-                                    errorText: snapshot.hasError
-                                        ? snapshot.error
-                                        : null,
-                                  ),
-                                  keyboardType: TextInputType.text,
-                                  focusNode: _nameFocus,
-                                  textCapitalization:
-                                      TextCapitalization.sentences,
-                                  textInputAction: TextInputAction.next,
-                                  onSubmitted: (term) {
-                                    _nameFocus.unfocus();
-                                    FocusScope.of(context)
-                                        .requestFocus(_emailFocus);
+                        ),
+                        Container(
+                          //center
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                child: Text(
+                                  "Bem-vindo ao Borderô",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              Container(
+                                child: StreamBuilder<String>(
+                                  stream: _userBloc.outName,
+                                  builder: (context, snapshot) {
+                                    return TextField(
+                                      autofocus: true,
+                                      maxLength: 30,
+                                      controller: _nameController,
+                                      onChanged: _userBloc.changeName,
+                                      decoration: InputDecoration(
+                                        hintText: "Nome",
+                                        errorText: snapshot.hasError
+                                            ? snapshot.error
+                                            : null,
+                                      ),
+                                      keyboardType: TextInputType.text,
+                                      focusNode: _nameFocus,
+                                      textCapitalization:
+                                          TextCapitalization.sentences,
+                                      textInputAction: TextInputAction.next,
+                                      onSubmitted: (term) {
+                                        _nameFocus.unfocus();
+                                        FocusScope.of(context)
+                                            .requestFocus(_emailFocus);
+                                      },
+                                    );
                                   },
-                                );
-                              },
-                            ),
-                          ),
-                          Container(
-                            child: StreamBuilder<String>(
-                              stream: _userBloc.outEmail,
-                              builder: (context, snapshot) {
-                                return TextField(
-                                  autofocus: true,
-                                  focusNode: _emailFocus,
-                                  maxLength: 100,
-                                  controller: _emailController,
-                                  onChanged: _userBloc.changeEmail,
-                                  decoration: InputDecoration(
-                                    hintText: "Email",
-                                    errorText: snapshot.hasError
-                                        ? snapshot.error
-                                        : null,
-                                  ),
-                                  keyboardType: TextInputType.emailAddress,
-                                  textInputAction: TextInputAction.done,
-                                );
-                              },
-                            ),
-                          ),
+                                ),
+                              ),
+                              Container(
+                                child: StreamBuilder<String>(
+                                  stream: _userBloc.outEmail,
+                                  builder: (context, snapshot) {
+                                    return TextField(
+                                      autofocus: true,
+                                      focusNode: _emailFocus,
+                                      maxLength: 100,
+                                      controller: _emailController,
+                                      onChanged: _userBloc.changeEmail,
+                                      decoration: InputDecoration(
+                                        hintText: "Email",
+                                        errorText: snapshot.hasError
+                                            ? snapshot.error
+                                            : null,
+                                      ),
+                                      keyboardType: TextInputType.emailAddress,
+                                      textInputAction: TextInputAction.done,
+                                    );
+                                  },
+                                ),
+                              ),
 //                        //Nao tera autenticacao por enquanto
 //                        StreamBuilder<String>(
 //                          stream: _userBloc.outPassword,
@@ -161,21 +164,24 @@ class _SignUpScreenState extends State<SignUpScreen>
 //                            );
 //                          },
 //                        ),
-                        ],
-                      ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: 120,
+                        ),
+                      ],
                     ),
-                    Container(
-                      height: 120,
+
+                    //Ação de de login animado
+                    StaggerAnimationSignUp(
+                      controller: _animationController.view,
+                      scaffoldKey: _scaffoldKey,
+                      snapshot: snapshot,
                     ),
                   ],
-                ),
-
-                //Ação de de login animado
-                StaggerAnimationSignUp(
-                  controller: _animationController.view,
-                  scaffoldKey: _scaffoldKey,
-                ),
-              ],
+                );
+              }
             ),
           ],
         ),

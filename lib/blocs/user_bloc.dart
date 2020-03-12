@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:bordero/enums/app_state.dart';
 import 'package:bordero/models/user.dart';
 import 'package:bordero/repository/repository_helper.dart';
 import 'package:bordero/util/string_util.dart';
@@ -13,7 +14,8 @@ class UserBloc extends BlocBase with UserValidator {
   final _userController = BehaviorSubject<User>();
   final _registerController = BehaviorSubject<bool>();
   final _loadingController = BehaviorSubject<bool>();
-
+  final _loginStateController = BehaviorSubject<AppState>();
+  
   Stream<bool> get outRegister => _registerController.stream;
 
   Stream<String> get outName => _nameController.stream.transform(validateName);
@@ -36,6 +38,8 @@ class UserBloc extends BlocBase with UserValidator {
 
   Stream<bool> get outSubmitValid =>
       Observable.combineLatest2(outEmail, outPassword, (user, email) => true);
+
+  Stream<AppState> get outLoginState => _loginStateController.stream;
 
   final _userRepository = RepositoryHelper().userRepository;
 
@@ -72,6 +76,7 @@ class UserBloc extends BlocBase with UserValidator {
     _passwordController.close();
     _registerController.close();
     _loadingController.close();
+    _loginStateController.close();
   }
 
   /// Register user on system

@@ -64,9 +64,10 @@ class CustomDrawer extends StatelessWidget {
                         );
                       },
                       child: CircleAvatar(
+                        backgroundColor: Colors.grey,
                         backgroundImage: user.profileUrl != null
                             ? FileImage(File(user.profileUrl))
-                            : AssetImage("images/avatar.png"),
+                            : AssetImage("assets/images/avatar.png"),
                         //https://gicons.carlosjeurissen.com/product-material/
                         // backgroundImage: NetworkImage('https://ssl.gstatic.com/images/branding/product/1x/avatar_circle_grey_512dp.png'),
                       ),
