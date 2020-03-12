@@ -43,7 +43,7 @@ class ChequeBloc extends BlocBase {
   }
 
   void loadCheques() async {
-    var cheques = await getAllCheques();
+     await getAllCheques();
     chequesClient = await getChequesGroupByClient();
     setOrderCriteria(SortCriteriaCheque.LOW_VALUE);
   }

@@ -389,7 +389,7 @@ class BorderoHelper {
 
   String validateImages(List images) {
     if (images.isEmpty) {
-      return "Adicione imagens ao produto";
+      return "Adicione imagens ao cheque";
     }
     return null;
   }

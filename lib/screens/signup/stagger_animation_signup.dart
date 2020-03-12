@@ -17,7 +17,7 @@ class StaggerAnimationSignUp extends StatelessWidget {
     @required this.scaffoldKey,
   })  
   //define o tamanho inicial e final do botão
-  : buttonSqueeze = Tween(begin: 320.0, end: 60.0).animate(
+  : buttonSqueeze = Tween(begin: 300.0, end: 60.0).animate(
           CurvedAnimation(
             parent: controller,
             curve: Interval(0.0, 0.150), //porcentagem da animação
@@ -119,7 +119,7 @@ class StaggerAnimationSignUp extends StatelessWidget {
         "Começar",
         style: TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.w500,
             letterSpacing: 0.3),
       );

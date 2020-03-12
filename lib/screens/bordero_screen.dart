@@ -108,268 +108,268 @@ class _BorderoScreenState extends State<BorderoScreen> {
           //ocupa um pedaço da tela
           //mas permite rolar os elementos
           child: SingleChildScrollView(
-            child: SizedBox(
-              height: height - 50,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Flexible(
-                            child: InkWell(
-                              onTap: () {
-                                _selectDate(_dataEmissaoController);
-                              },
-                              child: IgnorePointer(
-                                child: TextFormField(
-                                  controller: _dataEmissaoController,
-                                  decoration: InputDecoration(
-                                    hintText: "Dt. Emissao",
-                                    labelText: "Data Emissão",
-                                    labelStyle: TextStyle(fontSize: 12),
-                                  ),
-                                  keyboardType: TextInputType.datetime,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Flexible(
+                          child: InkWell(
+                            onTap: () {
+                              _selectDate(_dataEmissaoController);
+                            },
+                            child: IgnorePointer(
+                              child: TextFormField(
+                                controller: _dataEmissaoController,
+                                decoration: InputDecoration(
+                                  hintText: "Dt. Emissao",
+                                  labelText: "Data Emissão",
+                                  labelStyle: TextStyle(fontSize: 12),
                                 ),
+                                keyboardType: TextInputType.datetime,
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Flexible(
-                            child: InkWell(
-                              onTap: () {
-                                _selectDate(
-                                    _dataVencimentoController); // Call Function that has showDatePicker()
-                              },
-                              child: IgnorePointer(
-                                child: TextField(
-                                  controller: _dataVencimentoController,
-                                  decoration: InputDecoration(
-                                    hintText: "Dt. Vencimento",
-                                    labelText: "Data Vencimento",
-                                    labelStyle: TextStyle(fontSize: 12),
-                                  ),
-                                  keyboardType: TextInputType.datetime,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Flexible(
-                            child: InkWell(
-                              onTap: () {
-                                _selectDate(
-                                    _dataPagamentoController); // Call Function that has showDatePicker()
-                              },
-                              child: IgnorePointer(
-                                child: TextField(
-                                  readOnly: true,
-                                  controller: _dataPagamentoController,
-                                  decoration: InputDecoration(
-                                    hintText: "Dt. Pagamento",
-                                    labelText: "Data Pagamento",
-                                    labelStyle: TextStyle(fontSize: 12),
-                                  ),
-                                  keyboardType: TextInputType.datetime,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      //linha 2
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Flexible(
-                            child: TextField(
-                              controller: _valorChequeController,
-                              decoration: InputDecoration(
-                                hintText: "Valor Cheque",
-                                labelText: "Valor Cheque",
-                                labelStyle: TextStyle(fontSize: 12),
-                              ),
-                              keyboardType: TextInputType.numberWithOptions(
-                                  decimal: true),
-                              onChanged: (text) {
-                                Cheque cheque = helper.buildCheque();
-                                if (helper.validator(cheque)) {
-                                  helper.calcularCheque(cheque);
-                                  setState(() {});
-                                }
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Flexible(
-                            child: TextField(
-                              controller: _taxaJurosController,
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(5),
-                              ],
-                              decoration: InputDecoration(
-                                hintText: "% Taxa de Juros",
-                                labelText: "% Taxa de Juros",
-                                labelStyle: TextStyle(fontSize: 12),
-                              ),
-                              keyboardType: TextInputType.numberWithOptions(
-                                  decimal: true),
-                              onChanged: (text) {
-                                Cheque cheque = helper.buildCheque();
-                                if (helper.validator(cheque)) {
-                                  helper.calcularCheque(cheque);
-                                  setState(() {});
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      //linha 3
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Flexible(
-                            child: TextField(
-                              focusNode: _focusPrazo,
-                              controller: _prazoController,
-                              decoration: InputDecoration(
-                                hintText: "Prazo",
-                                labelText: "Prazo",
-                                labelStyle: TextStyle(fontSize: 12),
-                              ),
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.done,
-                              onChanged: (text) {
-                                int prazo =
-                                    NumberUtil.toInt(_prazoController.text);
-                                if (prazo != 0) {
-                                  helper.calcDateFromPrazo();
-                                } else {
-                                  print("Nao calculado");
-                                }
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Flexible(
-                            child: TextField(
-                              readOnly: true,
-                              controller: _valorJurosController,
-                              decoration: InputDecoration(
-                                hintText: "Valor Juros",
-                                labelText: "Valor Juros",
-                                labelStyle: TextStyle(fontSize: 12),
-                              ),
-                              keyboardType: TextInputType.numberWithOptions(
-                                  decimal: true),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      //linha 4
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Flexible(
-                            child: TextField(
-                              readOnly: true,
-                              controller: _valorLiquidoController,
-                              decoration: InputDecoration(
-                                hintText: "Valor Líquido",
-                                labelText: "Valor Líquido",
-                                labelStyle: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Flexible(
-                            child: TextField(
-                              controller: _numeroChequeController,
-                              decoration: InputDecoration(
-                                hintText: "Número Cheque",
-                                labelText: "Número Cheque",
-                                labelStyle: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TypeAheadField(
-                        textFieldConfiguration: TextFieldConfiguration(
-                          controller: _nominalController,
-                          decoration: InputDecoration(
-                            hintText: "Nominal",
-                            labelText: "Cliente",
-                            labelStyle: TextStyle(fontSize: 12),
                           ),
                         ),
-                        suggestionsCallback: (search) async {
-                          return await helper.getSuggestions(search);
-                        },
-                        itemBuilder: (context, Client suggestion) {
-                          print(suggestion);
-                          return ListTile(
-                            leading: Icon(Icons.account_box),
-                            title: Text(suggestion.name ?? ""),
-                            subtitle: Text(suggestion.phone1 ?? ""),
-                          );
-                        },
-                        onSuggestionSelected: (Client suggestion) {
-                          if (suggestion != null) {
-                            _nominalController.text = suggestion.name;
-                            helper.client = suggestion;
-                            if (helper.cheques.length > 0) {
-                              helper.cheques
-                                  .forEach((ch) => ch.setClient(suggestion));
-                            }
-                          }
-                        },
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          child: InkWell(
+                            onTap: () {
+                              _selectDate(
+                                  _dataVencimentoController); // Call Function that has showDatePicker()
+                            },
+                            child: IgnorePointer(
+                              child: TextField(
+                                controller: _dataVencimentoController,
+                                decoration: InputDecoration(
+                                  hintText: "Dt. Vencimento",
+                                  labelText: "Data Vencimento",
+                                  labelStyle: TextStyle(fontSize: 12),
+                                ),
+                                keyboardType: TextInputType.datetime,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          child: InkWell(
+                            onTap: () {
+                              _selectDate(
+                                  _dataPagamentoController); // Call Function that has showDatePicker()
+                            },
+                            child: IgnorePointer(
+                              child: TextField(
+                                readOnly: true,
+                                controller: _dataPagamentoController,
+                                decoration: InputDecoration(
+                                  hintText: "Dt. Pagamento",
+                                  labelText: "Data Pagamento",
+                                  labelStyle: TextStyle(fontSize: 12),
+                                ),
+                                keyboardType: TextInputType.datetime,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    //linha 2
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Flexible(
+                          child: TextField(
+                            controller: _valorChequeController,
+                            decoration: InputDecoration(
+                              hintText: "Valor Cheque",
+                              labelText: "Valor Cheque",
+                              labelStyle: TextStyle(fontSize: 12),
+                            ),
+                            keyboardType: TextInputType.numberWithOptions(
+                                decimal: true),
+                            onChanged: (text) {
+                              Cheque cheque = helper.buildCheque();
+                              if (helper.validator(cheque)) {
+                                helper.calcularCheque(cheque);
+                                setState(() {});
+                              }
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          child: TextField(
+                            controller: _taxaJurosController,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(5),
+                            ],
+                            decoration: InputDecoration(
+                              hintText: "% Taxa de Juros",
+                              labelText: "% Taxa de Juros",
+                              labelStyle: TextStyle(fontSize: 12),
+                            ),
+                            keyboardType: TextInputType.numberWithOptions(
+                                decimal: true),
+                            onChanged: (text) {
+                              Cheque cheque = helper.buildCheque();
+                              if (helper.validator(cheque)) {
+                                helper.calcularCheque(cheque);
+                                setState(() {});
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    //linha 3
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Flexible(
+                          child: TextField(
+                            focusNode: _focusPrazo,
+                            controller: _prazoController,
+                            decoration: InputDecoration(
+                              hintText: "Prazo",
+                              labelText: "Prazo",
+                              labelStyle: TextStyle(fontSize: 12),
+                            ),
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            onChanged: (text) {
+                              int prazo =
+                                  NumberUtil.toInt(_prazoController.text);
+                              if (prazo != 0) {
+                                helper.calcDateFromPrazo();
+                              } else {
+                                print("Nao calculado");
+                              }
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          child: TextField(
+                            readOnly: true,
+                            controller: _valorJurosController,
+                            decoration: InputDecoration(
+                              hintText: "Valor Juros",
+                              labelText: "Valor Juros",
+                              labelStyle: TextStyle(fontSize: 12),
+                            ),
+                            keyboardType: TextInputType.numberWithOptions(
+                                decimal: true),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    //linha 4
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Flexible(
+                          child: TextField(
+                            readOnly: true,
+                            controller: _valorLiquidoController,
+                            decoration: InputDecoration(
+                              hintText: "Valor Líquido",
+                              labelText: "Valor Líquido",
+                              labelStyle: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          child: TextField(
+                            controller: _numeroChequeController,
+                            decoration: InputDecoration(
+                              hintText: "Número Cheque",
+                              labelText: "Número Cheque",
+                              labelStyle: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TypeAheadField(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        controller: _nominalController,
+                        decoration: InputDecoration(
+                          hintText: "Nominal",
+                          labelText: "Cliente",
+                          labelStyle: TextStyle(fontSize: 12),
+                        ),
                       ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  _buildUpload(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  //Botoes
-                  Container(
-                    alignment: Alignment.bottomCenter,
-                    child: _buildFooter(),
-                  ),
+                      noItemsFoundBuilder: (context){
+                        return Container(margin: EdgeInsets.all(5.0), child:Text("Nenhum cliente encontrado"));
+                      },
+                      suggestionsCallback: (search) async {
+                        return await helper.getSuggestions(search);
+                      },
+                      itemBuilder: (context, Client suggestion) {
+                        print(suggestion);
+                        return ListTile(
+                          leading: Icon(Icons.account_box),
+                          title: Text(suggestion.name ?? ""),
+                          subtitle: Text(suggestion.phone1 ?? ""),
+                        );
+                      },
+                      onSuggestionSelected: (Client suggestion) {
+                        if (suggestion != null) {
+                          _nominalController.text = suggestion.name;
+                          helper.client = suggestion;
+                          if (helper.cheques.length > 0) {
+                            helper.cheques
+                                .forEach((ch) => ch.setClient(suggestion));
+                          }
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                _buildUpload(),
+                SizedBox(
+                  height: 20,
+                ),
+                //Botoes
+                Container(
+                  alignment: Alignment.bottomCenter,
+                  child: _buildFooter(),
+                ),
 //                  Expanded(
 //                    child: _buildFooter(),
 //                  ),
-                ],
-              ),
+              ],
             ),
           ),
         ),
@@ -556,7 +556,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
 
   Widget _buildFooter() {
     return Container(
-      color: Colors.transparent,
+      color: Colors.transparent,margin: EdgeInsets.only(top: 12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[

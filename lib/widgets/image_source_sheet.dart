@@ -11,16 +11,24 @@ class ImageSourceSheet extends StatelessWidget {
   final Color backgroundColor;
   final Color iconColor;
   final Color buttonColor;
-  ImageSourceSheet({this.onImageSelected,this.backgroundColor, this.iconColor, this.buttonColor});
+  ImageSourceSheet(
+      {this.onImageSelected,
+      this.backgroundColor,
+      this.iconColor,
+      this.buttonColor});
 
   void imageSelected(File image) async {
     if (image != null) {
       File croppedImage = await ImageCropper.cropImage(
         sourcePath: image.path,
-        ratioX: 1.0,
-        ratioY: 1.0,
+        aspectRatio: CropAspectRatio(
+          ratioX: 1.0,
+          ratioY: 1.0,
+        ),
       );
-      onImageSelected(croppedImage);
+      if (croppedImage != null) {
+        onImageSelected(croppedImage);
+      }
     }
   }
 

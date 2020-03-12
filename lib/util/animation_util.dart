@@ -103,7 +103,7 @@ class AnimationUtil {
   }
 
   static Widget buildRectangleShimmerFull(BuildContext context,
-      {@required double width, @required double height}) {
+      {double width, double height}) {
     final screenSize = MediaQuery.of(context).size;
 
     return SizedBox(

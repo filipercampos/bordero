@@ -127,10 +127,11 @@ class ChequeSimpleCard extends StatelessWidget {
     DecorationImage decorationImage;
     if (attachment) {
       decorationImage = DecorationImage(
-          image: FileImage(
-            File(cheque.imageFrontPath),
-          ),
-          fit: BoxFit.fill);
+        image: FileImage(
+          File(cheque.imageFrontPath),
+        ),
+        fit: BoxFit.contain,
+      );
     } else {
       decorationImage = DecorationImage(
         image: AssetImage("images/check.png"),
@@ -142,8 +143,10 @@ class ChequeSimpleCard extends StatelessWidget {
       width: 120.0,
       height: 60.0,
       padding: EdgeInsets.zero,
-      decoration:
-          BoxDecoration(shape: BoxShape.rectangle, image: decorationImage),
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        image: decorationImage,
+      ),
     );
   }
 }

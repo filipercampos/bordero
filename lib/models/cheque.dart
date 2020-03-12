@@ -1,6 +1,5 @@
 import 'package:bordero/util/date_util.dart';
 import 'package:bordero/util/number_util.dart';
-import 'package:decimal/decimal.dart';
 
 import 'client.dart';
 

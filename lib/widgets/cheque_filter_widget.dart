@@ -3,7 +3,7 @@ import 'package:bordero/util/date_util.dart';
 import 'package:flutter/material.dart';
 
 class ChequeFilterWidget extends StatefulWidget {
-  bool _showFilter;
+  final bool _showFilter;
   final ChequeBloc _chequeBloc;
 
   ChequeFilterWidget(this._showFilter, this._chequeBloc, {Key key})
