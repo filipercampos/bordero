@@ -1,6 +1,5 @@
 import 'package:bordero/blocs/cheque_bloc.dart';
 import 'package:bordero/dto/cheque_client.dart';
-import 'package:bordero/screens/compensacao_cheque_screen.dart';
 import 'package:bordero/util/animation_util.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:flutter/material.dart';
@@ -30,109 +29,99 @@ class ChequeClientCard extends StatelessWidget {
             padding: EdgeInsets.all(4.0),
             itemCount: snapshot.data.length,
             itemBuilder: (context, index) {
-              ChequeClient chequeClient = snapshot.data[index];
+              ChequeClient chclient = snapshot.data[index];
 
-              return InkWell(
-                onTap:  () async {
-
-                  var cheque  = await _chequeBloc.getCheque(chequeClient.id);
-                  //compensacao
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CompensacaoChequeScreen(cheque))
-                  );
-                } ,
-                child: Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      _buildHeader(snapshot.data[index]),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          //ilustração do cheque
-                          Container(
-                            margin: EdgeInsets.all(8.0),
-                            width: 120.0,
-                            height: 60.0,
-                            padding: EdgeInsets.zero,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              image: DecorationImage(
-                                image: AssetImage("images/check.png"),
-                                fit: BoxFit.fill,
+              return Card(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _buildHeader(chclient),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        //ilustração do cheque
+                        Container(
+                          margin: EdgeInsets.all(8.0),
+                          width: 120.0,
+                          height: 60.0,
+                          padding: EdgeInsets.zero,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/check.png"),
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(0, 8.0, 8.0, 8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                "Cheque: " +
+                                    NumberUtil.toDoubleFormatBr(
+                                        chclient.valorCheque),
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500),
                               ),
-                            ),
+                              Divider(
+                                height: 5,
+                                color: Colors.grey,
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        "Taxa: ${NumberUtil.toDoubleFormatBr(chclient.taxaJuros)}%",
+                                        style: TextStyle(fontSize: 12.0),
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text(
+                                        "Prazo: ${chclient.prazo}",
+                                        style: TextStyle(fontSize: 12.0),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        "Juros: " +
+                                            NumberUtil.toDoubleFormatBr(
+                                                chclient.valorJuros),
+                                        style: TextStyle(fontSize: 12.0),
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text(
+                                        "Líquido: " +
+                                            NumberUtil.toDoubleFormatBr(
+                                                chclient.valorLiquido),
+                                        style: TextStyle(fontSize: 12.0),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            ],
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(0, 8.0, 8.0, 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  "Cheque: " +
-                                      NumberUtil.toDoubleFormatBr(
-                                          chequeClient.valorCheque),
-                                  style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                Divider(
-                                  height: 5,
-                                  color: Colors.grey,
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          "Taxa: ${NumberUtil.toDoubleFormatBr(chequeClient.taxaJuros)}%",
-                                          style: TextStyle(fontSize: 12.0),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Text(
-                                          "Prazo: ${chequeClient.prazo}",
-                                          style: TextStyle(fontSize: 12.0),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          "Juros: " +
-                                              NumberUtil.toDoubleFormatBr(
-                                                  chequeClient.valorJuros),
-                                          style: TextStyle(fontSize: 12.0),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Text(
-                                          "Líquido: " +
-                                              NumberUtil.toDoubleFormatBr(
-                                                  chequeClient.valorLiquido),
-                                          style: TextStyle(fontSize: 12.0),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               );
             },

@@ -11,7 +11,7 @@ import 'package:bordero/widgets/image_source_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart'; 
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class BorderoScreen extends StatefulWidget {
   final PageController _controller;
@@ -86,7 +86,6 @@ class _BorderoScreenState extends State<BorderoScreen> {
 
     this._dataEmissaoController.text =
         DateUtil.toFormat(DateUtil.firstDateFromMonth());
-  
   }
 
   @override
@@ -402,6 +401,8 @@ class _BorderoScreenState extends State<BorderoScreen> {
                             ChequesBorderoScreen(this.helper.cheques),
                       ),
                     );
+                    //comunicia atualizacao do contador de cheques
+                    setState(() {});
                   }
                 : null, //desabilita o botao
           ),
@@ -626,5 +627,4 @@ class _BorderoScreenState extends State<BorderoScreen> {
       });
     }
   }
-
 }

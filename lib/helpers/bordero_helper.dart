@@ -100,7 +100,7 @@ class BorderoHelper {
   }
 
   /// Inicia um novo cálculo de cheque
-  void newCalc() {
+  void newCalc({String msg}) {
     dataEmissaoController.text =
         ""; //DateUtil.toFormat(DateUtil.firstDateFromMonth());
     dataPagamentoController.text = "";
@@ -113,11 +113,14 @@ class BorderoHelper {
     taxaJurosController.text = "0.00";
     prazoController.text = "0";
     numeroChequeController.text = "0000${(this.cheques.length + 1).toString()}";
+    
+    imageBackPath = null;
+    imageFrontPath = null;
 
     scaffoldKey.currentState.showSnackBar(
       SnackBar(
         duration: Duration(seconds: 2),
-        content: Text("Novo cheque iniciado ..."),
+        content: Text(msg == null? "Novo cheque iniciado ...": msg),
       ),
     );
   }
@@ -203,7 +206,7 @@ class BorderoHelper {
                       content: Text("Cheques removidos"),
                     ),
                   );
-                  newCalc();
+                  newCalc(msg:"Cheques removidos !");
                 },
               ),
             ],

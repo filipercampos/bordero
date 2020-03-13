@@ -40,10 +40,14 @@ class _ChequeBorderoCardDetailsState extends State<ChequeBorderoCardDetails> {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      Text(
-                        "Cheque: " + NumberUtil.toFormatBr(cheque.valorCheque),
-                        style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.w500),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Cheque: " +
+                              NumberUtil.toFormatBr(cheque.valorCheque),
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.w500),
+                        ),
                       ),
                       SizedBox(
                         height: 5,

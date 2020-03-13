@@ -12,16 +12,21 @@ class ChequesBorderoScreen extends StatefulWidget {
   ChequesBorderoScreen(this.cheques);
 
   @override
-  _ChequesBorderoScreenState createState() =>
-      _ChequesBorderoScreenState();
+  _ChequesBorderoScreenState createState() => _ChequesBorderoScreenState();
 }
 
 class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final ChequeBloc _chequeBloc = ChequeBloc();
+
+  @override
+  void dispose() {
+    super.dispose();
+    
+  }
+
   @override
   Widget build(BuildContext context) {
-
     //verifica se todos os cheque possuem cliente
     bool blockSave = false;
     double totalJuros = 0.0;
@@ -31,7 +36,7 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
       totalLiquido += ch.valorCheque;
 
       //bloquea o salvar
-      if(ch.clientId == null || ch.clientId == 0){
+      if (ch.clientId == null || ch.clientId == 0) {
         blockSave = true;
       }
     });
@@ -56,8 +61,8 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
                         if (await _saveChequesNBlockScreen()) {
                           Navigator.of(context).pop();
                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) => HomeScreen())
-                          );
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()));
                         }
                       },
               );
@@ -77,35 +82,35 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
                       (index) {
                         final item = widget.cheques[index];
                         return Dismissible(
-                          key: Key(
-                              DateTime.now().millisecondsSinceEpoch.toString()),
-                          direction: DismissDirection.endToStart,
-                          // Show a red background as the item is swiped away.
-                          background: Container(
-                            color: Colors.red,
-                            //distancia da esquerda pra direita
-                            child: Container(
-                              margin: EdgeInsets.only(right: 32),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Icon(
-                                  Icons.delete,
-                                  color: Colors.white,
+                            key: Key(DateTime.now()
+                                .millisecondsSinceEpoch
+                                .toString()),
+                            direction: DismissDirection.endToStart,
+                            // Show a red background as the item is swiped away.
+                            background: Container(
+                              color: Colors.red,
+                              //distancia da esquerda pra direita
+                              child: Container(
+                                margin: EdgeInsets.only(right: 32),
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          onDismissed: (direction) {
-                            setState(() {
-                              widget.cheques.removeAt(index);
-                            });
-                            // Then show a snackbar.
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                content: Text(
-                                    "Cheque ${item.numeroCheque} removido")));
-                          },
-                          child: ChequeBorderoCardDetails(item)
-                        );
+                            onDismissed: (direction) {
+                              setState(() {
+                                widget.cheques.removeAt(index);
+                              });
+                              // Then show a snackbar.
+                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                  content: Text(
+                                      "Cheque ${item.numeroCheque} removido")));
+                            },
+                            child: ChequeBorderoCardDetails(item));
                       },
                     ),
                   ),
@@ -190,7 +195,9 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
         content: Text(
-          success ? "Cheque(s) salvos com sucesso" : "Falha ao salvar cheque(s)!",
+          success
+              ? "Cheque(s) salvos com sucesso"
+              : "Falha ao salvar cheque(s)!",
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: success ? Theme.of(context).primaryColor : Colors.red,
