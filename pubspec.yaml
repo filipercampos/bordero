@@ -98,4 +98,4 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "icons/bordero.png"
+  image_path: "assets/icons/ic_launcher.png"
