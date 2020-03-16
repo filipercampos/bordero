@@ -1,17 +1,17 @@
 import 'package:bordero/util/color_util.dart';
 import 'package:flutter/material.dart';
 
-class ThemeDefault{
-
+class ThemeDefault {
   //Singleton
   ThemeDefault._internal();
-  static final ThemeDefault _instance =  ThemeDefault._internal();
-  factory ThemeDefault()  => _instance;
 
-  Color primaryColor = HexColor('#00a6bf');//ITE color
+  static final ThemeDefault _instance = ThemeDefault._internal();
 
-  themeDefault(){
+  factory ThemeDefault() => _instance;
 
+  Color primaryColor = HexColor('#00a6bf'); //ITE color
+
+  themeDefault() {
     return ThemeData(
       primarySwatch: Colors.blue,
       primaryColor: primaryColor,
@@ -19,12 +19,14 @@ class ThemeDefault{
       appBarTheme: AppBarTheme(
         color: primaryColor,
         textTheme: TextTheme(
-          title: TextStyle(color: Colors.white),
-          caption: TextStyle(color: Colors.white),
-          body1: TextStyle(color: Colors.white),
-        )
-
-      )
+          title: TextStyle(
+              color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.w500),
+          caption: TextStyle(
+              color: Colors.white, fontSize: 14.0),
+          body1: TextStyle(
+              color: Colors.white, fontSize: 14.0),
+        ),
+      ),
     );
   }
 }

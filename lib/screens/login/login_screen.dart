@@ -65,10 +65,7 @@ class _LoginScreenState extends State<LoginScreen>
       body: StreamBuilder<AppState>(
           stream: _userBloc.outLoginState,
           builder: (context, snapshot) {
-            if (snapshot.data != AppState.FAIL) {
-              if (!_animationController.isAnimating) {
-                 _animationController.forward();
-              }
+            if (snapshot.data == AppState.LOADING) {
               return Container(
                 color: Theme.of(context).primaryColor,
                 child: Center(
@@ -78,7 +75,11 @@ class _LoginScreenState extends State<LoginScreen>
               );
             }
             else if (snapshot.data == AppState.FAIL) {
-              _animationController.stop();
+              _animationController.reset();
+            }
+            else if (snapshot.data == AppState.SUCCESS) {
+              _animationController.forward();
+              FocusScope.of(context).unfocus();
             }
             return ListView(
               children: <Widget>[

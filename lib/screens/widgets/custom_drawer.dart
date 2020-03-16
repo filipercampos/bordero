@@ -5,7 +5,7 @@ import 'package:bordero/blocs/user_bloc.dart';
 import 'package:bordero/models/user.dart';
 import 'package:bordero/screens/user_screen.dart';
 import 'package:bordero/screens/tiles/bordero_tile.dart';
-import 'package:bordero/screens/tiles/cheques_tile.dart';
+import 'package:bordero/screens/tiles/cheque_tile.dart';
 import 'package:bordero/screens/tiles/client_tile.dart';
 import 'package:bordero/screens/tiles/home_tile.dart';
 import 'package:flutter/material.dart';

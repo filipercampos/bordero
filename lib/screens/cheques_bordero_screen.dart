@@ -23,6 +23,7 @@ class ChequesBorderoScreen extends StatefulWidget {
 class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final ChequeBloc _chequeBloc = ChequeBloc();
+
   BorderoHelper get helper => widget.helper;
 
   @override
@@ -67,8 +68,10 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
                         if (await _saveChequesNBlockScreen()) {
                           Navigator.of(context).pop();
                           Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => HomeScreen()));
+                            MaterialPageRoute(
+                              builder: (context) => HomeScreen(),
+                            ),
+                          );
                         }
                       },
               );

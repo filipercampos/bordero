@@ -234,10 +234,10 @@ class _CompensacaoChequeScreenState extends State<CompensacaoChequeScreen> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
     );
-
+    var dataPagamento = DateUtil.toDate(_dataPagamentoController.text);
     Map<String, dynamic> map = {
       "id": this.cheque.id,
-      "dataPagamento": this.cheque.dataPagamento.millisecondsSinceEpoch
+      "dataPagamento": dataPagamento.millisecondsSinceEpoch
     };
     bool success = await _repository.update(map) > 0;
 
@@ -257,11 +257,13 @@ class _CompensacaoChequeScreenState extends State<CompensacaoChequeScreen> {
     );
 
     if (success) {
-      this.cheque.dataPagamento =
-          DateUtil.toDate(_dataPagamentoController.text);
+      this.cheque.dataPagamento = dataPagamento;
+      setState(() {
+
+      });
       //garante a snack bar
       await Future.delayed(Duration(seconds: 1));
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(this.cheque);
     }
     return success;
   }
@@ -298,30 +300,4 @@ class _CompensacaoChequeScreenState extends State<CompensacaoChequeScreen> {
       );
     }
   }
-
-  // Widget _buildAttachment() {
-  //   bool attachment = this.cheque.imageFrontPath != null;
-  //   DecorationImage decorationImage;
-  //   if (attachment) {
-  //     decorationImage = DecorationImage(
-  //         image: FileImage(
-  //           File(this.cheque.imageFrontPath),
-  //         ),
-  //         fit: BoxFit.fill);
-  //   } else {
-  //     decorationImage = DecorationImage(
-  //       image: AssetImage("assets/images/check.png"),
-  //       fit: BoxFit.fill,
-  //     );
-  //   }
-  //   return Container(
-  //     margin: EdgeInsets.all(8.0),
-  //     width: 120.0,
-  //     height: 60.0,
-  //     padding: EdgeInsets.zero,
-  //     decoration:
-  //         BoxDecoration(shape: BoxShape.rectangle, image: decorationImage),
-  //   );
-  // }
-
 }

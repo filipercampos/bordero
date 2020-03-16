@@ -214,14 +214,19 @@ class _ChequesTabState extends State<ChequesTab> {
           itemCount: snapshot.data.length,
           itemBuilder: (context, index) {
             return InkWell(
-              onTap: () {
+              onTap: () async {
                 //compensacao
-                Navigator.of(context).push(
+                var result = await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) =>
                         CompensacaoChequeScreen(snapshot.data[index]),
                   ),
                 );
+                if(result!=null){
+                  setState(() {
+                    snapshot.data[index] = result;
+                  });
+                }
               },
               child: ChequeSimpleTile(snapshot.data[index]),
             );

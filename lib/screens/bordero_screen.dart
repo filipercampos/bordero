@@ -362,6 +362,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                         text: "Salvar",
                         onPressed: () {
                           this.helper.addCheque();
+                          FocusScope.of(context).unfocus();
                           setState(() {});
                         },
                       ),

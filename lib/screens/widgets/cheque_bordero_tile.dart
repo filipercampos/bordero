@@ -57,7 +57,7 @@ class _ChequeBorderoTileState extends State<ChequeBorderoTile> {
                           child: Container(
                             margin: EdgeInsets.only(right: 12.0),
                             alignment: Alignment.topRight,
-                            child: cheque.client == null
+                            child: cheque.clientId == null
                                 ? Icon(
                                     Icons.error,
                                     color: Colors.red[900],
