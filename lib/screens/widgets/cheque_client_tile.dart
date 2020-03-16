@@ -1,12 +1,12 @@
 import 'package:bordero/blocs/cheque_bloc.dart';
-import 'package:bordero/dto/cheque_client.dart';
+import 'package:bordero/models/cheque_client.dart';
 import 'package:bordero/util/animation_util.dart';
 import 'package:bordero/util/number_util.dart';
 import 'package:flutter/material.dart';
 
-class ChequeClientCard extends StatelessWidget {
+class ChequeClientTile extends StatelessWidget {
   final ChequeBloc _chequeBloc;
-  ChequeClientCard(this._chequeBloc);
+  ChequeClientTile(this._chequeBloc);
 
   @override
   Widget build(BuildContext context) {

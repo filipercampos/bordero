@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bordero/models/client.dart';
+import 'package:bordero/repository/repository_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -23,10 +24,9 @@ class _ClientScreenState extends State<ClientScreen> {
   final _phoneController1 = MaskedTextController(mask: '(00) 00000-0000');
   final _phoneController2 = MaskedTextController(mask: '(00) 00000-0000');
   final _nameFocus = FocusNode();
-
   bool _userEdited = false;
-
   Client _editedClient;
+  final helper = RepositoryHelper().clientRepository;
 
   @override
   void initState() {
@@ -57,8 +57,14 @@ class _ClientScreenState extends State<ClientScreen> {
           centerTitle: true,
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
             if (_editedClient.name != null && _editedClient.name.isNotEmpty) {
+              if (_editedClient.id == null) {
+                var id = await helper.insert(_editedClient.toJson());
+                _editedClient.id = id;
+              }else{
+                await helper.update(_editedClient.toJson());
+              }
               Navigator.pop(context, _editedClient);
             } else {
               FocusScope.of(context).requestFocus(_nameFocus);
@@ -108,7 +114,7 @@ class _ClientScreenState extends State<ClientScreen> {
               ),
               TextField(
                 controller: _phoneController1,
-                decoration: InputDecoration(labelText: "Phone"),
+                decoration: InputDecoration(labelText: "Celular"),
                 onChanged: (text) {
                   _userEdited = true;
                   _editedClient.phone1 = text;
@@ -117,7 +123,7 @@ class _ClientScreenState extends State<ClientScreen> {
               ),
               TextField(
                 controller: _phoneController2,
-                decoration: InputDecoration(labelText: "Phone (Alternativo)"),
+                decoration: InputDecoration(labelText: "Celular (Alternativo)"),
                 onChanged: (text) {
                   _userEdited = true;
                   _editedClient.phone2 = text;

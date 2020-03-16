@@ -1,4 +1,4 @@
-import 'package:bordero/dto/cheque_client.dart';
+import 'package:bordero/models/cheque_client.dart';
 import 'package:bordero/models/cheque.dart';
 import 'package:bordero/models/client.dart';
 import 'package:bordero/repository/ilist.dart';

@@ -1,6 +1,6 @@
 
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:bordero/dto/cheque_client.dart';
+import 'package:bordero/models/cheque_client.dart';
 import 'package:bordero/enums/cheque_view_type.dart';
 import 'package:bordero/models/cheque.dart';
 import 'package:bordero/repository/cheque_repository.dart';

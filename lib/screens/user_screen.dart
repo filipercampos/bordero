@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:bordero/blocs/user_bloc.dart';
 import 'package:bordero/models/user.dart';
-import 'package:bordero/widgets/image_source_sheet.dart';
+import 'package:bordero/screens/widgets/image_source_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 

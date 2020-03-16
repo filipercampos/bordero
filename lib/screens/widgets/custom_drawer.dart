@@ -4,10 +4,10 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:bordero/blocs/user_bloc.dart';
 import 'package:bordero/models/user.dart';
 import 'package:bordero/screens/user_screen.dart';
-import 'package:bordero/tiles/bordero_tile.dart';
-import 'package:bordero/tiles/cheques_tile.dart';
-import 'package:bordero/tiles/client_tile.dart';
-import 'package:bordero/tiles/home_tile.dart';
+import 'package:bordero/screens/tiles/bordero_tile.dart';
+import 'package:bordero/screens/tiles/cheques_tile.dart';
+import 'package:bordero/screens/tiles/client_tile.dart';
+import 'package:bordero/screens/tiles/home_tile.dart';
 import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget {

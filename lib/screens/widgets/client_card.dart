@@ -4,10 +4,10 @@ import 'package:bordero/screens/client_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ClientCard extends StatelessWidget {
+class ClientTile extends StatelessWidget {
   final Client client;
 
-  ClientCard(this.client);
+  ClientTile(this.client);
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 import 'package:bordero/models/client.dart';
 import 'package:bordero/repository/repository_helper.dart';
-import 'package:bordero/widgets/client_card.dart';
+import 'package:bordero/screens/widgets/client_card.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -172,7 +172,7 @@ class _TestAppBarSearchState extends State<TestAppBarSearch>
           ? ListView.builder(
               itemCount: filteredRecored.length,
               itemBuilder: (context, index) {
-                return ClientCard(filteredRecored[index]);
+                return ClientTile(filteredRecored[index]);
               },
             )
           : allRecord == null

@@ -13,9 +13,8 @@ class UserBloc extends BlocBase with UserValidator {
   final _passwordController = BehaviorSubject<String>();
   final _userController = BehaviorSubject<User>();
   final _registerController = BehaviorSubject<bool>();
-  final _loadingController = BehaviorSubject<bool>();
   final _loginStateController = BehaviorSubject<AppState>();
-  
+
   Stream<bool> get outRegister => _registerController.stream;
 
   Stream<String> get outName => _nameController.stream.transform(validateName);
@@ -25,8 +24,6 @@ class UserBloc extends BlocBase with UserValidator {
 
   Stream<String> get outPassword =>
       _passwordController.stream.transform(validatePassword);
-
-  Stream<bool> get outLoading => _loadingController.stream;
 
   Function(String) get changeName => _nameController.sink.add;
 
@@ -50,18 +47,21 @@ class UserBloc extends BlocBase with UserValidator {
     _registerController.add(false);
   }
 
+  get userData => _userController.value;
+
   Future<void> _loadUser() async {
     print("Carregando dados do usuário ...");
-    _loadingController.add(true);
+    _loginStateController.add(AppState.LOADING);
     final userMap = await _userRepository.getFirst();
     if (userMap != null) {
       _userController.add(User.fromJson(userMap));
       _registerController.add(true);
+      _loginStateController.add(AppState.SUCCESS);
       print("Data user loaded !");
     } else {
       _registerController.add(false);
+      _loginStateController.add(AppState.FAIL);
     }
-    _loadingController.add(false);
   }
 
   bool isRegister() {
@@ -75,7 +75,6 @@ class UserBloc extends BlocBase with UserValidator {
     _emailController.close();
     _passwordController.close();
     _registerController.close();
-    _loadingController.close();
     _loginStateController.close();
   }
 

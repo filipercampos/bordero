@@ -61,7 +61,6 @@ class Cheque {
       this.client.name = json["clientName"];
     }
     setPrazoTotal(prazo, compensacao);
-
   }
 
   Map<String, dynamic> toJson() {
@@ -156,9 +155,11 @@ class Cheque {
 
   void setClient(Client client) {
     if (client != null) {
-      this.client = client;
       this.clientId = client.id;
+    } else {
+      this.clientId = null;
     }
+    this.client = client;
   }
 
   @override

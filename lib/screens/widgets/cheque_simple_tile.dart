@@ -6,10 +6,10 @@ import 'package:bordero/util/number_util.dart';
 import 'package:flutter/material.dart';
 
 ///Cheques/Clientes
-class ChequeSimpleCard extends StatelessWidget {
+class ChequeSimpleTile extends StatelessWidget {
   final Cheque cheque;
 
-  ChequeSimpleCard(this.cheque);
+  ChequeSimpleTile(this.cheque);
 
   @override
   Widget build(BuildContext context) {

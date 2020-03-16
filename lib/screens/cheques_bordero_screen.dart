@@ -1,15 +1,20 @@
 import 'package:bordero/blocs/cheque_bloc.dart';
+import 'package:bordero/helpers/bordero_helper.dart';
 import 'package:bordero/models/cheque.dart';
+import 'package:bordero/models/client.dart';
+import 'package:bordero/screens/client_screen.dart';
 import 'package:bordero/screens/home_screen.dart';
+import 'package:bordero/screens/widgets/cheque_bordero_tile.dart';
 import 'package:bordero/util/number_util.dart';
-import 'package:bordero/widgets/cheque_bordero_card_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 ///Cheques calculados
 class ChequesBorderoScreen extends StatefulWidget {
   final List<Cheque> cheques;
+  final BorderoHelper helper;
 
-  ChequesBorderoScreen(this.cheques);
+  ChequesBorderoScreen(this.cheques, this.helper);
 
   @override
   _ChequesBorderoScreenState createState() => _ChequesBorderoScreenState();
@@ -18,11 +23,11 @@ class ChequesBorderoScreen extends StatefulWidget {
 class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final ChequeBloc _chequeBloc = ChequeBloc();
+  BorderoHelper get helper => widget.helper;
 
   @override
   void dispose() {
     super.dispose();
-    
   }
 
   @override
@@ -43,6 +48,7 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
 
     return Scaffold(
       key: _scaffoldKey,
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text("Cheques Calculados"),
         centerTitle: true,
@@ -74,6 +80,73 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
         children: <Widget>[
           Column(
             children: [
+              Container(
+                margin: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                child: TypeAheadField<Client>(
+                  textFieldConfiguration: TextFieldConfiguration(
+                    controller: helper.nominalController,
+                    decoration: InputDecoration(
+                      labelText: "Cliente",
+                      hintText: "Digite o nome do cliente",
+                      labelStyle: TextStyle(fontSize: 12),
+                    ),
+                    onChanged: (text) {
+                      if (helper.client != null) {
+                        helper.client = null;
+                        helper.nominalController.text = "";
+                        helper.cheques.forEach((ch) => ch.setClient(null));
+                        setState(() {});
+                      }
+                    },
+                  ),
+                  noItemsFoundBuilder: (context) {
+                    return GestureDetector(
+                      onTap: () async {
+                        Client cliente = await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ClientScreen(),
+                          ),
+                        );
+                        if (cliente != null) {
+                          helper.client = cliente;
+                          helper.nominalController.text = cliente.name;
+                          helper.cheques.forEach((ch) => ch.setClient(cliente));
+                        }
+                        setState(() {});
+                      },
+                      child: Container(
+                        margin: EdgeInsets.all(16.0),
+                        child: Text(
+                            "Cliente não encontrado. Toque para cadastrar"),
+                      ),
+                    );
+                  },
+                  suggestionsCallback: (search) async {
+                    return await helper.getSuggestions(search);
+                  },
+                  itemBuilder: (context, Client suggestion) {
+                    return Container(
+                      height: 50.0,
+                      child: ListTile(
+                        leading: Icon(Icons.account_box),
+                        title: Text(suggestion.name ?? ""),
+                        subtitle: Text(suggestion.phone1 ?? ""),
+                      ),
+                    );
+                  },
+                  onSuggestionSelected: (Client suggestion) {
+                    if (suggestion != null) {
+                      helper.nominalController.text = suggestion.name;
+                      helper.client = suggestion;
+                      if (helper.cheques.length > 0) {
+                        helper.cheques
+                            .forEach((ch) => ch.setClient(suggestion));
+                      }
+                      setState(() {});
+                    }
+                  },
+                ),
+              ),
               Expanded(
                 child: ListView.custom(
                   childrenDelegate: SliverChildListDelegate(
@@ -110,7 +183,7 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
                                   content: Text(
                                       "Cheque ${item.numeroCheque} removido")));
                             },
-                            child: ChequeBorderoCardDetails(item));
+                            child: ChequeBorderoTile(item));
                       },
                     ),
                   ),

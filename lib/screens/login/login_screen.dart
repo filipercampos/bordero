@@ -2,17 +2,21 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:bordero/blocs/user_bloc.dart';
 import 'package:bordero/enums/app_state.dart';
 import 'package:bordero/screens/home_screen.dart';
-import 'package:bordero/screens/signup/stagger_animation_signup.dart';
+import 'package:bordero/screens/login/stagger_animation_signup.dart';
+import 'package:bordero/util/animation_util.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart' show timeDilation;
 
-class SignUpScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen>
+class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
+
+    final _userBloc = BlocProvider.getBloc<UserBloc>();
+
   //controlador da animação
   AnimationController _animationController;
 
@@ -20,6 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen>
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+
 //  final _passwordController = TextEditingController();
 
   final FocusNode _nameFocus = FocusNode();
@@ -37,8 +42,8 @@ class _SignUpScreenState extends State<SignUpScreen>
     //listener da animação e login
     _animationController.addStatusListener(
       (status) {
-        if (status == AnimationStatus.completed) {
-          _onSuccess();
+        if (status == AnimationStatus.completed && _userBloc.userData != null ) {
+           _onSuccess();
         }
       },
     );
@@ -53,19 +58,31 @@ class _SignUpScreenState extends State<SignUpScreen>
 
   @override
   Widget build(BuildContext context) {
-    final _userBloc = BlocProvider.getBloc<UserBloc>();
 
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
-      body: Container(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            StreamBuilder<AppState>(
+      body: StreamBuilder<AppState>(
           stream: _userBloc.outLoginState,
           builder: (context, snapshot) {
-                return Stack(
+            if (snapshot.data != AppState.FAIL) {
+              if (!_animationController.isAnimating) {
+                 _animationController.forward();
+              }
+              return Container(
+                color: Theme.of(context).primaryColor,
+                child: Center(
+                  child: AnimationUtil.circularProgressIndicator(
+                      backgroundColor: Theme.of(context).primaryColor,),
+                ),
+              );
+            }
+            else if (snapshot.data == AppState.FAIL) {
+              _animationController.stop();
+            }
+            return ListView(
+              children: <Widget>[
+                Stack(
                   alignment: Alignment.bottomCenter,
                   children: <Widget>[
                     Column(
@@ -74,8 +91,8 @@ class _SignUpScreenState extends State<SignUpScreen>
                           padding: EdgeInsets.only(top: 100, bottom: 16),
                           child: Image.asset(
                             "assets/icons/bordero.png",
-                            width: 150,
-                            height: 150,
+                            width: 120.0,
+                            height: 120.0,
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -180,12 +197,10 @@ class _SignUpScreenState extends State<SignUpScreen>
                       snapshot: snapshot,
                     ),
                   ],
-                );
-              }
-            ),
-          ],
-        ),
-      ),
+                ),
+              ],
+            );
+          }),
     );
   }
 

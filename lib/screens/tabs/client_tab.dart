@@ -2,9 +2,9 @@ import 'package:bordero/blocs/client_bloc.dart';
 import 'package:bordero/models/client.dart';
 import 'package:bordero/repository/repository_helper.dart';
 import 'package:bordero/screens/client_screen.dart';
-import 'package:bordero/widgets/client_card.dart';
-import 'package:bordero/widgets/custom_drawer.dart';
-import 'package:bordero/widgets/order_options_popup.dart';
+import 'package:bordero/screens/widgets/client_card.dart';
+import 'package:bordero/screens/widgets/custom_drawer.dart';
+import 'package:bordero/screens/widgets/order_options_popup.dart';
 import 'package:flutter/material.dart';
 
 class ClientsTab extends StatefulWidget {
@@ -69,7 +69,7 @@ class _ClientsTabState extends State<ClientsTab> {
                 return ListView.builder(
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) {
-                    return ClientCard(snapshot.data[index]);
+                    return ClientTile(snapshot.data[index]);
                   },
                 );
               }
@@ -87,7 +87,6 @@ class _ClientsTabState extends State<ClientsTab> {
     );
 
     if (recClient != null) {
-      await helper.insert(recClient.toJson());
       _clientBloc.getAllClients();
     }
   }

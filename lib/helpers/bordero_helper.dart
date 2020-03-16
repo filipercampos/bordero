@@ -101,8 +101,8 @@ class BorderoHelper {
 
   /// Inicia um novo cálculo de cheque
   void newCalc({String msg}) {
-    dataEmissaoController.text =
-        ""; //DateUtil.toFormat(DateUtil.firstDateFromMonth());
+
+    dataEmissaoController.text = DateUtil.toFormat(DateTime.now());
     dataPagamentoController.text = "";
     dataVencimentoController.text = "";
 
@@ -113,14 +113,14 @@ class BorderoHelper {
     taxaJurosController.text = "0.00";
     prazoController.text = "0";
     numeroChequeController.text = "0000${(this.cheques.length + 1).toString()}";
-    
+
     imageBackPath = null;
     imageFrontPath = null;
 
     scaffoldKey.currentState.showSnackBar(
       SnackBar(
         duration: Duration(seconds: 2),
-        content: Text(msg == null? "Novo cheque iniciado ...": msg),
+        content: Text(msg == null ? "Novo cheque iniciado ..." : msg),
       ),
     );
   }
@@ -196,17 +196,10 @@ class BorderoHelper {
                 child: Text("Sim"),
                 onPressed: () {
                   Navigator.of(context).pop();
-//                  setState(() {
-                  //remove os cheques
+ 
                   this.cheques.clear();
-//                  });
-                  scaffoldKey.currentState.showSnackBar(
-                    SnackBar(
-                      duration: Duration(seconds: 2),
-                      content: Text("Cheques removidos"),
-                    ),
-                  );
-                  newCalc(msg:"Cheques removidos !");
+              
+                  newCalc(msg: "Cheques removidos !");
                 },
               ),
             ],
@@ -328,9 +321,8 @@ class BorderoHelper {
     final helper = RepositoryHelper().clientRepository;
     List<Client> clients = List();
     helper.debugExecuteQuery = true;
-    await helper.rawQueryMap({"name": search}, like: true).then((list) {
-      list.forEach((map) => clients.add(Client.fromJson(map)));
-    });
+    var maps = await helper.rawQueryMap({"name": search}, like: true);
+    maps.forEach((map) => clients.add(Client.fromJson(map)));
     return clients;
   }
 
@@ -398,7 +390,7 @@ class BorderoHelper {
 
   void test() {
     //teste
-     var de = DateTime(2019, 8, 26);
+    var de = DateTime(2019, 8, 26);
     var dv = DateTime.now();
     dataEmissaoController.text = DateUtil.toFormat(de);
     dataVencimentoController.text = DateUtil.toFormat(dv);

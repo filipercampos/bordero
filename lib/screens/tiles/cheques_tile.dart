@@ -1,4 +1,4 @@
-import 'package:bordero/widgets/drawer_tile.dart';
+import 'package:bordero/screens/widgets/drawer_tile.dart';
 import 'package:flutter/material.dart';
 
 class ChequesTile extends DrawerTile {
