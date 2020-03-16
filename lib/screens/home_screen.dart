@@ -1,6 +1,6 @@
 import 'package:bordero/screens/bordero_screen.dart';
 import 'package:bordero/screens/tabs/cheques_tab.dart';
-import 'package:bordero/screens/tabs/client_tab.dart';
+import 'package:bordero/screens/tabs/clients_tab.dart';
 import 'package:bordero/screens/widgets/bordero_button.dart';
 import 'package:bordero/screens/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';

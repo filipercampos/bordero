@@ -135,7 +135,7 @@ class _ClientScreenState extends State<ClientScreen> {
                   decoration: InputDecoration(labelText: "CPF/CNPJ"),
                   onChanged: (text) {
                     _userEdited = true;
-                    _editedClient.email = text;
+                    _editedClient.cpfCnpj = text;
                     //garante que passe apenas uma vez
                     if (text.length > 14 && text.length < 16) {
                       _cpfCnpjController.mask = '00.000.000.0000/00';

@@ -23,7 +23,7 @@ class ClientTile extends StatelessWidget {
                 margin: EdgeInsets.only(right: 16),
                 child: Icon(
                   Icons.account_box,
-                  size: 70,
+                  size: 64,
                   color: Theme.of(context).primaryColor,
                 ),
               ),
@@ -89,7 +89,10 @@ class ClientTile extends StatelessWidget {
                             SizedBox(
                               width: 10,
                             ),
-                            Text("Ligar",  style: TextStyle(color: Colors.black),),
+                            Text(
+                              "Ligar",
+                              style: TextStyle(color: Colors.black),
+                            ),
                           ],
                         ),
                         onPressed: () {
@@ -109,7 +112,10 @@ class ClientTile extends StatelessWidget {
                             SizedBox(
                               width: 10,
                             ),
-                            Text("Editar",  style: TextStyle(color: Colors.black),),
+                            Text(
+                              "Editar",
+                              style: TextStyle(color: Colors.black),
+                            ),
                           ],
                         ),
                         onPressed: () {
@@ -144,11 +150,14 @@ class ClientTile extends StatelessWidget {
 
   void _showEditClientSceen(context, Client client) async {
     final Client recClient = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => ClientScreen(client: client)));
+      MaterialPageRoute(
+        builder: (context) => ClientScreen(client: client),
+      ),
+    );
     final helper = RepositoryHelper().clientRepository;
-    print("$recClient");
+
     if (recClient != null) {
-      print( await helper.update(recClient.toJson()));
+      await helper.update(recClient.toJson());
     }
   }
 }

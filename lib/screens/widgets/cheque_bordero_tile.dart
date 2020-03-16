@@ -9,8 +9,7 @@ class ChequeBorderoTile extends StatefulWidget {
   ChequeBorderoTile(this.cheque);
 
   @override
-  _ChequeBorderoTileState createState() =>
-      _ChequeBorderoTileState();
+  _ChequeBorderoTileState createState() => _ChequeBorderoTileState();
 }
 
 class _ChequeBorderoTileState extends State<ChequeBorderoTile> {
@@ -50,8 +49,7 @@ class _ChequeBorderoTileState extends State<ChequeBorderoTile> {
                               "Cheque: " +
                                   NumberUtil.toFormatBr(cheque.valorCheque),
                               style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w500),
+                                  fontSize: 16.0, fontWeight: FontWeight.w500),
                             ),
                           ),
                         ),
@@ -59,13 +57,12 @@ class _ChequeBorderoTileState extends State<ChequeBorderoTile> {
                           child: Container(
                             margin: EdgeInsets.only(right: 12.0),
                             alignment: Alignment.topRight,
-                            child: 
-                            cheque.client == null 
-                            ? Icon(
-                              Icons.error,
-                              color: Colors.red[900],
-                            )
-                            : Container(),
+                            child: cheque.client == null
+                                ? Icon(
+                                    Icons.error,
+                                    color: Colors.red[900],
+                                  )
+                                : Container(),
                           ),
                         ),
                       ],
@@ -138,10 +135,9 @@ class _ChequeBorderoTileState extends State<ChequeBorderoTile> {
               child: Text(
                 "*Atenção: Informe o cliente para salvar o(s) cheque(s)",
                 style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500
-                ),
+                    fontSize: 12,
+                    color: Colors.red,
+                    fontWeight: FontWeight.w500),
               ),
             ),
           )
@@ -177,7 +173,9 @@ class _ChequeBorderoTileState extends State<ChequeBorderoTile> {
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color: cheque.dataPagamento == null
-                      ? Colors.blue[500]
+                      ? cheque.dataVencimento.isBefore(DateUtil.toDateZero())
+                          ? Colors.blue[500]
+                          : Colors.red[800]
                       : Theme.of(context).primaryColor,
                 ),
               ),

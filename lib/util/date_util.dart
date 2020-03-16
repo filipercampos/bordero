@@ -1,6 +1,11 @@
 import 'package:intl/intl.dart';
 
 class DateUtil {
+  static DateTime toDateZero() {
+    var now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }
+
   static DateTime toDate(String dateString) {
     if (dateString.isEmpty || dateString == null) {
       return null;

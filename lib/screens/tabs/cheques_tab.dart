@@ -3,9 +3,9 @@ import 'package:bordero/enums/cheque_view_type.dart';
 import 'package:bordero/models/cheque.dart';
 import 'package:bordero/preferences/shared_preferences_bordero.dart';
 import 'package:bordero/screens/compensacao_cheque_screen.dart';
+import 'package:bordero/screens/widgets/cheque_bordero_tile.dart';
 import 'package:bordero/util/animation_util.dart';
 import 'package:bordero/util/number_util.dart';
-import 'package:bordero/screens/widgets/cheque_bordero_card_details.dart';
 import 'package:bordero/screens/widgets/cheque_client_tile.dart';
 import 'package:bordero/screens/widgets/cheque_filter_widget.dart';
 import 'package:bordero/screens/widgets/cheque_simple_tile.dart';
@@ -33,7 +33,7 @@ class _ChequesTabState extends State<ChequesTab> {
   void initState() {
     super.initState();
     _chequeBloc.loadCheques();
-    preferences.setViewCheques(ChequeViewType.CHEQUES_BY_CLIENT);
+    preferences.setViewCheques(ChequeViewType.CHEQUES);
     setState(() {});
 
     _init();
@@ -239,7 +239,7 @@ class _ChequesTabState extends State<ChequesTab> {
                     builder: (context) =>
                         CompensacaoChequeScreen(snapshot.data[index])));
               },
-              child: ChequeBorderoCardDetails(
+              child: ChequeBorderoTile(
                 snapshot.data[index],
               ),
             );
