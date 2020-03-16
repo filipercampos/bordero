@@ -35,7 +35,6 @@ dependencies:
   smooth_star_rating: ^1.0.3 #A Star rating with touch and swipe rate enabled
   crypto: ^2.1.1+1 #hash
   flutter_typeahead: ^1.6.1 #autocomplete
-  path_provider: ^1.6.5
   flutter_speed_dial: ^1.2.1 #botões animados flutuantes
   shimmer: ^1.0.0 #efeito de carregamento
   shared_preferences: ^0.5.3+4 #salvar preferencias

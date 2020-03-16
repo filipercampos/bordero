@@ -20,8 +20,6 @@ class ImageSourceSheet extends StatelessWidget {
 
   void imageSelected(File image) async {
     if (image != null) {
-      await image.rename(image.path.replaceAll("cache", "imagens_bordero"));
-      print(image.path);
       File croppedImage = await ImageCropper.cropImage(
           sourcePath: image.path,
           aspectRatioPresets: [
@@ -29,21 +27,12 @@ class ImageSourceSheet extends StatelessWidget {
             CropAspectRatioPreset.square,
             CropAspectRatioPreset.ratio16x9,
           ]);
-      await _localPath();
       if (croppedImage != null) {
         onImageSelected(croppedImage);
       }
     }
   }
 
-  Future<String> _localPath() async {
-    // final directory = await getApplicationDocumentsDirectory();
-    //  final sdcard = await getExternalStorageDirectory();
-    var directory = await getApplicationSupportDirectory();
-    // For your reference print the AppDoc directory
-    print(directory.path);
-    return directory.path;
-  }
 
   @override
   Widget build(BuildContext context) {
