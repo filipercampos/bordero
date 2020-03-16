@@ -174,8 +174,8 @@ class _ChequeBorderoTileState extends State<ChequeBorderoTile> {
                   fontWeight: FontWeight.w500,
                   color: cheque.dataPagamento == null
                       ? cheque.dataVencimento.isBefore(DateUtil.toDateZero())
-                          ? Colors.blue[500]
-                          : Colors.red[800]
+                          ? Colors.red[800]
+                          : Colors.blue[500]
                       : Theme.of(context).primaryColor,
                 ),
               ),

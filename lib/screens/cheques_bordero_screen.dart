@@ -111,11 +111,14 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
                           ),
                         );
                         if (cliente != null) {
-                          helper.client = cliente;
-                          helper.nominalController.text = cliente.name;
-                          helper.cheques.forEach((ch) => ch.setClient(cliente));
+                          setState(() {
+                            helper.client = cliente;
+                            helper.client.id = cliente.id;
+                            helper.nominalController.text = cliente.name;
+                            helper.cheques
+                                .forEach((ch) => ch.setClient(cliente));
+                          });
                         }
-                        setState(() {});
                       },
                       child: Container(
                         margin: EdgeInsets.all(16.0),
@@ -139,13 +142,15 @@ class _ChequesBorderoScreenState extends State<ChequesBorderoScreen> {
                   },
                   onSuggestionSelected: (Client suggestion) {
                     if (suggestion != null) {
-                      helper.nominalController.text = suggestion.name;
-                      helper.client = suggestion;
-                      if (helper.cheques.length > 0) {
-                        helper.cheques
-                            .forEach((ch) => ch.setClient(suggestion));
-                      }
-                      setState(() {});
+                      setState(() {
+                        helper.nominalController.text = suggestion.name;
+                        helper.client = suggestion;
+                        helper.client.id = suggestion.id;
+                        if (helper.cheques.length > 0) {
+                          helper.cheques
+                              .forEach((ch) => ch.setClient(suggestion));
+                        }
+                      });
                     }
                   },
                 ),
