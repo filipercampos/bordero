@@ -112,7 +112,7 @@ class _CompensacaoChequeScreenState extends State<CompensacaoChequeScreen> {
                     margin: EdgeInsets.only(left: 8.0, right: 8.0),
                     alignment: Alignment.center,
                     child: InkWell(
-                      onTap: widget.cheque.dataEmissao == null
+                      onTap: widget.cheque.dataPagamento == null
                           ? _selectDate
                           : null,
                       child: IgnorePointer(
@@ -125,10 +125,9 @@ class _CompensacaoChequeScreenState extends State<CompensacaoChequeScreen> {
                             ),
                             border: InputBorder.none,
                             hintText: "Data Compensação",
-                            labelText: widget.cheque.dataEmissao == null 
-                            ? "Data Compensação"
-                            : "Cheque Compensado"
-                            ,
+                            labelText: widget.cheque.dataPagamento == null
+                                ? "Data Compensação"
+                                : "Cheque Compensado",
                             hintStyle: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
@@ -235,7 +234,6 @@ class _CompensacaoChequeScreenState extends State<CompensacaoChequeScreen> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
     );
-    this.cheque.dataPagamento = DateUtil.toDate(_dataPagamentoController.text);
 
     Map<String, dynamic> map = {
       "id": this.cheque.id,
@@ -259,6 +257,8 @@ class _CompensacaoChequeScreenState extends State<CompensacaoChequeScreen> {
     );
 
     if (success) {
+      this.cheque.dataPagamento =
+          DateUtil.toDate(_dataPagamentoController.text);
       //garante a snack bar
       await Future.delayed(Duration(seconds: 1));
       Navigator.of(context).pop();

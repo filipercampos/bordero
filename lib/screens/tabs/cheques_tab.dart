@@ -47,11 +47,13 @@ class _ChequesTabState extends State<ChequesTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: _buildFloatingButton(),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Cheques"),
         centerTitle: true,
         actions: <Widget>[
           IconButton(
+            
             icon: Icon(Icons.filter_list),
             onPressed: () {
               setState(() {

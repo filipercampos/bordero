@@ -16,6 +16,15 @@ class ThemeDefault{
       primarySwatch: Colors.blue,
       primaryColor: primaryColor,
       buttonColor: primaryColor,
+      appBarTheme: AppBarTheme(
+        color: primaryColor,
+        textTheme: TextTheme(
+          title: TextStyle(color: Colors.white),
+          caption: TextStyle(color: Colors.white),
+          body1: TextStyle(color: Colors.white),
+        )
+
+      )
     );
   }
 }

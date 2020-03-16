@@ -28,7 +28,7 @@ abstract class Repository implements Dao {
   @override
   Future<int> insert(Map<String, dynamic> map) async {
     try {
-      Database dbT = await database;
+      var dbT = await database;
       return await dbT.transaction((txn) async {
         var batch = txn.batch();
 
@@ -67,7 +67,7 @@ abstract class Repository implements Dao {
         return rowsAffected;
       });
     } catch (exception) {
-      print("Update $tableName failed => $exception.toString()");
+      print("Update $tableName failed => $exception");
       return 0;
     }
   }

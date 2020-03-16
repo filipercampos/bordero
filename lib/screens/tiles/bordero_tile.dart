@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class BorderoTile extends DrawerTile {
   BorderoTile(PageController controller,int pageIndex)
       : super(
-            text: "Calculador Cheque",
+            text: "Calculador",
             icon: Icons.monetization_on,
             pageIndex: pageIndex,
             controller: controller);

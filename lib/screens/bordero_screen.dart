@@ -581,10 +581,6 @@ class _BorderoScreenState extends State<BorderoScreen> {
     );
   }
 
-  Positioned _buildFooter() {
-     
-  }
-
   Widget _buildButton({@required String text, @required Function() onPressed}) {
     return Container(
       height: 50.0,
