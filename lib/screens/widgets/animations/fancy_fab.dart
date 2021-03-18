@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 
 ///Botão Menu/Close
 class FancyFab extends StatefulWidget {
-
   final Function() onPressedOpen;
   final Function() onPressedClose;
 
-  FancyFab({@required this.onPressedOpen,@required this.onPressedClose});
+  FancyFab({@required this.onPressedOpen, @required this.onPressedClose});
 
   @override
   _FancyFabState createState() => _FancyFabState();
@@ -24,23 +23,25 @@ class _FancyFabState extends State<FancyFab>
   @override
   initState() {
     _animationController =
-    AnimationController(vsync: this, duration: Duration(milliseconds: 500))
-      ..addListener(() {
-        setState(() {});
-      });
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
+          ..addListener(() {
+            setState(() {});
+          });
     _animateIcon =
         Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _animateColor = ColorTween(
       begin: HexColor('#00a6bf'),
       end: Colors.red,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Interval(
-        0.00,
-        1.00,
-        curve: _curve,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(
+          0.00,
+          1.00,
+          curve: _curve,
+        ),
       ),
-    ));
+    );
     super.initState();
   }
 
@@ -58,9 +59,9 @@ class _FancyFabState extends State<FancyFab>
     }
     isOpened = !isOpened;
 
-    if(isOpened){
+    if (isOpened) {
       widget.onPressedOpen();
-    }else{
+    } else {
       widget.onPressedClose();
     }
   }

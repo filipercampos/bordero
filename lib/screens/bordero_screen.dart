@@ -256,7 +256,7 @@ class _BorderoScreenState extends State<BorderoScreen> {
                                   ),
                                   keyboardType: TextInputType.number,
                                   inputFormatters: <TextInputFormatter>[
-                                    WhitelistingTextInputFormatter.digitsOnly
+                                    FilteringTextInputFormatter.digitsOnly
                                   ],
                                   textInputAction: TextInputAction.done,
                                   onChanged: (text) {
@@ -353,11 +353,10 @@ class _BorderoScreenState extends State<BorderoScreen> {
                               }
                             : null,
                       ),
-                     _buildButton(
-                          text: "Novo",
-                          onPressed: this.helper.newCalc,
-                        ),
-                       
+                      _buildButton(
+                        text: "Novo",
+                        onPressed: this.helper.newCalc,
+                      ),
                       _buildButton(
                         text: "Salvar",
                         onPressed: () {

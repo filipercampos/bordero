@@ -19,12 +19,10 @@ class ThemeDefault {
       appBarTheme: AppBarTheme(
         color: primaryColor,
         textTheme: TextTheme(
-          title: TextStyle(
+          headline6: TextStyle(
               color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.w500),
-          caption: TextStyle(
-              color: Colors.white, fontSize: 14.0),
-          body1: TextStyle(
-              color: Colors.white, fontSize: 14.0),
+          caption: TextStyle(color: Colors.white, fontSize: 14.0),
+          bodyText2: TextStyle(color: Colors.white, fontSize: 14.0),
         ),
       ),
     );
